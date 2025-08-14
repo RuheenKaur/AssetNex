@@ -1,0 +1,25 @@
+body{
+    background: #4f0310;
+    background: linear-gradient(90deg, rgba(79, 3, 16, 1) 25%, rgba(235, 73, 14, 0.96) 58%, rgba(179, 124, 23, 1) 100%);
+    }
+    
+     button {
+        background-color: black;
+        color: white;
+        border-radius: 25%;
+        border: 2px solid silver;
+        margin-top: 10px;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+
+    }
+
+    .email-box{
+    display: flex;
+    margin-top: 5rem;
+    border: solid 3px rgb(169, 180, 169);
+    border-radius: 20%;
+    align-items: center;
+
+   
+}

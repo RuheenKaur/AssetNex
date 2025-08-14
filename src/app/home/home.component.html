@@ -1,0 +1,140 @@
+<!-- 
+Backend (Controller Filter Example):
+
+
+[Authorize(Roles = "Admin")]
+[HttpGet("admin/assets")]
+public IActionResult GetAllAssetsForAdmin()
+{
+    // logic to return asset list
+}
+User Role Claim Setup:
+Ensure role is saved in JWT token claim during login:
+
+
+var claims = new List<Claim>
+{
+    new Claim(ClaimTypes.Name, user.Username),
+    new Claim(ClaimTypes.Role, user.Role)
+};
+Frontend Check (Angular Example):
+
+if (user.role === 'admin') {
+  // show admin dashboard
+}
+
+ 2. View My Tickets / History
+Backend Endpoint:
+
+
+[HttpGet("my-tickets")]
+public async Task<IActionResult> GetMyTickets([FromQuery] Guid userId)
+{
+    var tickets = await supportRepo.GetTicketsByUserId(userId);
+    return Ok(tickets);
+}
+DTO Filter Example:
+
+
+public async Task<List<SupportRequestDto>> GetTicketsByUserId(Guid userId)
+{
+    return await dbContext.SupportRequests
+        .Where(t => t.UserId == userId)
+        .Select(t => new SupportRequestDto {
+            Id = t.Id,
+            Title = t.Title,
+            Status = t.Status,
+            CreatedOn = t.CreatedOn
+        })
+        .ToListAsync();
+}
+Frontend:
+
+Display with colored badges based on Status (Pending, Resolved, etc.)
+
+Optional: Sort by date, filter by status
+
+ 3. E-Disposal Request + Approval Workflow
+Model Update (E.g.):
+
+public class EWaste
+{
+    public string Status { get; set; } = "Pending"; // Approved/Rejected
+}
+Controller Logic (Admin Approval):
+
+
+[HttpPost("approve-disposal/{id}")]
+public async Task<IActionResult> ApproveDisposal(Guid id)
+{
+    var disposal = await ewasteRepo.GetById(id);
+    if (disposal == null) return NotFound();
+
+    disposal.Status = "Approved";
+    await dbContext.SaveChangesAsync();
+    return Ok();
+}
+User Side:
+
+Create Disposal Request → sets Status = "Pending"
+
+Admin Side:
+
+List all pending → Approve/Reject via buttons
+
+ 4. Asset Assignment to Users
+Assignment Table:
+
+
+public class Assign
+{
+    public Guid Id { get; set; }
+    public Guid AssetId { get; set; }
+    public Guid UserId { get; set; }
+    public DateTime AssignedOn { get; set; }
+}
+Assignment Controller Logic:
+
+
+[HttpPost("assign")]
+public async Task<IActionResult> AssignAssetToUser([FromBody] AssignDto assignDto)
+{
+    var assignment = new Assign {
+        AssetId = assignDto.AssetId,
+        UserId = assignDto.UserId,
+        AssignedOn = DateTime.UtcNow
+    };
+
+    await dbContext.Assignments.AddAsync(assignment);
+    await dbContext.SaveChangesAsync();
+    return Ok();
+}
+Frontend Form:
+
+Dropdown for Asset
+
+Dropdown for User
+
+Assign button
+
+ 5. Dashboard Stats Widgets
+Backend Endpoint Example:
+
+
+
+[HttpGet("stats")]
+public async Task<IActionResult> GetDashboardStats()
+{
+    var stats = new {
+        TotalAssets = await dbContext.Assets.CountAsync(),
+        AssignedAssets = await dbContext.Assignments.CountAsync(),
+        TicketsOpen = await dbContext.SupportRequests.CountAsync(t => t.Status != "Resolved"),
+        DisposalsPending = await dbContext.EWastes.CountAsync(w => w.Status == "Pending")
+    };
+    return Ok(stats);
+}
+Frontend (Angular/React):
+
+Card widgets: TotalAssets, AssignedAssets, TicketsOpen, DisposalsPending
+
+Optional chart (bar/pie) using Chart.js or similar -->

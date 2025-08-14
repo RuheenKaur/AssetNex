@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Software License Request</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="update-asset.component.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="form-wrapper">
+
+        <h2>Update Asset Request</h2>
+
+        <form>
+
+            <div class="form-group">
+                <label for="assetName"> Asset Name</label>
+                <input type="text" disabled id="assetName" name="assetName" class="form-control" [(ngModel)]="assets!.name">
+            </div>
+
+            <div class="form-group">
+                <label for="serialnumber">Serial Number </label>
+                <input type="text" disabled id="serialnumber" name="serialnumber" class="form-control" [(ngModel)]="assets!.serialNumber">
+            </div>
+
+
+            <div class="form-group">
+                <label for="department">Department</label>
+                <input type="text" disabled id="department" name="department" class="form-control" [(ngModel)]="assets!.department">
+            </div>
+
+            <div class="form-group">
+                <label for="dateofissue">Date Of Issue </label>
+                <input type="datetime" disabled id="dateofissue" name="dateofissue" class="form-control" [(ngModel)]="assets!.dateOfIssue">
+            </div>
+
+            <div class="form-group">
+                <label for="warrantydate">WarrantyDate</label>
+                <input type="datetime" diabled id="warrantydate" name="warrantydate" class="form-control" [(ngModel)]="assets!.warrantyDate" />
+            </div>
+
+
+            <div class="form-group">
+                <label for="userid">UserId</label>
+                <input type="text" disabled id="userid" name="userid" lass="form-control" [(ngModel)]="assets!.userId" />
+            </div>
+
+
+            <div class="form-group">
+                <label for="user">User</label>
+                <input type="text" disabled id="user" name="user" class="form-control" [(ngModel)]="assets!.user" />
+            </div>
+
+            <div class="form-group">
+                <label for="status">Status </label>
+                <input type="checkbox" disabled id="status" name="status" class="form-control" [(ngModel)]="assets!.status" />
+                <select>
+        <option>Recycling</option>
+        <option>Donation</option>
+        <option>Exchange</option>
+        <option>Others</option>
+    </select>
+            </div>
+
+            <div class="form-group">
+                <label for="assetTypeId">AssetTypeId</label>
+                <input type="text" disabled id="assetTypeId" name="userid" class="form-control" [(ngModel)]="assets!.assetTypeId" />
+            </div>
+
+            <div class="form-group">
+                <label for="assetType">AssetType</label>
+                <input type="text" disabled id="assetType" name="assetType" class="form-control" [(ngModel)]="assets!.assetType" />
+            </div>
+
+
+            <div class="form-actions">
+                <button type="submit">Save</button>
+                <button type="button" (onclick)="onDelete()">Delete</button>
+            </div>
+        </form>
+
+
+
+
+        <ng-template [ngIf]="!assets">
+            <div class="alert alert-warning" role="alert">
+                Alert! Something is going wrong.
+            </div>
+        </ng-template>
+
+    </div>
+
+</body>
+
+</html>

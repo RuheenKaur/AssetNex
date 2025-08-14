@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ASSET INVENTORY LIST</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="inventory.component.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <h3><u>ASSET INVENTORY LIST</u></h3>
+
+    <div class="buttonadd">
+        <button type="submit" class="btn btn-primary" routerlink="/assets/add" (click)="goToAddAssets()">Add Asset</button>
+    </div>
+
+    <div class="back">
+        <button class="dback" routerlink="/dashboard" (click)="goToDashboard()">To Dashboard<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+</svg></button>
+    </div>
+
+
+    <p-table class="custom-table" [value]="assets$ | async " [paginator]="true" [rows]="10">
+        <ng-template #header>
+
+            <tr>
+                <th pSortableColumn="id">ID
+                    <p-sortIcon field="id"></p-sortIcon>
+                </th>
+                <th pSortableColumn="name">NAME
+                    <p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="serialNumber">SERIAL NUMBER
+                    <p-sortIcon field="serialNumber"></p-sortIcon>
+                </th>
+                <th pSortableColumn="department">DEPARTMENT
+                    <p-sortIcon field="department"></p-sortIcon>
+                </th>
+                <th pSortableColumn="dateOfIssue">DATE OF ISSUE
+                    <p-sortIcon field="dateOfIssue"></p-sortIcon>
+                </th>
+                <th pSortableColumn="warrantyDate">WARRANTY DATE
+                    <p-sortIcon field="warrantyDate"></p-sortIcon>
+                </th>
+                <th pSortableColumn="userId">USER ID
+                    <p-sortIcon field="userId"></p-sortIcon>
+                </th>
+                <th pSortableColumn="user">USER
+                    <p-sortIcon field="user"></p-sortIcon>
+                </th>
+                <th pSortableColumn="status">STATUS
+                    <p-sortIcon field="status"></p-sortIcon>
+                </th>
+                <th pSortableColumn="assetTypeId">ASSET TYPE ID
+                    <p-sortIcon field="assetTypeId"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="assetType">ASSET TYPE
+                    <p-sortIcon field="assetType"></p-sortIcon>
+                </th>
+            </tr>
+
+        </ng-template>
+
+        <ng-template #body let-asset>
+            <tr>
+                <td>{{ asset.id }}</td>
+                <td>{{ asset.name }}</td>
+                <td>{{ asset.serialNumber }}</td>
+                <td>{{ asset.department }}</td>
+                <td>{{ asset.dateOfIssue | date }}</td>
+                <td>{{ asset.warrantyDate | date }}</td>
+                <td>{{ asset.userId }}</td>
+                <td>{{ asset.user }}</td>
+                <td>{{ asset.status }}</td>
+                <td>{{ asset.assetTypeId }}</td>
+                <td>{{ asset.assetType }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+
+</body>

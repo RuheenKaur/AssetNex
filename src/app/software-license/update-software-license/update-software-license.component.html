@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Software License Request</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="update-software-license.component.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="form-wrapper">
+
+        <h2>Update Software License Request</h2>
+
+        <form>
+
+            <div class="form-group">
+                <label for="Id"> Id</label>
+                <input type="text" disabled id="Id" name="Id">
+            </div>
+
+
+            <div class="form-group">
+                <label class="form-label" for="UserName"> User Name</label>
+                <input type="text" disabled id="UserName" name="UserName">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="Request">Request</label>
+                <input type="text" disabled id="Request" name="Request">
+            </div>
+
+            <div class="form-group">
+                <label for="EmployeeId">EmployeeId</label>
+                <input type="text" disabled id="EmployeeId" name="EmployeeId">
+            </div>
+
+            <div class="form-group">
+                <label for="SoftwareName">Software Name </label>
+                <input type="datetime" disabled id="SoftwareName" name="SoftwareName">
+            </div>
+
+            <div class="form-group">
+                <label for="OtherSoftware">Other Software </label>
+                <input type="datetime" diabled id="OtherSoftware" name="OtherSoftware">
+            </div>
+
+
+            <div class="form-group">
+                <label for="DateApplied">Date Applied</label>
+                <input type="text" disabled id="DateApplied" name="DateApplied">
+            </div>
+
+
+            <div class="form-actions">
+                <button type="submit" (onclick)="goToSoftwareLicense()">Submit</button>
+            </div>
+
+
+            <ng-template [ngIf]="!softwareLicense">
+                <div class="alert alert-warning" role="alert">
+                    Alert! Something is going wrong.
+                </div>
+            </ng-template>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>

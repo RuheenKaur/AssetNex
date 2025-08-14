@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hardware Support Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="hardware.component.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="form-wrapper">
+        <h2>Hardware Support Form</h2>
+        <form>
+
+            <div class="form-group">
+                <label for="id">Id</label>
+                <input type="text" id="id" name="id">
+            </div>
+
+            <div class="form-group">
+                <label for="problemDescription">ProblemDescription</label>
+                <input type="text" id="problemDescription" name="problemDescription">
+            </div>
+
+            <div class="form-group">
+                <label for="assetTypeId">AssetTypeId</label>
+                <input type="text" id="assetTypeId" name="assetTypeId">
+            </div>
+
+            <div class="form-group">
+                <label for="serialNumber">SerialNumber</label>
+                <input type="text" id="serialNumber" name="serialNumber">
+            </div>
+
+            <div class="form-group">
+                <label for="assetName">AssetName</label>
+                <input type="text" id="assetName" name="assetName">
+            </div>
+
+            <div class="form-group">
+                <label for="assetType">AssetType</label>
+                <input type="text" id="assetType" name="assetType">
+            </div>
+
+            <div class="form-group">
+                <label for="dateSubmitted">DateSubmitted</label>
+                <input type=d ate id="dateSubmitted" name="dateSubmitted">
+            </div>
+
+
+            <div class="form-group">
+                <label for="dateOfIssue">DateOfIssue</label>
+                <input type=date id="dateOfIssue" name="dateOfIssue">
+            </div>
+
+            <div class="form-group">
+                <label for="warrantyDate">WarrantyDate</label>
+                <input type=date id="warrantyDate" name="warrantyDate">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" (click)="goToHardware()">Submit</button>
+            </div>
+
+        </form>
+    </div>
+
+</body>
+
+</html>

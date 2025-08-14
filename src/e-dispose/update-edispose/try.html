@@ -1,0 +1,27 @@
+mport { Component } from '@angular/core'; import { Router } from '@angular/router'; import { FormBuilder, FormGroup, Validators } from '@angular/forms'; import { EDisposeService } from '../services/e-dispose.service'; @Component({ selector: 'app-add-ewaste',
+templateUrl: './add-ewaste.component.html' }) export class AddEWasteComponent { ewasteForm: FormGroup; constructor( private fb: FormBuilder, private edisposeService: EDisposeService, private router: Router ) { this.ewasteForm = this.fb.group({ assetTypeId:
+['', Validators.required], assetName: ['', Validators.required], assetType: ['', Validators.required], reason: ['', Validators.required], disposedOn: ['', Validators.required], disposedBy: ['', Validators.required], condition: ['', Validators.required],
+dateOfIssue: ['', Validators.required], warrantyDate: ['', Validators.required], status: ['Pending'] }); } onSubmit(): void { if (this.ewasteForm.valid) { this.edisposeService.addEWaste(this.ewasteForm.value).subscribe({ next: () => { alert('E-Waste submitted
+successfully!'); this.router.navigate(['/ewaste/disposable-assets']); // Redirect to inventory table }, error: (err) => { console.error('Submission error:', err); alert('Failed to submit. Check console.'); } }); } } } ✅ 2. Angular: HTML Form html Copy
+Edit
+<form [formGroup]="ewasteForm" (ngSubmit)="onSubmit()">
+    <input formControlName="assetTypeId" placeholder="Asset Type ID" />
+    <input formControlName="assetName" placeholder="Asset Name" />
+    <input formControlName="assetType" placeholder="Asset Type" />
+    <input formControlName="reason" placeholder="Reason" />
+    <input formControlName="disposedOn" type="date" />
+    <input formControlName="disposedBy" placeholder="Disposed By (Email)" />
+    <input formControlName="condition" placeholder="Condition" />
+    <input formControlName="dateOfIssue" type="date" />
+    <input formControlName="warrantyDate" type="date" />
+
+    <button type="submit">Submit</button>
+</form>
+✅ 3. Angular: Service Method In your e-dispose.service.ts: ts Copy Edit addEWaste(payload: any): Observable
+<any> { return this.http.post('https://localhost:5001/api/EWastes', payload); } 📌 Adjust the URL to match your .NET controller route ([Route("api/[controller]")] → api/EWastes) ✅ 4. .NET API Controller (C#) In EWastesController.cs: csharp Copy Edit [HttpPost]
+    public async Task
+    <IActionResult> AddEWaste([FromBody] EWasteDto model) { if (!ModelState.IsValid) return BadRequest(ModelState); var ewaste = new EWaste { Id = Guid.NewGuid(), AssetTypeId = model.AssetTypeId, AssetName = model.AssetName, AssetType = model.AssetType, Reason = model.Reason,
+        DisposedOn = model.DisposedOn, DisposedBy = model.DisposedBy, Condition = model.Condition, DateOfIssue = model.DateOfIssue, WarrantyDate = model.WarrantyDate, Status = model.Status }; await _context.EWastes.AddAsync(ewaste); await _context.SaveChangesAsync();
+        return Ok(ewaste); } ✅ 5. DTO (EWasteDto.cs) csharp Copy Edit public class EWasteDto { public Guid AssetTypeId { get; set; } public string AssetName { get; set; } public string AssetType { get; set; } public string Reason { get; set; } public
+        DateTime DisposedOn { get; set; } public string DisposedBy { get; set; } public string Condition { get; set; } public DateTime DateOfIssue { get; set; } public DateTime WarrantyDate { get; set; } public string Status { get; set; } } ✅ Result When
+        you click Submit, the Angular form: Validates inputs Calls the API with POST .NET saves the record to your EWaste table UI is redirected to /ewaste/disposable-assets showing the new entry

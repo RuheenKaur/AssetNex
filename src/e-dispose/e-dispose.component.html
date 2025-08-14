@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>EWASTE LIST</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="e-dispose.component.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <h3><u>EWASTE INVENTORY </u></h3>
+
+
+
+    <div class="button-row">
+        <button class="back" (click)="goToDashboard()">← Back</button>
+
+        <div class="button-wrapper">
+            <button type="button" (click)="goToGuidelines()">E-Disposal Criteria</button>
+            <button type="button" (click)="goToAddEDispose()">Add E-Waste</button>
+        </div>
+    </div>
+
+    <p-table class="custom-table" [value]="disposedetails$ | async" [paginator]="true" [rows]="12">
+
+        <ng-template #header>
+
+            <tr>
+                <th pSortableColumn="id">ID
+                    <p-sortIcon field="id"></p-sortIcon>
+                </th>
+                <th pSortableColumn="assetTypeId">ASSET TYPE ID
+                    <p-sortIcon field="assetTypeId"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="assetName">ASSET NAME
+                    <p-sortIcon field="assetName"></p-sortIcon>
+                </th>
+                <th pSortableColumn="assetType">ASSET TYPE
+                    <p-sortIcon field="assetType"></p-sortIcon>
+                </th>
+                <th pSortableColumn="reason">REASON
+                    <p-sortIcon field="reason"></p-sortIcon>
+                </th>
+                <th pSortableColumn="disposedOn">DISPOSED ON
+                    <p-sortIcon field="disposedOn"></p-sortIcon>
+                </th>
+                <th pSortableColumn="disposedBy">DISPOSED BY
+                    <p-sortIcon field="disposedBy"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="condition">CONDITION
+                    <p-sortIcon field="condition"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="dateOfIssue">DATE OF ISSUE
+                    <p-sortIcon field="dateOfIssue"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="warrantyDate">WARRANTY DATE
+                    <p-sortIcon field="warrantyDate"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="status">STATUS
+                    <p-sortIcon field="status"></p-sortIcon>
+                </th>
+            </tr>
+
+        </ng-template>
+
+        <ng-template #body let-disposedetails>
+            <tr>
+                <td>{{ disposedetails.id }}</td>
+                <td>{{ disposedetails.assetTypeId}}</td>
+                <td>{{ disposedetails.assetName }}</td>
+                <td>{{disposedetails.assetType}}</td>
+                <td>{{disposedetails.reason}}</td>
+                <td>{{ disposedetails.disposedOn | date }}</td>
+                <td>{{disposedetails.disposedBy}}</td>
+                <td>{{disposedetails.condition}}</td>
+                <td>{{disposedetails.dateOfIssue | date}}</td>
+                <td>{{disposedetails.warrantyDate | date}}</td>
+                <td>{{disposedetails.status}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+
+</body>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" class="my-app-dark">
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>SUPPORT LIST</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="support-table.component.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <h3><u>SUPPORT INVENTORY </u></h3>
+
+    <div class="buttonadd">
+        <button type="submit" class="btn btn-primary" routerlink="/assets/suppport/add" (click)="goToAddSupport()">Add Support</button>
+    </div>
+
+    <div class="back">
+        <button class="btn btn-primary" routerlink="/dashboard" (click)="goToDashboard()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+</svg></button>
+    </div>
+
+
+    <p-table class="custom-table" [value]="support$ | async " [paginator]="true" [rows]="10">
+        <ng-template #header>
+
+            <tr>
+                <th pSortableColumn="id">Id
+                    <p-sortIcon field="id"></p-sortIcon>
+                </th>
+                <th pSortableColumn="userName">UserName
+                    <p-sortIcon field="userName"></p-sortIcon>
+                </th>
+                <th pSortableColumn=" email">Email
+                    <p-sortIcon field="email"></p-sortIcon>
+                </th>
+                <th pSortableColumn="employeeId">EmployeeId
+                    <p-sortIcon field="employeeId"></p-sortIcon>
+                </th>
+                <th pSortableColumn="department">Department
+                    <p-sortIcon field="department"></p-sortIcon>
+                </th>
+                <th pSortableColumn="requestType">RequestType
+                    <p-sortIcon field="requestType"></p-sortIcon>
+                </th>
+
+
+
+        </ng-template>
+
+        <ng-template #body let-support>
+            <tr>
+                <td>{{ support.id }}</td>
+                <td>{{ support.userName }}</td>
+                <td>{{ support.email}}</td>
+                <td>{{ support.employeeId}}</td>
+                <td>{{ support.department }}</td>
+                <td>{{support.requestType }}</td>
+
+
+            </tr>
+        </ng-template>
+    </p-table>
+
+
+</body>

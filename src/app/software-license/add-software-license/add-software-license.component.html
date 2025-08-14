@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Software License Request</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="add-software-license.component.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="form-wrapper">
+
+        <h2>Software License Request</h2>
+
+        <form>
+
+            <div class="form-group">
+                <label for="userName">UserName</label>
+                <input type="text" id="userName" name="userName">
+            </div>
+
+            <div class="form-group">
+                <label for="request">Request</label>
+                <input type="text" id="request" name="request">
+            </div>
+
+            <div class="form-group">
+                <label for="employeeId">Employee Id</label>
+                <input type="text" id="employeeId" name="employeeId">
+            </div>
+
+            <div class="form-group">
+                <label for="DateApplied">Date Applied</label>
+                <input type="date" id="DateApplied" name="DateApplied">
+            </div>
+
+
+
+            <div class="form-group">
+                <label for="SoftwareName">Software Name</label>
+                <select id="SoftwareName" name="SoftwareName">
+        <option value="" disabled selected>Select Software</option>
+         <option value="CRM">CRM </option>
+        <option value="Jira">Jira</option>
+        <option value="Asana">Asana</option>
+        <option vlaue="Trello">Trello</option>
+        <option value="Azure">Azure</option>
+        <option value="SalesForce">SalesForce</option>
+        <option value="Office 365">Office 365</option>
+        <option value="Co-Pilot">Co-Pilot</option>
+        <option value="Oracle DB">Oracle DB</option>
+        <option value="Dynamics 365">Dynamics 365</option>
+        <option value="AWS">AWS</option>
+        <option value="McAfee">McAfee</option>
+        <option value="KaperSky">KaperSky</option>
+        <option value="Teams">Teams</option>
+        <option value="SomeOther">SomeOther</option>
+        </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Other Software">Other Software</label>
+                <input type="text" id="OtherSoftware" name="OtherSoftware">
+            </div>
+
+            <div class="form-group">
+                <textarea rows="4" placeholder="Mention purpose or additional comments..." style="width: 100%; border-radius: 4px; padding: 1em; background: var(--input-bg); border: 1px solid var(--border-color); resize: vertical;"></textarea>
+            </div>
+
+            <div class="form-group">
+                <input type="checkbox" required>I confirm the details above are correct.</div>
+
+            <div class="form-actions">
+                <button type="submit" (click)="onFormSubmit()">Submit</button>
+            </div>
+
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>
+
+<!-- <form method="POST" action="/submit-inventory"></form>
+
+<textarea name="comments" rows="4" placeholder="Mention purpose or additional comments..." style="..."></textarea> -->

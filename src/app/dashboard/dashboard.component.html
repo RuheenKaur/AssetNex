@@ -1,0 +1,96 @@
+<body>
+    <div class="app-wrapper">
+
+        <div id="sidebar" class="sidebar expanded">
+
+
+            <ul class="sidebar-menu">
+                <li><a href="/assets"> ASSETS INVENTORY</a></li>
+                <li><a routerLink="/ewaste/disposable-assets" (click)="goToEDispose()"> E-DISPOSAL</a></li>
+                <li><a routerlink="/assets/support" (click)="goToSupport()"> SUPPORT</a></li>
+                <li><a href="/reports"> REPORTS</a></li>
+                <li><a href="/help"> HELP</a></li>
+                <li><a href="/logout"> LOGOUT</a></li>
+            </ul>
+        </div>
+
+
+        <div class="sidebar" [class.collapsed]="isSidebarCollapsed">
+            <ul class="sidebar-menu">
+                <li><a (click)="goTo('/assets')">ASSETS INVENTORY</a></li>
+                <li><a (click)="goTo('/ewaste/disposable-assets')">E-DISPOSAL INVENTORY</a></li>
+                <li><a (click)="goTo('/newsupport')">SUPPORT INVENTORY</a></li>
+                <li><a (click)="goTo('softwarelicense')">SOFTWARE INVENTORY</a></li>
+                <li><a (click)="goTo('/assets/hardware')">HARDWARE INVENTORY</a>
+                </li>
+                <li><a (click)="goTo('/reports')">REPORTS</a></li>
+                <li><a (click)="goTo('/help')">HELP</a></li>
+                <li><a (click)="goTo('/logout')">LOGOUT</a></li>
+            </ul>
+
+            <button id="sidebar-toggle-btn" class="sidebar-toggle-btn" (click)="toggleSidebar()">
+      {{ isSidebarCollapsed ? '►' : '☰' }}
+    </button>
+        </div>
+        <div class="main-content">
+
+            <!-- <p-chart type="bar" [data]="{
+     labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+     datasets: [{
+         label: 'Votes',
+         data: [12, 19, 3, 5, 2, 3],}" [options]="basicOptions" /> -->
+            <div class="nav-left">
+
+
+                <!--azure login function--->>
+                <div class="navbar">
+                    <div class></div>
+
+                    <button id="sidebar-toggle-btnn" class="sidebar-toggle-btnn" (click)="toggleSidebar()">&#x25B6;</button>
+
+                    <div class="logo-wrapper">
+                        <h1 class="logo" (click)="goToLanding()">AssetNex<span class="highlight">IT</span> </h1>
+                        <!-- <a (click)="goToLanding()">AssetNex<span class="highlight">IT</span></a> -->
+
+                        <p class="below">TRACK | MANAGE | DISPOSE</p>
+                    </div>
+
+
+
+                    <ul class="nav-links">
+                        <li><a (click)="goTo('/assets/explore')">EXPLORE</a></li>
+                        <li><a (click)="goTo('/assets/support')">SUPPORT DESK</a></li>
+                        <li><a (click)="goTo('/about')">ABOUT</a></li>
+                    </ul>
+
+                </div>
+                <div class="chart-row">
+                    <p-chart *ngIf="assetChartData" type="doughnut" class="pie" [data]="assetChartData" [options]="assetChartOptions">
+                    </p-chart>
+
+                    <p-chart *ngIf="eWasteChartData" type="doughnut" class="pie" [data]="eWasteChartData" [options]="eWasteChartOptions">
+                    </p-chart>
+                </div>
+                <div class="box">
+
+                    <div class="container">
+                        <p><a (click)="goToAssets()">Tracking & Inventory</a></p>
+                    </div>
+
+                    <div class="container">
+                        <p><a (click)="goTo('/ewaste/disposable-assets')">Recycling & Disposal</a></p>
+                    </div>
+
+                    <div class="container">
+                        <p><a (click)="goToSupport()">Support and Concerns</a></p>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Software License Request</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="login.component.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <img src="assets/images/78f10bc3-96dc-4351-a85f-dc17eeb4.png" class="guide" />
+
+    <img src="assets/images/image.png" class="guidee" />
+
+    <div class="form-wrapper">
+
+        <h2>User Login</h2>
+
+        <form>
+
+
+            <div class="logo-wrapper">
+                <h1 class="logo"><a routerLink="/landing" onclick="goToLanding()">AssetNex<span class="highlight">IT</span></a></h1>
+                <p class="below">TRACK | MANAGE | DISPOSE</p>
+            </div>
+
+            <div class="form-group">
+                <div class="radio">
+                    <label for="profile">Profile:</label>
+                    <div><input type="radio" class="radio" name="profile" value="user" id="user">
+                        <label for="user">User</label></div>
+
+                    <div><input type="radio" class="radio" name="profile" value="admin" id="admin">
+                        <label for="admin">Admin</label></div>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="userName">User Name:</label>
+                <input type="text" id="userName" name="userName" placeholder="User Name">
+            </div>
+
+            <div class="form-group">
+                <label for="request">Password:</label>
+                <input type="text" id="request" name="request" placeholder="Password">
+            </div>
+
+
+            <a class="forgot-link" href="#">Forgot Password?</a>
+
+            <button type="submit" class="btn btn-primary" routerLink="/dashboard" (click)="goToDashboard()">Submit</button>
+
+
+        </form>
+    </div>
+</body>
+
+</html>

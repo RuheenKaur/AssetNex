@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Software License Request</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="update-edispose.component.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="form-wrapper">
+
+        <h2>Update EWaste Request</h2>
+
+        <form>
+
+            <div class="form-group">
+                <label class="form-label" for="assetTypeId"> AssetType Id</label>
+                <input type="text" disabled id="assetTypeId" placeholder="AssetTypeId" name="assetTypeId" class="form-control" (value)="disposeDetails?.assetTypeId">
+            </div>
+
+
+            <div class="form-group">
+                <label class="form-label" for="assetName"> Asset Name</label>
+                <input type="text" disabled id="assetName" placeholder="AssetName" name="assetName" class="form-control" (value)="disposeDetails?.assetName">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="assetType">AssetType</label>
+                <input type="text" disabled id="assetType" name="assetType" placeholder="AssetType" class="form-control" (value)="disposeDetails?.assetType" />
+            </div>
+
+
+            <div class="form-group">
+                <label class="form-label" for="reason">Reason</label>
+                <input type="text" disabled id="reason" name="reason" placeholder="Reason" class="form-control" (value)="disposeDetails?.reason">
+            </div>
+
+
+            <div class="form-group">
+                <label class="form-label" for="disposedOn">Disposed On</label>
+                <input type="date" disabled id="disposedOn" placeholder="Disposed On" name="disposedOn" class="form-control" (value)="disposeDetails?.disposedOn">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="disposedBy">Disposed By</label>
+                <input type="text" disabled id="disposedBy" name="disposedBy" placeholder="Disposed By" class="form-control" (value)="disposeDetails?.disposedBy">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="condition">Condition</label>
+                <input type="text" disabled id="condition" name="condition" placeholder="Condition" class="form-control" (value)="disposeDetails?.condition">
+            </div>
+
+
+            <div class="form-group">
+                <label class="form-label" for="dateofissue">Date Of Issue </label>
+                <input type="date" disabled id="dateofissue" name="dateofissue" placeholder="Date Of Issue" class="form-control" (value)="disposeDetails!.dateOfIssue">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="warrantydate">WarrantyDate</label>
+                <input type="date" diabled id="warrantydate" name="warrantydate" placeholder="WarrantyDate" class="form-control" (value)="disposeDetails!.warrantyDate" />
+            </div>
+
+
+            <div class="form-group">
+                <label class="form-label" for="status">Status</label>
+                <input type="checkbox" disabled id="status" name="status" class="form-control" (ngModel)="disposeDetails!.status" />
+                <select>
+        <option>Recycling</option>
+        <option>Donation</option>
+        <option>Exchange</option>
+        <option>In-repair</option>
+        <option>Others</option>
+    </select>
+            </div>
+
+
+            <div class="form-actions">
+                <button type="submit">Save</button>
+                <button type="button" (onclick)="onDelete()">Delete</button>
+            </div>
+
+
+
+
+            <ng-template [ngIf]="!disposeDetails">
+                <div class="alert alert-warning" role="alert">
+                    Alert! Something is going wrong.
+                </div>
+
+
+            </ng-template>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>

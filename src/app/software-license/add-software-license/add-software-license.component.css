@@ -1,0 +1,98 @@
+body {
+    background-color: #ffffff;
+    margin: 0;
+    padding: 2rem;
+    /* background-color: white; */
+    margin: 0;
+    padding: 2rem;
+    background: linear-gradient(135deg, #d3d3d3, #f0f0f0);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+ :root {
+    --primary: #d3852b;
+    --input-bg: #f9fdf6;
+    --card-bg: #ffffff;
+    --border: #d9e7cb;
+    --text: #ffffff;
+}
+
+.form-wrapper {
+    max-width: 700px;
+    margin: auto;
+    border-radius: 15px;
+    background-color: black;
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+h2 {
+    margin-bottom: 1.5rem;
+    color: var(--text);
+    font-size: 1.6rem;
+    text-align: center;
+    color: #f0852d;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+}
+
+.form-group input,
+.form-group select {
+    padding: 0.8rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background-color: var(--input-bg);
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+.form-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.form-actions button {
+    padding: 0.8rem 1.4rem;
+    background: var(--primary);
+    border: none;
+    background-color: #f0852d;
+    color: rgb(7, 7, 7);
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.27s ease-in-out;
+}
+
+.form-actions button:hover {
+    background: #3b3b3b;
+    color: white;
+}
+
+@media (max-width: 600px) {
+    .form-wrapper {
+        padding: 1.5rem;
+    }
+}
