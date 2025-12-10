@@ -1,0 +1,201 @@
+    body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        cursor: zoom-in;
+    }
+    
+    .title {
+        color: #0c0c0c;
+        font-size: 20px;
+        text-decoration: underline;
+        margin-bottom: 20px;
+        MARGIN-LEFT: 520PX;
+    }
+    
+    .highlight {
+        color: #e66f20;
+    }
+    
+    .dashboard-container {
+        padding: 20px;
+        background: #fcfaf8;
+        min-height: 100vh;
+    }
+    
+    .topper {
+        width: 1500px;
+        height: 60px;
+        margin-left: 70px;
+        border-radius: 14px;
+        margin-top: -180px;
+        margin-bottom: 0px;
+        background-color: #e9e3dd;
+        color: black;
+        font-style: bolder;
+        font-weight: 100rem;
+        height: value;
+    }
+    
+    .line {
+        height: 4px;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: row;
+        justify-content: baseline;
+        margin-left: 20px;
+        justify-content: bottom;
+        height: -100%;
+        margin-top: 200px;
+        margin-left: 240px;
+        background-color: black;
+        width: 60px;
+    }
+    
+    .line::after {
+        margin-top: 90px;
+    }
+    
+    .arrange {
+        margin-left: 240px;
+        text-align: left;
+        flex-direction: row;
+        display: flex;
+        gap: 40px;
+        font-style: bolder;
+        font-weight: 800em;
+        justify-content: flex-start;
+        text-decoration: underline;
+    }
+    
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        row-gap: 150px;
+        font-size: 15px;
+        font-weight: 800rem;
+        column-gap: 150px;
+        gap: 16x;
+    }
+    
+    .card {
+        background: rgb(243, 237, 237);
+        border: 1px solid #ffe0cc;
+        border-radius: 12px;
+        font-size: 15px;
+        padding: 16px;
+        box-shadow: 0 4px 6px rgba(255, 102, 0, 0.1);
+        transition: transform 0.2s;
+    }
+    
+    .arrange a:hover {
+        color: rgb(230, 93, 3);
+        transition-duration: 1s;
+    }
+    
+    .card:hover {
+        transform: translateY(-4px);
+    }
+    
+    .status-active {
+        color: green;
+        font-weight: bold;
+    }
+    
+    .status-repair {
+        color: orange;
+        font-weight: bold;
+    }
+    
+    .status-inactive {
+        color: red;
+        font-weight: bold;
+    }
+    
+    .status-intransit {
+        color: rgb(216, 46, 111);
+        font-weight: bold;
+    }
+    
+    .date {
+        font-size: 12px;
+        color: gray;
+    }
+    
+    .add-btn {
+        margin-top: 200px;
+        padding: 10px 20px;
+        margin-left: 50px;
+        background: #ff6600;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    .add-btn:hover {
+        background: #e65c00;
+    }
+    
+    .card-front,
+    .card-back {
+        background: white;
+        border: 1px solid #ffe0cc;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 4px 6px rgba(255, 102, 0, 0.1);
+        height: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        backface-visibility: hidden;
+        transition: transform 0.6s;
+        position: absolute;
+        width: 100%;
+    }
+    
+    .card-front {
+        transform: rotateY(0deg);
+    }
+    
+    .card-back {
+        transform: rotateY(180deg);
+        align-items: center;
+        justify-content: space-evenly;
+    }
+    
+    .card.flipped .card-front {
+        transform: rotateY(-180deg);
+    }
+    
+    .card.flipped .card-back {
+        align-items: center;
+        justify-content: space-evenly;
+        transform: rotateY(0deg);
+    }
+    
+    .update-btn,
+    .delete-btn {
+        padding: 8px 14px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    
+    .update-btn {
+        background: #ffb84d;
+        color: white;
+    }
+    
+    .update-btn:hover {
+        background: #e6a040;
+    }
+    
+    .delete-btn {
+        background: #ff4d4d;
+        color: white;
+    }
+    
+    .delete-btn:hover {
+        background: #e04444;
+    }

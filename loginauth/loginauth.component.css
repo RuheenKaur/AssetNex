@@ -1,0 +1,254 @@
+body {
+
+    margin: 0;
+    background: #eb7e09;
+   background: linear-gradient(90deg, rgba(235, 126, 9, 1) 0%, rgba(240, 124, 29, 1) 50%, rgba(214, 118, 15, 1) 100%);
+    padding: 2rem;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    max-height: fit-content;
+    color: black;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem;
+    background-color: #ffffff;
+    color: #080808;
+    margin-left: -20px;
+    position: fixed;
+    margin-top: 10px;
+    top: -10px;
+    left: 0;
+    height: 80px;
+    width: 1500px;
+    border-radius: 25px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 20px;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #000000;
+    margin: 0;
+}
+
+.logo a .highlight {
+    color: #f0842c;
+}
+
+.logo a {
+    color: rgb(7, 7, 7)
+}
+
+.highlight {
+    color: #f0842c;
+}
+
+.below {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+    color: #000000;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    line-height: 1.2;
+}
+
+.nav-left {
+    display: flex;
+    margin-left: -50px;
+    margin-top: -20px;
+    position: absolute;
+}
+
+.name {
+    color: #f1f0f0;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    margin-left: -150px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #000000;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+    font-weight: bold;
+    margin-right: 290px;
+}
+
+.nav-links a:hover {
+    color: #f0842c;
+}
+
+.text{
+  color:#ffffff;
+  text-align: left;
+  display:flex;
+  position:absolute;
+  margin-left: 5px;
+  margin-top: 200px;
+  font-size: 20px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-weight: 600;
+}
+
+.break{
+line-break: auto;
+}
+
+.main{
+  text-align: left;
+  font-size:24px;
+}
+
+.login-container{
+    max-width: 400px;
+    height: 500px;
+    margin-top: 100px;
+    margin-left: 800px;
+    border-radius: 15px;
+    background-color: rgb(248, 247, 247);
+    padding: 2rem 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.switch{
+  margin-left:200px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    border-top: 40px;
+    margin-top: 10px;
+    row-gap: 10px;
+    margin-bottom: 1rem;
+    color: rgb(10, 10, 10);
+}
+
+.form-group ::before {
+    margin-top: -50px;
+}
+
+.form-group label {
+    font-weight: 500;
+  margin-top:20px;
+    display: flex;
+    gap:20px;
+    width:300px;
+    color: var(--text);
+}
+
+.form-group input,
+.form-group select {
+    padding: 0.8rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background-color: var(--input-bg);
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+.form-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.form-actions button {
+    padding: 0.8rem 1.4rem;
+    background: var(--primary);
+    border: none;
+    background-color: #f0ab5d;;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.27s ease-in-out;
+}
+
+.form-actions button:hover {
+    background: #3b3b3b;
+}
+
+@media (max-width: 600px) {
+    .form-wrapper {
+        padding: 1.5rem;
+    }
+}
+
+button {
+    width: 100px;
+    padding: 10px 20px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 16px;
+    margin-left: 100px;
+    margin-top: 40px;
+    cursor: pointer;
+    align-items: flex-end;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    border: none;
+    background-color: #f0852d;
+    color: rgb(12, 12, 12);
+    transition: 0.3s;
+}
+
+.up {
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #0f0f0f;
+    color: white;
+}
+
+.forgot-link {
+    color: #1b1b1a;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    text-decoration: underline;
+    font-weight: bold;
+    margin-top: 108px;
+    margin-left: 198px;
+}
+
+a:hover {
+    color: #080808;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+h2 {
+    color: black;
+    margin-top: 20px;
+    font-weight: bolder;
+}
+

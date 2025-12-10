@@ -1,0 +1,147 @@
+<div class="nav-left">
+    <div class="navbar">
+        <div class="logo-wrapper">
+            <h1 class="logo" (click)="goToLanding()">AssetNex<span class="highlight">IT</span> </h1>
+            <p class="below">TRACK | MANAGE | DISPOSE</p>
+        </div>
+             <ul class="nav-links">
+                        <li><a (click)="goTo('/assets/explore')">EXPLORE <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+</svg></a></li>
+                        <li><a (click)="goTo('/assets/support')">SUPPORT DESK <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-raised-hand" viewBox="0 0 16 16">
+  <path d="M6 6.207v9.043a.75.75 0 0 0 1.5 0V10.5a.5.5 0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 0 0 0-3-3H6.236a1 1 0 0 1-.447-.106l-.33-.165A.83.83 0 0 1 5 2.488V.75a.75.75 0 0 0-1.5 0v2.083c0 .715.404 1.37 1.044 1.689L5.5 5c.32.32.5.754.5 1.207"/>
+  <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+</svg></a></li>
+                        <li><a (click)="goTo('/about')">ABOUT <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+  <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+</svg></a></li>
+                    </ul>
+    </div>
+</div>
+
+<div class="welcome"><a>User's Assets</a></div>
+
+<div class="sidebar border-end">
+    <div class="sidecolor">
+        <div class="sidebar-header border-bottom">
+            <div class="sidebar-brand">Hello, User!</div>
+        </div>
+
+        <ul class="sidebar-nav">
+
+            <li class="nav-item">
+                <a class="nav-link mt-5" >
+                    <i class="nav-icon cil-cloud-download"></i> MY ASSETS</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link mt-3" href='/assetrequests'>
+                    <i class="nav-icon cil-speedometer"></i>ASSET REQUEST
+                    <span class="badge bg-primary ms-auto">NEW</span>
+                </a>
+            </li>
+
+            <li class="nav-item nav-group show">
+                <a class="nav-link nav-group-toggle" (click)="goTo(SupportTickets())" class="nav-item mt-5"> SUPPORT
+            </a>
+
+                <ul class="nav-group-items ">
+                    <li class="nav-item mt-3 ">
+                        <a class="nav-link "  routerLink="/supporttickets" (click)="goTo(AssetsRequests())">
+                            <span class="nav-icon "><span class="nav-icon-bullet "></span></span>RAISE TICKET
+                        </a>
+                    </li>
+
+                    <li class="nav-item ">
+                        <a class="nav-link " href="# ">
+                            <span class="nav-icon "><span class="nav-icon-bullet " href= '/ticketstatus' routerLink="/ticketstatus" (click)="goTo(StatusTicket())"></span></span>TRACK TICKET
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item mt-3 ">
+                <a class="nav-link ">
+                    <i class="nav-icon cil-cloud-download "></i> PROFILE SETTINGS</a>
+            </li>
+
+            <li class="nav-item mt-3 ">
+                <a class="nav-link " routerLink="/help ">
+                    <i class=" nav-icon cil-speedometer "></i> HELP</a>
+            </li>
+            <li class="nav-item mt-3 ">
+                <a class="nav-link " routerLink="/login/logout" (click)="goTo(Logout())">
+                    <i class="nav-icon cil-speedometer "></i> LOGOUT</a>
+            </li>
+
+        </ul>
+    </div>
+</div>
+
+<div class="card-grid-container ">
+    <div class="card-body "><img src="assets/images/image (3).svg ">
+        <h2>Asset Inventory</h2>
+        <p>Get a comprehensive view of the all the deployed assets in a single click. Quick assessment of asset distribution, status, and allocation across your organization.
+        </p>
+    </div>
+
+    <div class="card-body "><img src="assets/images/image (4).svg ">
+        <h2>E-Waste Disposal</h2>
+        <p>Effortlessly manage your e-waste disposal process with our streamlined solution. Track, Schedule,document the disposal of electronic assets ensuring compliance with environmental regulations.
+        </p>
+    </div>
+
+    <div class="card-body "><img src="assets/images/image (5).svg ">
+        <h2>IT System Integration</h2>
+        <p>Seamlessly integrate AssetNexIT with your existing IT systems. Our platform supports API integrations, allowing you to synchronize data ,enhance your asset management workflows.
+        </p>
+    </div>
+
+    <div class="card-body "><img src="assets/images/image (6).svg ">
+        <h2>Support Desk</h2>
+        <p>Enhance your IT support operations with our integrated support desk. Track and manage support tickets, monitor response times, and ensure timely resolution of IT issues.
+        </p>
+    </div>
+
+    <div class="card-body ">
+        <img src="assets/images/image (7).svg ">
+        <h2>Reporting & Analytics</h2>
+        <p>Gain valuable insights into your asset management processes with our robust reporting and analytics features
+        </p>
+    </div>
+
+    <div class="card-body "><img src="assets/images/image (8).svg ">
+        <h2>Security & Compliance</h2>
+        <p>Ensure the security and compliance of your IT assets with AssetNexIT.Allows for a quick and safe process that ensures asset well-being.</p>
+    </div>
+</div>
+
+
+
+
+<!--
+Step 6 — Display Tickets to User (homepage)
+Service already exists → use same:
+
+this.ticketService.getMyTickets(userId).subscribe(res => {
+  this.myTickets = res;
+});
+HTML:
+
+<table>
+  <tr *ngFor="let t of myTickets">
+    <td>{{ t.issueCategory }}</td>
+    <td>{{ t.ticketStatus }}</td>
+    <td>{{ t.createdAt | date }}</td>
+  </tr>
+</table> -->
+
+<!-- RESULT
+✔️ User logs in
+✔️ User page prepopulates Name/Email from backend
+✔️ User fills issue → POST to DB
+✔️ Ticket stored with UserId FK
+✔️ User can see status updates
+✔️ Admin updates from backend (not affecting user flow)
+ -->
