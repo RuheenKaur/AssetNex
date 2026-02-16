@@ -4,6 +4,7 @@
   "newProjectRoot": "projects",
   "projects": {
     "NewAssetNexIT": {
+
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,22 +14,23 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+                  "outputPath": "dist/newassetnexit",
+            "index": "src/index.html",
             "browser": "src/main.ts",
+
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+                  "src/favicon.ico",
+              "src/assets/images"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/primeicons/primeicons.css",
+                    "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css"
             ],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+
+            "scripts":[]
           },
           "configurations": {
             "production": {
@@ -76,7 +78,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "output": "/assets/"
               }
             ],
             "styles": [
@@ -91,3 +94,6 @@
     "analytics": "605c105b-103e-4e55-a70a-de289cf8578f"
   }
 }
+
+
+

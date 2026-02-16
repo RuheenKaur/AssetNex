@@ -1,0 +1,109 @@
+<h3 class="mb-3"><u>Asset Requests</u></h3>
+<div class="buttonrow">
+    <button routerLink="admin/dashboard" (click)="goBack()">← Back To Dash</button>
+  </div>
+
+<div class="table">
+  <p-table
+    #dt
+    [value]="assetRequests"
+    class="p-datatable-sm"
+    [paginator]="true"
+    [rows]="10"
+
+    [responsiveLayout]="'scroll'"
+    [globalFilterFields]="['user','asset']">
+    <ng-template pTemplate="caption">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          (input)="dt.filterGlobal($event.target.value, 'contains')"
+          placeholder="Search asset requests..."/>
+      </span>
+    </ng-template>
+
+  <ng-template pTemplate="header">
+
+      <tr>
+      <th>Id</th>
+      <th pSortableColumn="assetId">AssetId  <p-sortIcon field="assetId"></p-sortIcon></th>
+      <th>Asset</th>
+      <th>UserId</th>
+      <th>User</th>
+      <th>Requested Asset Type</th>
+      <th>Reason</th>
+      <th>StatusId</th>
+      <th>Status</th>
+      <th>RequestedOn</th>
+      <th>Action</th>
+    </tr>
+</ng-template>
+
+
+    <ng-template pTemplate="body" let-req>
+      <tr>
+      <td>{{ req.id }}</td>
+      <td>{{ req.assetId }}</td>
+      <td>{{ req.asset }}</td>
+      <td>{{ req.userId }}</td>
+      <td>{{ req.user }}</td>
+      <td>{{ req.requestedAssetType }}</td>
+      <td>{{req.reason}}</td>
+      <td>{{req.statusId}}</td>
+      <td>
+
+<p-select
+  [options]="statusList"
+  optionLabel="name"
+  optionValue="id"
+  [(ngModel)]="req.statusId"
+  [ngModelOptions]="{ standalone: true }"
+  (onChange)="onStatusChange(req)"
+  styleClass="sn-status-dropdown"
+>
+
+  <ng-template pTemplate="selectedItem" let-value>
+    <span
+      class="sn-status-pill"
+      [ngClass]="'status-' + getStatusClass(value)">
+      {{ getStatusName(value) }}
+    </span>
+  </ng-template>
+
+
+  <ng-template pTemplate="item" let-status>
+    <span
+      class="sn-status-pill"
+      [ngClass]="'status-' + getStatusClass(status.id)">
+      {{ status.name }}
+    </span>
+  </ng-template>
+
+</p-select>
+</td>
+      <td>{{req.requestedOn}}</td>
+
+        <td class="text-center">
+          <div class="action-icons">
+            <i
+              class="pi pi-pencil action-icon"
+              title="Edit Assignment"
+              >
+            </i>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4" class="text-center">
+          No asset requests found
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+

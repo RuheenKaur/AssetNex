@@ -1,0 +1,139 @@
+
+<h3 class="mb-3"><u>Asset History</u></h3>
+<div class="buttonrow">
+    <button routerLink="admin/dashboard" (click)="goBack()">← Back To Dash</button>
+  </div>
+
+<div class="table">
+  <p-table
+    #dt
+    [value]="history"
+    class="p-datatable-sm"
+    [paginator]="true"
+    [rows]="10"
+    [responsiveLayout]="'scroll'"
+    [globalFilterFields]="[ 'user' ,'asset']">
+    <ng-template pTemplate="caption">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          (input)="dt.filterGlobal($event.target.value, 'contains')"
+          placeholder="Search asset history..."/>
+      </span>
+    </ng-template>
+        <ng-template pTemplate="header">
+
+            <tr>
+                <th pSortableColumn="id">Id
+                    <p-sortIcon field="id"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="assetId">AssetId
+                    <p-sortIcon field="assetId"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="asset">Asset
+                    <p-sortIcon field="asset"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="userId">UserId
+                    <p-sortIcon field="userId"></p-sortIcon>
+                </th>
+
+                  <th pSortableColumn="user">User
+                    <p-sortIcon field="user"></p-sortIcon>
+                </th>
+
+             <th pSortableColumn="statusId">StatusId
+                    <p-sortIcon field="statusId"></p-sortIcon>
+              </th>
+
+                <th pSortableColumn="status">Status
+                    <p-sortIcon field="status"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="referenceTicketId">ReferenceTicketId
+                    <p-sortIcon field="referenceTicketId"></p-sortIcon>
+                </th>
+
+                    <th pSortableColumn="eventType">EventType
+                    <p-sortIcon field="eventType"></p-sortIcon>
+                </th>
+
+                          <th pSortableColumn="eventDate">EventDate
+                    <p-sortIcon field="eventDate"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="assignedDate">AssignedDate
+                    <p-sortIcon field="assignedDate"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="returnedDate">ReturnedDate
+                    <p-sortIcon field="returnedDate"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="remarks">Remarks
+                    <p-sortIcon field="remarks"></p-sortIcon>
+                </th>
+
+               <th pSortableColumn="performedAt">PerformedAt
+                    <p-sortIcon field="performedAt"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="vendor">Vendor
+                    <p-sortIcon field="vendor"></p-sortIcon>
+                </th>
+
+               <th pSortableColumn="costIncurred">CostIncurred
+                    <p-sortIcon field="costIncurred"></p-sortIcon>
+                </th>
+
+                <th>Actions</th>
+            </tr>
+
+        </ng-template>
+
+        <ng-template pTemplate ="body" let-history>
+            <tr>
+                <td>{{history.id}}</td>
+                <td>{{history.assetId}}</td>
+                <td>{{history.asset}}</td>
+                <td>{{history.userId}}</td>
+                <td>{{history.user}}</td>
+                <td>{{history.statusId}}</td>
+                <td>{{history.status}}</td>
+                <td>{{history.referenceTicketId}}</td>
+                <td>{{history.eventType}}</td>
+                <td>{{history.eventDate}}</td>
+                 <td>{{history.assignedDate}}</td>
+                <td>{{history.returnedDate}}</td>
+                <td>{{history.remarks}}</td>
+                <td>{{history.performedAt}}</td>
+                 <td>{{history.vendor}}</td>
+                <td>{{history.costIncurred}}</td>
+
+            </tr>
+              <td class="text-center">
+          <div class="action-icons">
+            <i
+              class="pi pi-pencil action-icon"
+              title="Edit Assignment"
+              >
+            </i>
+          </div>
+        </td>
+
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4" class="text-center">
+          No asset requests found
+        </td>
+      </tr>
+
+        </ng-template>
+    </p-table>
+  </div>

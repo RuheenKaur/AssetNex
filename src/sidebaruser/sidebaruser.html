@@ -1,0 +1,65 @@
+
+
+<div class="content-wrapper">
+  <div class="welcome">USER'S ASSETS</div>
+
+  <aside class="sidebar border-end">
+    <h6 class="user-greeting">Hello {{ userName }}!</h6>
+
+    <ul class="sidebar-nav">
+      <li>
+        <a class="nav-item" (click)="goToAssetAssign()">
+          <i class="pi pi-desktop"></i>
+          <span>My Assets</span>
+        </a>
+      </li>
+
+      <li>
+        <a class="nav-item" (click)="goToAssetRequest()">
+          <i class="pi pi-send"></i>
+          <span>
+            Asset Request
+            <span class="badge bg-primary">New</span>
+          </span>
+        </a>
+      </li>
+
+      <div class="divider"></div>
+
+      <li class="section-title">
+        <i class="pi pi-ticket"></i>
+        <span>Support</span>
+      </li>
+
+      <li>
+        <a class="nav-item" (click)="goToSupporttickets()">
+          <i class="pi pi-chevron-right"></i>
+          <span>Raise Ticket</span>
+        </a>
+      </li>
+
+      <li>
+        <a class="nav-item" (click)="goToTracktickets()">
+          <i class="pi pi-chevron-right"></i>
+          <span>Track Ticket</span>
+        </a>
+      </li>
+
+      <div class="divider"></div>
+
+      <li>
+        <a class="nav-item">
+          <i class="pi pi-cog"></i>
+          <span>Settings</span>
+        </a>
+      </li>
+
+      <li>
+        <a class="nav-item logout">
+          <i class="pi pi-sign-out"></i>
+          <span (click)="onLogOut()">Logout</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
+</div>

@@ -1,0 +1,149 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f5f7fb;
+  padding: 80px 40px;
+  box-sizing: border-box;
+  margin-top:20px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.asset-card {
+  padding: 14px;
+}
+
+.asset-details {
+  padding: 22px;
+}
+
+.asset-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+  margin-left: 240px;
+  padding-right: 20px;
+  max-width: calc(100% - 260px);
+}
+
+.asset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top:40px;
+}
+
+.asset-card {
+  background: #ff8c32;
+  color: #111827;
+  padding: 14px;
+  margin-top:20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.asset-card:hover {
+  transform: translateY(-2px);
+  background: #ff9f4d;
+}
+
+
+.asset-card.active {
+  background: #ffb06a;
+  box-shadow: 0 0 0 2px #2563eb inset;
+}
+
+
+.asset-tag {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.asset-type {
+  font-size: 13px;
+  margin-top: 4px;
+  opacity: 0.9;
+}
+
+
+.empty-state {
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+  padding: 20px 0;
+}
+
+
+.asset-details {
+  margin-top:50px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 22px;
+  border:#ff8c32 2px solid;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.asset-details h3 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #111827;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 16px;
+  column-gap: 20px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.details-grid b {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.support-btn {
+  margin-top: 28px;
+  padding: 12px 20px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.support-btn:hover {
+  background: #1e40af;
+  transform: translateY(-1px);
+}
+
+.alert-success {
+  background: #ecfdf5;
+  color: #065f46;
+  border-left: 4px solid #10b981;
+}
+
+button{
+  height:40px;
+  width:250px;
+margin-left:150px;
+}
+
+@media (max-width: 900px) {
+  .asset-page {
+    grid-template-columns: 1fr;
+  }
+}

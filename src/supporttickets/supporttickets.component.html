@@ -1,0 +1,103 @@
+<div *ngIf="showSuccess" class="success-toast">
+  {{ successMessage }}
+</div>
+<div *ngIf="showError" class="error-toast">
+  {{ errorMessage }}
+</div>
+
+<div class="support-container">
+  <form [formGroup]="supportForm" (ngSubmit)="submitForm()">
+
+    <legend><b>Raise a Support Ticket</b></legend>
+
+    <div class="form-row">
+      <label>Name</label>
+      <input type="text" formControlName="name" class="form-control" readonly />
+    </div>
+
+
+    <div class="form-row">
+      <label>Email</label>
+      <input type="email" formControlName="email" class="form-control" readonly />
+    </div>
+
+
+    <div class="form-row">
+      <label>Contact</label>
+      <input type="text" formControlName="contact" class="form-control" readonly />
+    </div>
+
+
+    <div class="form-row">
+      <label>Issue Category</label>
+      <select formControlName="issueCategory" class="form-control">
+        <option value="">-- Select Category --</option>
+        <option value="Hardware">Hardware</option>
+        <option value="Software">Software</option>
+        <option value="Network">Network</option>
+      </select>
+      <div class="error" *ngIf="isFieldInvalid('issueCategory')">
+        <small>Issue category is required.</small>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Asset Concerned</label>
+      <select formControlName="assetId" class="form-control">
+        <option value="">-- Select Asset --</option>
+        <option *ngFor="let asset of assignedAssets" [value]="asset.assetId">
+          {{ asset.assetTag }} - {{ asset.assetType }}
+        </option>
+      </select>
+      <div class="error" *ngIf="isFieldInvalid('assetId')">
+        <small>Please select an asset.</small>
+      </div>
+      <p style="color: gray; font-size: 12px;">Assets loaded: {{ assignedAssets.length }}</p>
+    </div>
+
+
+    <div class="form-row">
+      <label>Issue Description</label>
+      <textarea
+        formControlName="issueDescription"
+        class="form-control"
+        rows="4"
+        placeholder="Describe the issue (minimum 10 characters)">
+      </textarea>
+      <div class="error" *ngIf="isFieldInvalid('issueDescription')">
+        <small *ngIf="supportForm.get('issueDescription')?.errors?.['required']">
+          Description is required.
+        </small>
+        <small *ngIf="supportForm.get('issueDescription')?.errors?.['minlength']">
+          Minimum 10 characters required.
+        </small>
+        <small *ngIf="supportForm.get('issueDescription')?.errors?.['gibberish']">
+          Please describe clearly (no gibberish).
+        </small>
+        <small *ngIf="supportForm.get('issueDescription')?.errors?.['notMeaningful']">
+          Please enter a meaningful description.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Priority</label>
+      <select formControlName="priority" class="form-control">
+        <option value="">-- Select Priority --</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+      <div class="error" *ngIf="isFieldInvalid('priority')">
+        <small>Priority is required.</small>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="supportForm.invalid || isSubmitting">
+      {{ isSubmitting ? 'Submitting...' : 'Submit Ticket' }}
+    </button>
+  </form>
+</div>

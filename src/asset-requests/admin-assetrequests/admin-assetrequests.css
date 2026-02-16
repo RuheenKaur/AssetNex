@@ -1,0 +1,169 @@
+
+.p-datatable-sm{
+  font-size: 14px;
+  color: #111827;
+  margin-top:50px;
+  margin-left:50px;
+}
+
+.table{
+  border-radius: 10px;
+  position: relative;
+  margin-left:220px;
+  margin-top:70px;
+}
+
+.table thead {
+  background: #f8fafc;
+}
+
+
+:host ::ng-deep .sn-status-dropdown {
+  border: none;
+  background: transparent;
+}
+
+
+:host ::ng-deep .sn-status-dropdown .p-select {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Hide label (we render our own pill) */
+:host ::ng-deep .sn-status-dropdown .p-select-label {
+  padding: 0;
+}
+
+/* Caret icon */
+:host ::ng-deep .sn-status-dropdown .p-select-trigger {
+  width: 24px;
+  color: #6b7280;
+}
+
+/* Status pill base */
+.sn-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+
+.status-open {
+  background: #e8f0fe;
+  color: #1a73e8;
+}
+
+.status-in-progress {
+  background: #fff4e5;
+  color: #b45309;
+}
+
+.status-under-maintenance {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+
+.status-resolved {
+  background: #e6f4ea;
+  color: #137333;
+}
+
+.status-closed {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+
+.status-active {
+  background: #e6f4ea;
+  color: #137333;
+}
+
+.status-in-use {
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.status-assigned {
+  background: #ecfeff;
+  color: #0369a1;
+}
+
+.status-requested {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.status-inactive {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+
+:host ::ng-deep .p-dropdown-items .sn-status-pill {
+  margin: 4px 0;
+}
+
+
+:host ::ng-deep .p-select {
+  border-radius: 8px;
+}
+
+
+button{
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  margin-left:250px;
+  margin-top:100px;
+  background-color: #2563eb;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #eceef5;
+  color:black;
+}
+
+.table{
+  position: center;
+}
+
+
+.table th {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #475569;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+th{
+  color:black;
+  font-size: 0.9rem;
+}
+
+tr{
+  color:#121213;
+  height: 40px;
+  font-style: bold;
+}
+
+tr :hover
+{
+color:#4a6183
+}
+
+body {
+  background-color: #ffffff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+    'Open Sans', 'Helvetica Neue', sans-serif;
+}
+

@@ -1,0 +1,70 @@
+<div class="sidebar" [class.collapsed]="isSidebarCollapsed">
+    <ul class="sidebar-menu">
+        <li>
+            <div class="align" (click)="getAllAssetMaster()" routerLink="/assetmaster">
+                <i class="pi pi-desktop"></i>
+                <a>Asset Master</a>
+            </div>
+        </li>
+
+        <li>
+            <div class="align" (click)="getAllUsers()" routerLink="/users">
+                <i class="pi pi-users"></i>
+                <a>Users Master</a>
+            </div>
+        </li>
+
+        <li>
+            <div class="align" (click)="getAllSupportTickets()" routerLink="/support">
+                <i class="pi pi-ticket"></i>
+                <a>Support Tickets</a>
+            </div>
+        </li>
+
+        <li>
+            <div class="align" (click)="getAllAssignedAssets()" routerLink="/assetassign">
+                <i class="pi pi-info"></i>
+                <a>Assigned Assets</a>
+            </div>
+        </li>
+
+        <li>
+            <div class="align" (click)="getAllAssetSoftware()" routerLink="/assetsoftware">
+                <i class="pi pi-code"></i>
+                <a>Asset Software</a>
+            </div>
+        </li>
+
+        <li>
+            <div class="align" (click)="getAllAssetsRequests()" routerLink="/requests">
+                <i class="pi pi-list"></i>
+                <a>Asset Requests</a>
+            </div>
+        </li>
+
+        <li>
+            <div class="align" (click)="getAllAssetHistory()" routerLink="/history">
+                <i class="pi pi-history"></i>
+                <a>Asset History</a>
+            </div>
+        </li>
+
+        <li>
+            <div class="align" routerLink="/departments">
+                <i class="pi pi-address-book"></i>
+                <a>Departments</a>
+            </div>
+        </li>
+
+        <li>
+            <div class="align" routerLink="/roles">
+                <i class="pi pi-user"></i>
+                <a>Roles</a>
+            </div>
+        </li>
+    </ul>
+
+    <button class="sidebar-toggle-btn" (click)="toggleSidebar()">
+        {{ isSidebarCollapsed ? '►' : '☰' }}
+    </button>
+</div>

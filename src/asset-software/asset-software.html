@@ -1,0 +1,73 @@
+<h3 class="mb-3"><u>Asset Software</u></h3>
+<div class="buttonrow">
+    <button routerLink="admin/dashboard" (click)="goBack()">← Back To Dash</button>
+  </div>
+
+<div class="table">
+
+  <p-table
+
+    #dt
+    [value]="software"
+    class="p-datatable-sm"
+    [paginator]="true"
+    [rows]="10"
+    [responsiveLayout]="'scroll'"
+    [globalFilterFields]="['version','asset']">
+    <ng-template pTemplate="caption">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          (input)="dt.filterGlobal($event.target.value, 'contains')"
+          placeholder="Search asset software..."/>
+      </span>
+    </ng-template>
+
+
+  <ng-template pTemplate="header">
+      <tr>
+      <th >Id</th>
+      <th pSortableColumn="version">Version  <p-sortIcon field="version"></p-sortIcon></th>
+      <th>StatusId</th>
+      <th>AssetId</th>
+      <th>LicenseKey</th>
+      <th>InstalledAt</th>
+        <th>Actions</th>
+    </tr>
+</ng-template>
+
+
+    <ng-template pTemplate="body" let-software>
+      <tr>
+      <td>{{ software.id }}</td>
+      <td>{{ software.version }}</td>
+      <td >{{ software.statusId }}</td>
+      <td >{{ software.assetId }}</td>
+      <td>{{ software.license_Key }}</td>
+      <td>{{software.installedAt}}</td>
+
+        <td >
+          <div class="action-icons" >
+            <i
+              class="pi pi-pencil action-icon"
+              title="Edit Assignment"
+              >
+            </i>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4" class="text-center">
+          No asset software found
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+

@@ -1,0 +1,41 @@
+<h2>{{ userName }}'s Assigned Assets</h2>
+
+<div class="asset-page">
+
+  <div class="asset-list">
+    <div
+      *ngFor="let asset of assigned"
+      class="asset-card"
+      [class.active]="asset === selectedAsset"
+      (click)="selectAsset(asset)"
+    >
+      <div class="asset-tag">{{ asset.assetTag }}</div>
+      <div class="asset-type">{{ asset.assetType }}</div>
+    </div>
+
+    <p *ngIf="assigned?.length === 0" class="empty-state">
+      No assets assigned to you.
+    </p>
+  </div>
+
+  <div class="asset-details" *ngIf="selectedAsset">
+    <h3>{{ selectedAsset.assetTag }}</h3>
+    <div class="details-grid">
+      <p><b>Type:</b> {{ selectedAsset.assetType }}</p>
+      <p><b>Brand:</b> {{ selectedAsset.brand }}</p>
+      <p><b>Model:</b> {{ selectedAsset.model }}</p>
+      <p><b>Serial No:</b> {{ selectedAsset.serialNumber }}</p>
+      <p><b>Assigned On:</b> {{ selectedAsset.assignedOn | date }}</p>
+    </div>
+
+<button
+  label="Raise Ticket"
+  icon="pi pi-exclamation-circle" class="btn btn-primary"
+  (click)="raiseTicket(selectedAsset)">Raise a Support Ticket!
+</button>
+
+  </div>
+</div>
+
+
+

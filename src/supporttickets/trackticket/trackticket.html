@@ -1,0 +1,67 @@
+
+<h3 class="mb-3">Your Ticket Status!</h3>
+<div class="d-flex justify-content-between mb-3">
+  <button class="btn btn-primary" routerLink="admin/dashboard" (click)="goBack()">← Back To Dash</button>
+</div>
+
+<div class="container">
+<div class="table">
+<p-table
+  #dt
+  [value]="tickets"
+  class="p-datatable-md"
+  [paginator]="true"
+  [rows]="10"
+  [responsiveLayout]="'scroll'"
+  [globalFilterFields]="['name','email','contact','issueCategory','assetConcerned']">
+
+  <ng-template pTemplate="caption">
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input
+        pInputText
+        type="text"
+        (input)="dt.filterGlobal($event.target.value, 'contains')"
+        placeholder="Search tickets..."/>
+    </span>
+  </ng-template>
+
+  <ng-template pTemplate="header">
+    <tr>
+
+    <th pSortableColumn="ticketId">TicketId <p-sortIcon field="ticketId"></p-sortIcon></th>
+      <th pSortableColumn="category">Category<p-sortIcon field="category"></p-sortIcon></th>
+      <th>Description</th>
+      <th >Priority</th>
+     <th >AssetConcerned</th>
+      <th >StatusName</th>
+      <th>StatusCategory</th>
+      <th>Ticket Status</th>
+      <th>ResolutionNotes</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-ticket>
+    <tr>
+      <td class="text-center">{{ ticket.ticketId }}</td>
+      <td class="text-center">{{ ticket.issueCategory }}</td>
+      <td class="text-center">{{ ticket.issueDescription}}</td>
+      <td class="text-center">{{ ticket.priority }}</td>
+      <td class="text-center">{{ ticket.assetConcerned }}</td>
+      <td class="text-center">{{ ticket.statusName }}</td>
+      <td class="text-center">{{ ticket.statusCategory }}</td>
+      <td class="text-center">{{ ticket.ticketStatus}}</td>
+      <td class="text-center">{{ticket.resolutionNotes}}</td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="10">No tickets found.</td>
+    </tr>
+  </ng-template>
+</p-table>
+</div>
+</div>
+
+

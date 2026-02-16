@@ -1,0 +1,58 @@
+
+<div class="request-container">
+  <form [formGroup]="requestForm" (ngSubmit)="submitForm()">
+
+    <legend><b>Raise Request for an Asset!</b></legend>
+    <div class="form-row">
+      <label>Name</label>
+          <input type="text" formControlName="name" readonly />
+    </div>
+
+    <div class="form-row">
+      <label>Email</label>
+      <input type="email" formControlName="email" readonly />
+    </div>
+
+    <div class="form-row" >
+      <label >Contact</label>
+      <input type="text" formControlName="contact" class="form-control" [disabled]="true">
+    </div>
+
+    <hr>
+    <div class="form-row">
+      <label>Requested Asset Type</label>
+      <select formControlName="requestedAssetType">
+        <option value="">-- Select Asset Type --</option>
+        <option>Laptop</option>
+        <option>Monitor</option>
+        <option>Mouse</option>
+        <option>Keyboard</option>
+        <option>Headset</option>
+        <option>Charger</option>
+        <option>HDMICable</option>
+        <option>PenDrive</option>
+        <option>HardDisk</option>
+        <option>MemoryCardReader</option>
+        <option>SmartPhone</option>
+        <option>Tablet</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label>Reason</label>
+      <textarea class="m-md-1" rows="4" formControlName="reason" placeholder="Why do you need this asset?"></textarea>
+    </div>
+
+    <div *ngIf="success" class="success-message">
+      ✔ Asset Request submitted successfully!
+    </div>
+
+    <div class="button-row">
+      <button class="btn btn-dark" (click)="goToLanding()">Back</button>
+      <button [disabled]="requestForm.invalid" class="btn btn-primary">Submit Request</button>
+    </div>
+<!-- <pre>{{ requestForm.value | json }}</pre> -->
+  </form>
+</div>
+

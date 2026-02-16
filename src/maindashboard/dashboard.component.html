@@ -1,0 +1,121 @@
+<body>
+    <div class="app-wrapper">
+
+        <!-- DASHBOARD OVERVIEW SECTION -->
+        <section class="dashboard-section">
+            <h1 class="section-title">Dashboard Overview</h1>
+
+            <div class="chart-row">
+                <!-- Chart 1: Asset Distribution -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Asset Distribution Overview</h3>
+                    <p-chart
+                        *ngIf="assetChartData"
+                        type="doughnut"
+                        [data]="assetChartData"
+                        [options]="assetChartOptions">
+                    </p-chart>
+                </div>
+
+                <!-- Chart 2: E-Waste -->
+                <div class="chart-card">
+                    <h3 class="chart-title">E-Waste Overview</h3>
+                    <p-chart
+                        *ngIf="eWasteChartData"
+                        type="doughnut"
+                        [data]="eWasteChartData"
+                        [options]="eWasteChartOptions">
+                    </p-chart>
+                </div>
+
+                <!-- Chart 3: Hardware -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Hardware Overview</h3>
+                    <p-chart
+                        *ngIf="hardwareChartData"
+                        type="bar"
+                        [data]="hardwareChartData"
+                        [options]="hardwareChartOptions">
+                    </p-chart>
+                </div>
+
+                <!-- Chart 4: Support Tickets -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Support Tickets Status</h3>
+                    <p-chart
+                        *ngIf="supportChartData"
+                        type="doughnut"
+                        [data]="supportChartData"
+                        [options]="supportChartOptions">
+                    </p-chart>
+                </div>
+
+                <!-- REMOVE THE 5TH CHART (duplicate support chart) -->
+            </div>
+        </section>
+
+        <!-- PLATFORM FEATURES SECTION -->
+        <section class="dashboard-section">
+            <h1 class="section-title">Platform Features</h1>
+
+            <div class="card-grid-container">
+                <div class="card-body">
+                    <img src="assets/images/image (3).svg" alt="Asset Inventory"/>
+                    <h2>Asset Inventory</h2>
+                    <p>Get a comprehensive view of all deployed assets in a single click. Quick assessment of asset distribution, status, and allocation across your organization.</p>
+                </div>
+
+                <div class="card-body">
+                    <img src="assets/images/image (4).svg" alt="E-Waste"/>
+                    <h2>E-Waste Disposal</h2>
+                    <p>Effortlessly manage your e-waste disposal process with our streamlined solution. Track, schedule, and document the disposal of electronic assets ensuring compliance with environmental regulations.</p>
+                </div>
+
+                <div class="card-body">
+                    <img src="assets/images/image (5).svg" alt="Integration"/>
+                    <h2>IT System Integration</h2>
+                    <p>Seamlessly integrate AssetNexIT with your existing IT systems. Our platform supports API integrations, allowing you to synchronize data and enhance your asset management workflows.</p>
+                </div>
+
+                <div class="card-body">
+                    <img src="assets/images/image (6).svg" alt="Support"/>
+                    <h2>Support Desk</h2>
+                    <p>Enhance your IT support operations with our integrated support desk. Track and manage support tickets, monitor response times, and ensure timely resolution of IT issues.</p>
+                </div>
+
+                <div class="card-body">
+                    <img src="assets/images/image (7).svg" alt="Analytics"/>
+                    <h2>Reporting & Analytics</h2>
+                    <p>Gain valuable insights into your asset management processes with our robust reporting and analytics features. Make data-driven decisions to optimize your IT operations.</p>
+                </div>
+
+                <div class="card-body">
+                    <img src="assets/images/image (8).svg" alt="Security"/>
+                    <h2>Security & Compliance</h2>
+                    <p>Ensure the security and compliance of your IT assets with AssetNexIT. Allows for a quick and safe process that ensures asset well-being and regulatory adherence.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="bottom">
+            <span>AssetNexIT</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-c-circle" viewBox="0 0 16 16">
+                <path d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.146 4.992c-1.212 0-1.927.92-1.927 2.502v1.06c0 1.571.703 2.462 1.927 2.462.979 0 1.641-.586 1.729-1.418h1.295v.093c-.1 1.448-1.354 2.467-3.03 2.467-2.091 0-3.269-1.336-3.269-3.603V7.482c0-2.261 1.201-3.638 3.27-3.638 1.681 0 2.935 1.054 3.029 2.572v.088H9.875c-.088-.879-.768-1.512-1.729-1.512"/>
+            </svg>
+            <span>2025 All Rights Reserved</span>
+            <span>|</span>
+            <a href="#">Terms of Service</a>
+            <span>|</span>
+            <a href="#">Privacy Policy</a>
+            <span>|</span>
+            <a href="#">Contact Us</a>
+            <span>|</span>
+            <a href="#">Cookies</a>
+        </div>
+    </footer>
+
+</body>
