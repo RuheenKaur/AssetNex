@@ -305,10 +305,6 @@ button:hover,
   box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3);
 }
 
-/* ========================================
-   RESPONSIVE
-   ======================================== */
-
 @media (max-width: 1024px) {
   .chart-row {
     grid-template-columns: repeat(2, 1fr);

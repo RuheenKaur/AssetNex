@@ -173,9 +173,6 @@ initializeHardwareChart() {
   };
 }
 
-// ============================================
-// CHART 4: SUPPORT TICKETS (ORANGE THEME)
-// ============================================
 initializeSupportChart() {
   this.supportChartData = {
     labels: ['Renewal', 'Outdated', 'Expired'],
@@ -183,7 +180,7 @@ initializeSupportChart() {
       label: 'Support Status',
       data: [50, 20, 32],
       backgroundColor: [
-        '#FFB84D',  // Golden Orange
+        '#FFB84D',
         '#FF9966',  // Tangerine
         '#E67E50'   // Burnt Orange
       ],

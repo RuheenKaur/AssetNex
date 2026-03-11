@@ -137,3 +137,68 @@
         </ng-template>
     </p-table>
   </div>
+
+  1.ng content for html slots, parent component can pass content into child component direclty using this,
+  ideal for card, dropdowns and lists etc 2.transaction has four steps begin save commit check rollback,
+  if any step fails we can rollback to previous state, if all steps succeed we can commit the transaction,
+   this ensures data integrity and consistency in database operations.
+   3.sql injection - raw queries we can handle such a situation by using
+   parameterized queries, or prepared statements,
+    which separate SQL code from data, preventing attackers
+    from injecting malicious SQL code through user input. 4.extension methods-> using this for  a
+    static class, means it cant be instantiated again using new keyword,
+    we can call the method directly on the type we want to extend, this string is an
+    example of extension method, we can call it like this
+     "hello world".ToTitleCase() and it will return "Hello World"
+      5.forkjoin is a methods to call observables in
+       parallel and wait for all of them to complete before emitting a combined result, if one fails ,
+       the result will be an error, if all succeed we get the combined result,
+       this is useful for optimizing performance
+       when we have multiple independent API calls.
+       6. func t takes input and gives an output, action return a void,
+       predicate returns a boolean, func can be used for any type of method,
+       func is ideal for methods that return a value,
+       action is ideal for methods that perform an action without returning a value,
+        predicate is ideal for methods that evaluate a condition and return true or false.
+        .Where is a LINQ method that filters a collection based on a specified condition, in function
+        7.ng content with named slots,
+        we can have multiple ng content tags with select attribute to specify
+        which content goes where,
+        8.shadow property not there in .net c# class, but there in model mapped to a column in the database
+        like createdby = datetime.utcnow, this is a shadow property,
+         it is not defined in the class but it is mapped to a column in the database,
+         it is used to store metadata about the entity, such as who created it and when it was created,
+         9.behaviour subject requires an initial value,
+         it is a type of observable that always holds the latest value emitted to its
+         subscribers,
+         when a new subscriber subscribes to a behavior subject,
+         it immediately receives the most recent value, subject doesnt do this.
+
+         10. captive dependency -> singleton is forever,
+         scoped is for per instance of a http request, transient is for every time we request a new instance,
+        scoped service like dbcontext should never be singleton because mutiple api call communication request and response
+        from one instance of dbcontext will cause data corruption,race conditions and unpredictable behavior,
+        the file will show error at the time of startup only. scoped services like need multiple instances for each http request, as that is safe for the thre
+
+
+        1.cors => cross origin resource sharing , here we need to establish cors inorder to
+        allow frontened and backend to communicate and share resources, as they have different ports,
+        we need to add them and usecors, addcors, so that exchange is carried on and app doesnt crash. 2.
+        localstoarge will be there the next time u log in after restarting, sessionstorage
+        remains active only throughout that session. jwt token for now is in the local storage
+        but for sceurity it should be in http cookie etc 3.async pipe in html to handle mapping of
+        asynchronous data without manual intervention, also handles memory leaks.
+        4.http interceptor used to modify the http urls to increase functionality, like appending jwt token using http interceptor
+        in the auth interceptor one authguard is activated. 5.interface is structural model, that can be injected anywhere,
+        class can implement many interfaces, only tasks no implementation in interfcae, abstract is implemented and unimplemented methods,
+        only one can be inherited. 6. iqueryable vs ienumerable -> iqueryable is for creating expression tress,
+        it takes up all the queries, filters and actions, deffered exceution, ienumerable for memorycollection,
+        tolistasync does it in memory, tolist does it in database, iqueryable is for database, ienumerable is for in memory collection.
+        query, enum, tolist, returnasync order 7. rest is representational state transfer, http communication,
+        stateless, caching done, maintainanble by server, good interface, api communication, crud operations, dbms management
+        8. dependency injection -> for reusing code without writing them all over again, injecting classes, interfaces etc, to increase maintability,
+        scalability and testability, promotes loose coupling. new service in controller should be avoided,
+        each layers and module has its own single responsibility, so that we can easily maintain, test,
+        SOLID principle should be followed,
+        controller should be for api calls, api controller, and they should be thin.
+        service should be for business logic, and repository should be for database communication.

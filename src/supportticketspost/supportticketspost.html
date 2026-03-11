@@ -1,9 +1,16 @@
-<h3 class="head">Support Tickets</h3>
+  <div class="page-header">
+    <div class="page-title-group">
+      <h3>SupportTicket Management</h3>
+      <span class="page-subtitle">Manage support tickets and status</span>
+    </div>
+
+<div class="nav-loading-bar" *ngIf="isNavigating"></div>
+
 
 <div class="d-flex justify-content-between mb-3">
   <button (click)="goBack()" class="btn btn-primary">← Back To Dashboard</button>
 </div>
-
+<div class="nav-loading-bar" *ngIf="isNavigating"></div>
 <p-table
   [value]="supportTickets"
   [paginator]="true"
@@ -91,7 +98,7 @@
     </tr>
   </ng-template>
 
-  <!-- Empty Message -->
+
   <ng-template pTemplate="emptymessage">
     <tr>
       <td colspan="8" class="text-center" style="padding: 20px;">
@@ -104,23 +111,34 @@
 
 <!-- ACTIVITY MODAL -->
 <div class="modal-overlay" *ngIf="showActivityModal" (click)="closeActivityModal()"></div>
-<div class="modal-container" *ngIf="showActivityModal">
+<div class="modal-container modal-lg" *ngIf="showActivityModal">
   <div class="modal-header">
-    <h3>Ticket Activity - #{{ selectedTicket?.id }}</h3>
-    <button class="close-btn" (click)="closeActivityModal()">×</button>
+    <div class="modal-title-group">
+      <i class="pi pi-comments"></i>
+      <span>Ticket Activity — #{{ selectedTicket?.id }}</span>
+    </div>
+    <button class="close-btn" (click)="closeActivityModal()">✕</button>
   </div>
 
   <div class="modal-body activity-body">
+
     <!-- Comments List -->
     <div class="comments-list">
       <div *ngIf="ticketComments.length === 0" class="no-comments">
+        <i class="pi pi-inbox"></i>
         <p>No activity yet</p>
       </div>
 
-      <div *ngFor="let comment of ticketComments" class="comment-box" [class.internal]="comment.type === 'Internal'">
+      <div *ngFor="let comment of ticketComments"
+           class="comment-box"
+           [class.internal]="comment.type === 'Internal'"
+           [class.user]="comment.type === 'User'">
         <div class="comment-header">
-          <span class="comment-type">{{ comment.type }}</span>
-          <span class="comment-date">{{ comment.createdAt | date:'short' }}</span>
+          <span class="comment-type-badge" [class.badge-internal]="comment.type === 'Internal'"
+                [class.badge-user]="comment.type === 'User'">
+            {{ comment.type === 'Internal' ? '🔒 Internal Note' : '💬 Reply to User' }}
+          </span>
+          <span class="comment-date">{{ comment.createdAt | date:'MMM d, y, h:mm a' }}</span>
         </div>
         <p class="comment-message">{{ comment.message }}</p>
       </div>
@@ -128,32 +146,32 @@
 
     <!-- Add Comment -->
     <div class="add-comment">
+      <p class="add-comment-label">Add Message</p>
       <textarea
         rows="3"
-        class="form-control"
+        class="comment-input"
         placeholder="Write a message..."
         [(ngModel)]="message">
       </textarea>
 
       <div class="message-options">
-        <label class="radio-label">
+        <label class="radio-label" [class.selected]="messageType === 'Internal'">
           <input type="radio" value="Internal" [(ngModel)]="messageType" name="messageType">
-          Internal Note
+          🔒 Internal Note
         </label>
-        <label class="radio-label">
+        <label class="radio-label" [class.selected]="messageType === 'User'">
           <input type="radio" value="User" [(ngModel)]="messageType" name="messageType">
-          Reply to User
+          💬 Reply to User
         </label>
       </div>
     </div>
+
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-success" (click)="sendMessage()" [disabled]="!message">
-      Send Message
-    </button>
-    <button class="btn btn-secondary" (click)="closeActivityModal()">
-      Close
+    <button class="btn btn-dark" (click)="closeActivityModal()">Close</button>
+    <button class="btn btn-primary" (click)="sendMessage()" [disabled]="!message">
+      <i class="pi pi-send"></i> Send Message
     </button>
   </div>
 </div>
@@ -162,41 +180,60 @@
 <div class="modal-overlay" *ngIf="showViewModal" (click)="closeViewModal()"></div>
 <div class="modal-container" *ngIf="showViewModal">
   <div class="modal-header">
-    <h3>Ticket Details - #{{ selectedTicket?.id }}</h3>
-    <button class="close-btn" (click)="closeViewModal()">×</button>
+    <div class="modal-title-group">
+      <i class="pi pi-eye"></i>
+      <span>Ticket Details — #{{ selectedTicket?.id }}</span>
+    </div>
+    <button class="close-btn" (click)="closeViewModal()">✕</button>
   </div>
 
   <div class="modal-body">
-    <div class="detail-row">
-      <label>Asset Concerned:</label>
-      <span>{{ selectedTicket?.assetConcerned || 'N/A' }}</span>
-    </div>
-    <div class="detail-row">
-      <label>Issue Category:</label>
-      <span>{{ selectedTicket?.issueCategory }}</span>
-    </div>
-    <div class="detail-row">
-      <label>Issue Description:</label>
-      <p>{{ selectedTicket?.issueDescription }}</p>
-    </div>
-    <div class="detail-row">
-      <label>Priority:</label>
-      <span class="priority-badge">{{ selectedTicket?.priority }}</span>
-    </div>
-    <div class="detail-row">
-      <label>Status:</label>
-      <span>{{ getStatusName(selectedTicket?.statusId) }}</span>
-    </div>
-    <div class="detail-row">
-      <label>Created At:</label>
-      <span>{{ selectedTicket?.createdAt | date:'medium' }}</span>
+    <div class="detail-grid">
+
+      <div class="detail-item">
+        <span class="detail-label">Asset Concerned</span>
+        <span class="detail-value">{{ selectedTicket?.assetConcerned || 'N/A' }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-label">Issue Category</span>
+        <span class="detail-value">{{ selectedTicket?.issueCategory }}</span>
+      </div>
+
+      <div class="detail-item full-width">
+        <span class="detail-label">Issue Description</span>
+        <p class="detail-value detail-desc">{{ selectedTicket?.issueDescription }}</p>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-label">Priority</span>
+        <span class="priority-badge"
+          [class.priority-low]="selectedTicket?.priority === 'Low'"
+          [class.priority-medium]="selectedTicket?.priority === 'Medium'"
+          [class.priority-high]="selectedTicket?.priority === 'High'">
+          {{ selectedTicket?.priority }}
+        </span>
+      </div>
+
+      <div class="detail-item">
+        <span class="detail-label">Status</span>
+        <span class="status-badge">{{ getStatusName(selectedTicket?.statusId) }}</span>
+      </div>
+
+      <div class="detail-item full-width">
+        <span class="detail-label">Created At</span>
+        <span class="detail-value">{{ selectedTicket?.createdAt | date:'MMM d, y, h:mm a' }}</span>
+      </div>
+
     </div>
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-secondary" (click)="closeViewModal()">Close</button>
+    <button class="btn btn-dark" (click)="closeViewModal()">Close</button>
   </div>
 </div>
+
+
 
 <!-- DELETE MODAL -->
 <div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()"></div>

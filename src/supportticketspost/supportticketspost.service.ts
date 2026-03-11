@@ -10,7 +10,6 @@ export class SupportTicketPostService {
 
   constructor(private http: HttpClient) {}
 
-  // Get paginated admin tickets
   getAdminTickets(
     pageNumber: number,
     pageSize: number,
@@ -28,27 +27,27 @@ export class SupportTicketPostService {
     return this.http.get<any>(`${this.apiUrl}/admin`, { params });
   }
 
-  // Get comments for a ticket
   getComments(ticketId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/${ticketId}/comments`);
   }
 
-  // Add comment to ticket
   addComment(ticketId: number, payload: { message: string; type: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/${ticketId}/comment`, payload);
   }
 
-  // Update ticket status
+getConnents(ticketId: number): Observable<any[]>
+{
+  return this.http.get<any[]>(`${this.apiUrl}/${ticketId}/comments`);
+}
   updateStatus(ticketId: number, statusId: number): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${ticketId}/status`, { statusId });
   }
 
-  // Delete ticket
   deleteTicket(ticketId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${ticketId}`);
   }
 
-  // Get user's tickets
+
   getAllTrackTickets(userId: number): Observable<TrackTicket[]> {
     return this.http.get<TrackTicket[]>(`${this.apiUrl}/user/${userId}`);
   }

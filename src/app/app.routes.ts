@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '../auth/auth.guard';
-
 import { LoginAuthComponent } from '../loginauth/loginauth.component';
 import { LandingComponent } from '../landing/landing.component';
 import { AssetSoftware } from '../asset-software/asset-software';
@@ -18,6 +17,7 @@ import { AssetRequestsComponent } from '../asset-requests/asset-requests.compone
 import { Trackticket } from '../supporttickets/trackticket/trackticket';
 import { AdminAssetrequests } from '../asset-requests/admin-assetrequests/admin-assetrequests';
 import { AssetHistory } from '../asset-history/asset-history';
+import { SupportTicketsResolver } from '../supportticketspost/supportticketspost.resolver';
 
 export const appRoutes: Routes = [
   { path: '', redirectTo: '/landing', pathMatch: 'full' },
@@ -34,15 +34,15 @@ export const appRoutes: Routes = [
       { path: 'users', component: UsersPost },
       { path: 'assetsmaster', component: AssetsMasterComponent },
       { path: 'assetassignpost', component: Assetassignpost },
-      { path: 'supportticketspost', component: SupportTicketsPost },
+      { path: 'supportticketspost',component: SupportTicketsPost, resolve:{tickets: SupportTicketsResolver}},
       { path: 'asset-requests', component: AdminAssetrequests },
       { path: 'assethistory', component: AssetHistory },
       { path: 'assetsoftware', component: AssetSoftware },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
+  // },,resolve: { tickets: SupportTicketsResolver
 
-  // User Area
   {
     path: 'user',
     component: Layoutuser,
@@ -58,6 +58,15 @@ export const appRoutes: Routes = [
 }]
 
   },
+
+      // { path: 'dashboard', component: DashboarduserComponent },
+      // { path: 'assetassign', component: AssetassignComponent },
+      // { path: 'supporttickets', component: SupportTicketsComponent },
+      // { path: 'assetsrequests', component: AssetRequestsComponent },
+      // { path: 'trackticket', component: Trackticket },
+      // { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      // {path: 'support/create',component: SupportTicketsComponent},
+
 
 
   { path: '**', redirectTo: '/landing' }

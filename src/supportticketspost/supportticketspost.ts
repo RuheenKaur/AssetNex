@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+
+
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute, NavigationStart, NavigationEnd } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { SupportTicketPostService } from './supportticketspost.service';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +9,8 @@ import { SelectModule } from 'primeng/select';
 import { MenuModule } from 'primeng/menu';
 import { DatePipe, CommonModule } from '@angular/common';
 import { SupportTicketsPostModel } from './supportticketspost.model';
+import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-support-tickets',
@@ -15,10 +19,10 @@ import { SupportTicketsPostModel } from './supportticketspost.model';
   templateUrl: './supportticketspost.html',
   styleUrl: './supportticketspost.css'
 })
-export class SupportTicketsPost implements OnInit {
+export class SupportTicketsPost implements OnInit, OnDestroy {
   supportTickets: SupportTicketsPostModel[] = [];
   totalRecords: number = 0;
-  getStatusName:any;
+  isNavigating = false;
   loading: boolean = false;
   pageNumber = 1;
   pageSize = 10;
@@ -31,6 +35,8 @@ export class SupportTicketsPost implements OnInit {
   ticketComments: any[] = [];
   message = '';
   messageType: 'Internal' | 'User' = 'Internal';
+  private searchTimeout: any;
+  private routerSub!: Subscription;
 
   statusList = [
     { id: 1, name: 'Open' },
@@ -41,11 +47,64 @@ export class SupportTicketsPost implements OnInit {
 
   constructor(
     private router: Router,
-    private service: SupportTicketPostService
+    private service: SupportTicketPostService,
+    private route: ActivatedRoute
   ) {}
 
+//   ngOnInit(): void {
+//   // Critical data from resolver
+//   const assets = this.route.snapshot.data['assets'];
+//   this.assets = assets.data;
+
+//   // Secondary data — load in parallel, don't block
+//   this.loadStatusList();
+//   this.loadUsers();
+//   this.loadDepartments();
+// }
+
+// loadStatusList() {
+//   this.service.getStatuses().subscribe(res => this.statusList = res);
+// }
+
+// ngOnInit(): void {
+//   // All secondary data fired simultaneously
+//   // none blocking the other
+//   forkJoin({
+//     statuses: this.service.getStatuses(),
+//     users: this.service.getUsers(),
+//     departments: this.service.getDepartments()
+//   }).subscribe(({ statuses, users, departments }) => {
+//     this.statusList = statuses;
+//     this.users = users;
+//     this.departments = departments;
+//   });
+// }
+
   ngOnInit(): void {
-    this.loadTickets();
+    this.routerSub = this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) this.isNavigating = true;
+      if (event instanceof NavigationEnd) this.isNavigating = false;
+    });
+
+    const data = this.route.snapshot.data['tickets'];
+    console.log('=> Resolver started --fetching before route loads');
+    console.log('-> component loaded');
+    console.log('Data from resolver:' ,data);
+    
+    if (data?.data) {
+      this.supportTickets = data.data;
+      this.totalRecords = data.pagination?.totalCount ?? data.totalCount ?? 0;
+    } else {
+      this.loadTickets();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.routerSub) this.routerSub.unsubscribe();
+  }
+
+  getStatusName(statusId: number): string {
+    return this.statusList.find(s => s.id === statusId)?.name || 'Unknown';
   }
 
   getStatusClass(statusId: number): string {
@@ -58,7 +117,6 @@ export class SupportTicketsPost implements OnInit {
     }
   }
 
-
   loadTickets(event?: any): void {
     this.loading = true;
     const pageNumber = event
@@ -67,27 +125,21 @@ export class SupportTicketsPost implements OnInit {
     const pageSize = event?.rows || this.pageSize;
     const sortField = event?.sortField || 'CreatedAt';
     const sortOrder = event?.sortOrder === 1 ? 'asc' : 'desc';
-    console.log('Loading tickets:', { pageNumber, pageSize, search: this.searchText, sortField, sortOrder });
+
     this.service.getAdminTickets(
-      pageNumber,
-      pageSize,
-      this.searchText,
-      sortField,
-      sortOrder
+      pageNumber, pageSize, this.searchText, sortField, sortOrder
     ).subscribe({
       next: (res: any) => {
-        console.log(' API Response:', res);
         this.supportTickets = res?.data ?? [];
-        this.totalRecords = res?.totalCount ?? 0;
-        this.totalCount = res?.totalCount ?? 0;
+        this.totalRecords = res?.pagination?.totalCount ?? res?.totalCount ?? 0;
+        this.totalCount = this.totalRecords;
         this.loading = false;
-        console.log(' Tickets loaded:', this.supportTickets.length);
+        console.log('Tickets loaded:', this.supportTickets.length);
       },
       error: (err) => {
         console.error(' Error loading tickets:', err);
         this.supportTickets = [];
         this.totalRecords = 0;
-        this.totalCount = 0;
         this.loading = false;
       }
     });
@@ -95,17 +147,13 @@ export class SupportTicketsPost implements OnInit {
 
   onGlobalSearch(event: any): void {
     this.searchText = event.target.value;
-    if (this.searchTimeout) {
-      clearTimeout(this.searchTimeout);
-    }
+    if (this.searchTimeout) clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
       this.loadTickets();
     }, 500);
   }
 
-  private searchTimeout: any;
   openViewModal(ticket: any): void {
-    console.log(' Opening view modal for ticket:', ticket);
     this.selectedTicket = { ...ticket };
     this.showViewModal = true;
   }
@@ -115,21 +163,12 @@ export class SupportTicketsPost implements OnInit {
     this.selectedTicket = null;
   }
 
-
   openActivityModal(ticket: any): void {
-    console.log(' Opening activity modal for ticket:', ticket);
     this.selectedTicket = { ...ticket };
     this.showActivityModal = true;
     this.loadComments();
   }
 
-  ActivityModalClose():void{
-    this.showActivityModal = false;
-    this.message ='';
-    this.messageType = 'Internal';
-    this.ticketComments = [];
-    this.selectedTicket = null;
-  }
   closeActivityModal(): void {
     this.showActivityModal = false;
     this.message = '';
@@ -139,14 +178,14 @@ export class SupportTicketsPost implements OnInit {
   }
 
   loadComments(): void {
-    if (!this.selectedTicket?.id) {
-      console.error('No ticket ID for loading comments');
-      return;
-    }
-    console.log('Loading comments for ticket:', this.selectedTicket.id);
+    if (!this.selectedTicket?.id) return;
     this.service.getComments(this.selectedTicket.id).subscribe({
       next: (res: any) => {
-        this.ticketComments = res ?? [];
+
+        this.ticketComments = (res ?? []).map((c: any) => ({
+          ...c,
+          message: c.message || c.comment || c.Comment || ''
+        }));
         console.log(' Comments loaded:', this.ticketComments.length);
       },
       error: (err) => {
@@ -157,28 +196,18 @@ export class SupportTicketsPost implements OnInit {
   }
 
   sendMessage(): void {
-    if (!this.message || !this.message.trim()) {
-      alert('Please enter a message');
-      return;
-    }
-
-    if (!this.selectedTicket?.id) {
-      console.error('No ticket selected');
-      return;
-    }
+    if (!this.message?.trim() || !this.selectedTicket?.id) return;
 
     const payload = {
       message: this.message.trim(),
       type: this.messageType
     };
 
-    console.log('📤 Sending message:', payload);
-
     this.service.addComment(this.selectedTicket.id, payload).subscribe({
       next: () => {
-        console.log(' Message sent');
         this.message = '';
         this.loadComments();
+        console.log(' Message sent');
       },
       error: (err) => {
         console.error(' Error sending message:', err);
@@ -188,7 +217,6 @@ export class SupportTicketsPost implements OnInit {
   }
 
   openDeleteModal(ticket: any): void {
-    console.log(' Opening delete modal for ticket:', ticket);
     this.selectedTicket = { ...ticket };
     this.showDeleteModal = true;
   }
@@ -199,40 +227,28 @@ export class SupportTicketsPost implements OnInit {
   }
 
   confirmDeleteTicket(): void {
-    if (!this.selectedTicket?.id) {
-      console.error('No ticket selected for deletion');
-      return;
-    }
-
-    console.log(' Deleting ticket:', this.selectedTicket.id);
-
+    if (!this.selectedTicket?.id) return;
     this.service.deleteTicket(this.selectedTicket.id).subscribe({
       next: () => {
-        console.log(' Ticket deleted');
-        alert('Ticket removed successfully');
         this.closeDeleteModal();
         this.loadTickets();
+        console.log(' Ticket deleted');
       },
       error: (err) => {
         console.error(' Error deleting ticket:', err);
-        alert('Failed to remove ticket: ' + (err.error?.message || 'Unknown error'));
+        alert('Failed to delete ticket: ' + (err.error?.message || 'Unknown error'));
       }
     });
   }
 
-
   updateStatus(ticket: any): void {
-    console.log('Updating status for ticket:', ticket.id, 'to:', ticket.statusId);
-
     this.service.updateStatus(ticket.id, ticket.statusId).subscribe({
       next: () => {
-        console.log(' Status updated');
-        alert('Status updated successfully');
+        console.log('Status updated');
         this.loadTickets();
       },
       error: (err) => {
         console.error(' Status update failed:', err);
-        alert('Status update failed');
         this.loadTickets();
       }
     });

@@ -5,6 +5,35 @@ body {
     'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
+:root {
+  --primary: #f0842c;
+  --primary-light: #fff3e6;
+  --primary-dark: #d46a1a;
+  --dark: #111111;
+  --muted: #6b7280;
+  --bg: #ffffff;
+  --soft: #f9fafb;
+  --border: #e5e7eb;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --radius: 10px;
+}
+
+
+.page-title-group h3 {
+  margin-top: 100px;
+  margin-left: 280px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--dark);
+}
+
+.page-subtitle {
+  font-size: 0.85rem;
+  margin-left:280px;
+  color: var(--muted);
+}
+
+
 .badge {
   padding: 4px 10px;
   border-radius: 999px;

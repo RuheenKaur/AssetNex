@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AssetRequestService } from './asset-requests.service';
 import { Router } from '@angular/router';
@@ -134,9 +134,31 @@ loadAssignedAssets() {
     });
   }
 
-  goToLanding() {
+  goToLanding()
+  {
     this.router.navigateByUrl('/landing');
   }
 }
 
 
+// @Injectable({ providedIn: 'root' })
+// export class AssetResolver implements Resolve<Asset[]> {
+//   constructor(private assetService: AssetService) {}
+
+//   resolve(): Observable<Asset[]> {
+//     return this.assetService.getAssets();
+//   }
+// }
+// In routing:
+// typescript{
+//   path: 'assets',
+//   component: AssetListComponent,
+//   resolve: { assets: AssetResolver }
+// }
+// In component:
+// typescriptngOnInit() {
+//   this.assets = this.route.snapshot.data['assets'];
+// }
+
+//  thread pool manages a fixed set of reusable threads,
+//  async releases threads back to it on await, avoiding thread exhaustion under load.

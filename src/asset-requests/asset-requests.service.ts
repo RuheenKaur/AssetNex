@@ -32,7 +32,6 @@ updateStatus(id: number, statusId: number) {
   );
 }
 
-
 getAssetRequestsV1()
 {
     return this.http.get(`${ environment.apibaseUrl}/ api / v1 / asset - requests`);
@@ -50,3 +49,4 @@ getAssetRequestsV2()
 }
 
 }
+

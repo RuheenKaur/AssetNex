@@ -9,8 +9,7 @@ import {NgxCaptchaModule} from 'ngx-captcha';
 import {inject} from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import {ToastrModule} from 'ngx-toastr';
-
-
+import { RouterModule } from '@angular/router';
 import { PrimeIcons} from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { PrimeNG } from 'primeng/config';
@@ -18,7 +17,7 @@ import { PrimeNG } from 'primeng/config';
 
 @NgModule({
   imports: [
-    BrowserAnimationsModule,
+    BrowserAnimationsModule,RouterModule,
     NgxCaptchaModule,ReactiveFormsModule,FormsModule,
      ToastrModule.forRoot({
       preventDuplicates: false,

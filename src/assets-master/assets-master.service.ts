@@ -13,6 +13,15 @@ export class AssetsMasterService {
     return this.http.get<AssetMaster[]>(`${environment.apibaseUrl}/api/AssetsMaster`);
   }
 
+  getAllAssetsMastersList():Observable<AssetMaster[]>
+  {
+     return this.http.get<AssetMaster[]>(`${environment.apibaseUrl}/api/AssetsMaster`);
+  }
+
+  StatusAssetUpdate(assetId: number, statusId:number, reason: string):Observable<any>
+  {
+      return this.http.put(`{environment.apibaseUrl}/api/AssetsMaster/${assetId}`, {statusId, reason});
+  }
 updateAssetStatus(assetId: number, statusId: number) {
   return this.http.put(
     `${environment.apibaseUrl}/api/AssetsMaster/${assetId}`,

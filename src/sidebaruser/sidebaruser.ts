@@ -2,22 +2,20 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { LoginAuthComponent } from '../loginauth/loginauth.component';
-
+import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-sidebaruser',
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './sidebaruser.html',
   styleUrl: './sidebaruser.css',
 })
-export class Sidebaruser {
 
+export class Sidebaruser {
   userId:any;
   userName:any;
-goTo: any;
+  goTo: any;
 constructor(private router: Router, private authService:AuthService){}
-
 ngOnInit(): void {
-
   const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
   this.userId = storedUser.id;
   this.userName=storedUser.name;
@@ -40,7 +38,6 @@ goToLanding()
     this.authService.logout();
     alert('Go ahead with the logout?');
   }
-
 
 goToAssetAssign()
 {

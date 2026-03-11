@@ -38,13 +38,10 @@ export class LoginAuthComponent implements OnInit {
 
     this.loading = true;
     this.error = '';
-
     this.authService.login(this.loginForm.value).subscribe({
       next: (res: any) => {
-
         const token = res.accessToken;
         const decoded: any = jwtDecode(token);
-
         const user = {
           id: res.id,
           name: res.name,
@@ -52,18 +49,25 @@ export class LoginAuthComponent implements OnInit {
           role: decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
         };
 
+localStorage.setItem('accessToken', token);
         localStorage.setItem('token', token);
-        localStorage.setItem('userId', res.id.toString());
+        localStorage.setItem('userId', res.id);
         localStorage.setItem('user', JSON.stringify(user));
+console.log('Decoded token:', decoded);
+console.log('Logged in user:', user);
+console.log('Navigating to:', user.role === 'Admin' ? '/admin/dashboard' : '/user/dashboard');
 
-        console.log('Logged in user:', user);
+// this.router.navigate(
+//   [user.role === 'Admin' ? '/admin/dashboard' : '/user/dashboard']
+// ).then(success => {
+//   console.log('Navigation success:', success);
+// });
 
         if (user.role === 'Admin') {
           this.router.navigate(['/admin/dashboard']);
         } else {
           this.router.navigate(['/user/dashboard']);
         }
-
         this.loading = false;
       },
       error: (err) => {

@@ -13,7 +13,7 @@ export class TrackTicketService {
 
   getAllTrackTickets(userId:number):Observable<TrackTicket[]>
   {
-    return this.http.get<TrackTicket[]>(`${environment.apibaseUrl}/api/support-tickets/ticket/${userId}`)
+    return this.http.get<TrackTicket[]>(`${environment.apibaseUrl}/api/support-tickets/user/${userId}`)
   }
 
 }

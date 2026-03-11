@@ -25,17 +25,14 @@
         placeholder="Search tickets..."/>
     </span>
   </ng-template>
-
   <ng-template pTemplate="header">
     <tr>
 
-    <th pSortableColumn="ticketId">TicketId <p-sortIcon field="ticketId"></p-sortIcon></th>
+    <th pSortableColumn="id">TicketId <p-sortIcon field="id"></p-sortIcon></th>
       <th pSortableColumn="category">Category<p-sortIcon field="category"></p-sortIcon></th>
-      <th>Description</th>
-      <th >Priority</th>
-     <th >AssetConcerned</th>
-      <th >StatusName</th>
-      <th>StatusCategory</th>
+      <th pSortableColumn="description">Description<p-sortIcon field="description"></p-sortIcon></th>
+      <th  pSortableColumn = "priority">Priority<p-sortIcon field="priority"></p-sortIcon></th>
+     <th>AssetConcerned</th>
       <th>Ticket Status</th>
       <th>ResolutionNotes</th>
     </tr>
@@ -43,14 +40,12 @@
 
   <ng-template pTemplate="body" let-ticket>
     <tr>
-      <td class="text-center">{{ ticket.ticketId }}</td>
+      <td class="text-center">{{ ticket.id }}</td>
       <td class="text-center">{{ ticket.issueCategory }}</td>
       <td class="text-center">{{ ticket.issueDescription}}</td>
       <td class="text-center">{{ ticket.priority }}</td>
-      <td class="text-center">{{ ticket.assetConcerned }}</td>
-      <td class="text-center">{{ ticket.statusName }}</td>
-      <td class="text-center">{{ ticket.statusCategory }}</td>
-      <td class="text-center">{{ ticket.ticketStatus}}</td>
+      <td class="text-center">{{ ticket.asset }}</td>
+      <td class="text-center">{{ ticket.status}}</td>
       <td class="text-center">{{ticket.resolutionNotes}}</td>
     </tr>
   </ng-template>

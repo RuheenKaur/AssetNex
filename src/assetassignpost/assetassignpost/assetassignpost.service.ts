@@ -19,6 +19,14 @@ export class AssetAssignPostService {
     );
   }
 
+  unassign(assignmentId: number) {
+    return this.http.delete(
+      `${environment.apibaseUrl}/api/AssetAssignments/${assignmentId}`
+    );
+  }
+
+  reassignAsset(payload: {assignmentId: number, newUserId: number})
+  {return this.http.put (`${environment.apibaseUrl}/api/AssetAssignments/reassign`, payload);}
   assignAsset(assetId: number, assignedToUserId: number, assignedByUserId: number) {
   return this.http.post(
     `${environment.apibaseUrl}/api/AssetAssignments/assign`,
@@ -32,12 +40,5 @@ export class AssetAssignPostService {
     }
   );
 }
-
-  unassign(assignmentId: number) {
-    return this.http.put(
-      `${environment.apibaseUrl}/api/AssetAssignments/unassign/${assignmentId}`,
-      {}
-    );
-  }
 }
 

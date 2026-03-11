@@ -192,6 +192,25 @@ saveUserEdits(): void {
   });
 }
 
+UserEditSave(): void
+{
+  if(!this.selectedUser) return;
+  this.userpostService.updateUser(this.selectedUser).subscribe({
+    next : ()=>{
+
+      this.showEditModal = false;
+      this.selectedUser = null;
+      this.loadUsers();
+      alert('User updated successfully');
+    },
+    error:(err)=>
+    {
+      console.error('Reason behind no edit save', err);
+      alert('Failed to update user');
+    }
+  })
+}
+
 ngOnInit(): void {
   this.userpostService.getAllUsers().subscribe({
     next: (data) => this.users = data ?? [],
@@ -228,17 +247,10 @@ reloadUsers()
   DeactivateUser(user:UserspostModel): void{
     this.selectedUser = user;
     this.showDeactivateModal = true;
-
   }
 
-  onDeactivateUser(user: UserspostModel): void {
-  this.selectedUser = user;
-  this.showDeactivateModal = true;
-}
-
-confirmDeactivateUser(): void {
+  confirmDeactivateUser(): void {
   if (!this.selectedUser) return;
-
   this.userpostService.deactivateUser(this.selectedUser.id).subscribe({
     next: () => {
       this.showDeactivateModal = false;
@@ -258,12 +270,6 @@ confirmDeactivateUser(): void {
   this.selectedUser = null;
 }
 
-openModalDeactivate(user:UserspostModel):void
-{
-  this.selectedUser = user;
-  this.showDeactivateModal = true;
-}
-
 openDeactivateModal(user:UserspostModel): void
 {
   this.selectedUser= user;
@@ -273,26 +279,6 @@ openDeactivateModal(user:UserspostModel): void
   closeDeactivateModal(): void {
     this.showDeactivateModal = false;
     this.selectedUser=null;
-  }
-
-  closeDeactivateMod():void{
-    this.showDeactivateModal =  false;
-    this.selectedUser = null;
-  }
-
-  deactivate(userId: number):void{
-    this.userpostService.deactivateUser(userId).subscribe({
-      next:()=> {
-        this.showDeactivateModal= false;
-        this.loadUsers();
-        alert('User deactivated');
-      },
-      error: err=>
-      {
-        console.error(err);
-        alert('Failed to deactivatr User');
-      }
-    });
   }
 
   deactivateUser(userId: number): void {
@@ -309,5 +295,6 @@ openDeactivateModal(user:UserspostModel): void
     });
   }
 
-
 }
+
+

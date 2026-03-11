@@ -11,7 +11,6 @@ describe('LoginauthComponent', () => {
       imports: [LoginAuthComponent]
     })
     .compileComponents();
-
     fixture = TestBed.createComponent(LoginAuthComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

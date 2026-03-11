@@ -51,11 +51,11 @@ export class AssetsMasterComponent implements OnInit {
     this.loadUsers();
   }
 
+
   onSearchChange() {
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
     }
-
     this.searchTimeout = setTimeout(() => {
       console.log('Searching for:', this.search);
       this.loadAssets({ first: 0, rows: this.pageSize });
@@ -83,12 +83,9 @@ export class AssetsMasterComponent implements OnInit {
 
   loadAssets(event: any) {
     this.loading = true;
-
     const page = event ? Math.floor(event.first / event.rows) + 1 : this.pageNumber;
     const pageSize = event?.rows || this.pageSize;
-
     console.log('Loading assets - Page:', page, 'Size:', pageSize, 'Search:', this.search);
-
     this.assetService.getAssetsPaged(page, pageSize, this.search).subscribe({
       next: (res) => {
         console.log('API Response:', res);
@@ -114,8 +111,9 @@ export class AssetsMasterComponent implements OnInit {
     this.assets = this.assets.filter(a => a.statusId === this.selectedStatus);
   }
 
-  openEditModal(asset: any) {
-    this.selectedAsset = { ...asset };
+  openEditModal(asset:any)
+  {
+    this.selectedAsset = {...asset};
     this.showEditModal = true;
     console.log('Editing asset:', this.selectedAsset);
   }
@@ -125,24 +123,18 @@ export class AssetsMasterComponent implements OnInit {
     this.selectedAsset = null;
   }
 
+
+
   saveAssetEdits() {
-    if (!this.selectedAsset) return;
-
-    console.log('Saving asset:', this.selectedAsset);
-
-    this.assetService.updateAsset(this.selectedAsset.assetId).subscribe({
-      next: (response) => {
-        console.log('Asset updated:', response);
-        alert('Asset updated successfully');
-        this.closeEditModal();
-        this.loadAssets({ first: 0, rows: this.pageSize });
-      },
-      error: (err) => {
-        console.error('Update failed:', err);
-        alert('Update failed: ' + (err.error?.message || 'Unknown error'));
-      }
-    });
-  }
+  if (!this.selectedAsset) return;
+  this.assetService.updateAsset(this.selectedAsset).subscribe({
+    next: () => {
+      this.closeEditModal();
+      this.loadAssets({ first: 0, rows: this.pageSize });
+    },
+    error: (err) => console.error('Update failed:', err)
+  });
+}
 
   updateStatus(asset: any) {
     console.log('Updating status for asset:', asset.assetId, 'to status:', asset.statusId);
@@ -174,25 +166,19 @@ export class AssetsMasterComponent implements OnInit {
     this.selectedUserId = null;
   }
 
-  assignAsset() {
-    if (!this.selectedUserId || !this.selectedAsset) {
-      alert("Please select a user");
-      return;
-    }
-
-    console.log("Assigning asset", this.selectedAsset.assetId, "to user", this.selectedUserId);
-
-    this.assetService.assignAsset(this.selectedAsset.assetId, this.selectedUserId, this.selectedAsset).subscribe({
-      next: (response:any) => {
-        console.log('Asset assigned:', response);
-        alert('Asset assigned successfully');
-        this.closeAssignModal();
-        this.loadAssets({ first: 0, rows: this.pageSize });
-      },
-      error: (err:any) => {
-        console.error('Assignment failed:', err);
-        alert('Assignment failed: ' + (err.error?.message || 'Unknown error'));
-      }
-    });
-  }
+assignAsset() {
+  if (!this.selectedUserId || !this.selectedAsset) return;
+  const loggedInUserId = Number(localStorage.getItem('userId'));
+  this.assetService.assignAsset(
+    this.selectedAsset.assetId,
+    this.selectedUserId,
+    loggedInUserId
+  ).subscribe({
+    next: () => {
+      this.closeAssignModal();
+      this.loadAssets({ first: 0, rows: this.pageSize });
+    },
+    error: (err) => console.error('Assignment failed:', err)
+  });
+}
 }

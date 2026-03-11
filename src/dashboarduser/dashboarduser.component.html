@@ -1,15 +1,184 @@
 
 
-             <img src ='/assets/images/exploreone.jpg'>
+<div class="welcome-banner">USER'S ASSETS</div>
+<aside class="user-sidebar">
+  <div class="user-greeting">
+    <div class="greeting-text">Hello, {{ userName }}! 👋</div>
+  </div>
+  <ul class="sidebar-nav">
 
+    <li>
+      <a class="nav-item" (click)="goToAssetAssign()">
+        <i class="pi pi-desktop"></i>
+        <span>My Assets</span>
+      </a>
+    </li>
 
-      <h2>Welcome, {{ user?.name }}</h2>
-<p>User ID: {{ user?.userId }}</p>
+    <li>
+      <a class="nav-item" (click)="goToAssetRequest()">
+        <i class="pi pi-send"></i>
+        <span>Asset Request</span>
+        <span class="badge-new">NEW</span>
+      </a>
+    </li>
 
+    <!-- Divider -->
+    <li class="divider"></li>
 
+    <!-- Support Header -->
+    <li class="section-header">
+      <i class="pi pi-headphones"></i>
+      <span>SUPPORT</span>
+    </li>
 
+    <!-- Raise Ticket -->
+    <li>
+      <a class="nav-item" (click)="goToSupporttickets()">
+        <i class="pi pi-plus-circle"></i>
+        <span>Raise Ticket</span>
+      </a>
+    </li>
 
+    <!-- Track Tickets -->
+    <li>
+      <a class="nav-item" (click)="goToTracktickets()">
+        <i class="pi pi-list-check"></i>
+        <span>Track Tickets</span>
+      </a>
+    </li>
 
-<!-- goTo(path: string) {
-  this.router.navigate(['/dashboarduser', path]);
-} -->
+    <!-- Divider -->
+    <li class="divider"></li>
+
+    <!-- Settings -->
+    <li>
+      <a class="nav-item">
+        <i class="pi pi-cog"></i>
+        <span>Settings</span>
+      </a>
+    </li>
+
+    <!-- Logout -->
+    <li>
+      <a class="nav-item nav-logout" (click)="onLogOut()">
+        <i class="pi pi-sign-out"></i>
+        <span>Logout</span>
+      </a>
+    </li>
+  </ul>
+</aside>
+
+<!-- Main Dashboard Content -->
+<div class="dashboard-content">
+
+  <!-- Dashboard Header -->
+  <div class="dashboard-header">
+    <h1>My Dashboard</h1>
+    <p>View and manage your assigned assets</p>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="stats-grid">
+    <!-- Stat Card 1 -->
+    <div class="stat-card">
+      <div class="stat-icon" style="background: #fff4ec; color: #ff8c42;">
+        <i class="pi pi-desktop"></i>
+      </div>
+      <div class="stat-details">
+        <h3>My Assets</h3>
+        <div class="stat-value">{{ myAssetsCount || 0 }}</div>
+        <div class="stat-label">Currently Assigned</div>
+      </div>
+    </div>
+
+    <!-- Stat Card 2 -->
+    <div class="stat-card">
+      <div class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
+        <i class="pi pi-send"></i>
+      </div>
+      <div class="stat-details">
+        <h3>Requests</h3>
+        <div class="stat-value">{{ pendingRequests || 0 }}</div>
+        <div class="stat-label">Pending Approval</div>
+      </div>
+    </div>
+
+    <!-- Stat Card 3 -->
+    <div class="stat-card">
+      <div class="stat-icon" style="background: #d1fae5; color: #10b981;">
+        <i class="pi pi-check-circle"></i>
+      </div>
+      <div class="stat-details">
+        <h3>Tickets</h3>
+        <div class="stat-value">{{ openTickets || 0 }}</div>
+        <div class="stat-label">Open Support Tickets</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Assets Section -->
+  <div class="content-section">
+    <h2 class="section-title">Recent Assets</h2>
+
+    <div class="assets-grid">
+      <div class="asset-card" *ngFor="let asset of recentAssets">
+        <div class="asset-icon">
+          <i class="pi pi-desktop"></i>
+        </div>
+        <div class="asset-info">
+          <h3>{{ asset.name || 'Asset Name' }}</h3>
+          <p class="asset-type">{{ asset.type || 'Hardware' }}</p>
+          <div class="asset-meta">
+            <span class="meta-item">
+              <i class="pi pi-calendar"></i>
+              {{ asset.assignedDate || 'Jan 15, 2026' }}
+            </span>
+            <span class="meta-item">
+              <i class="pi pi-tag"></i>
+              {{ asset.serialNumber || 'SN-12345' }}
+            </span>
+          </div>
+        </div>
+        <div class="asset-status">
+          <span class="status-badge status-active">Active</span>
+        </div>
+      </div>
+
+      <!-- Placeholder if no assets -->
+      <div class="empty-state" *ngIf="!recentAssets || recentAssets.length === 0">
+        <i class="pi pi-inbox"></i>
+        <h3>No Assets Assigned</h3>
+        <p>You don't have any assets assigned yet.</p>
+        <button class="btn-primary" (click)="goToAssetRequest()">
+          Request Asset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="content-section">
+    <h2 class="section-title">Quick Actions</h2>
+
+    <div class="actions-grid">
+      <div class="action-card" (click)="goToAssetRequest()">
+        <i class="pi pi-plus-circle"></i>
+        <h3>Request New Asset</h3>
+        <p>Submit a request for new equipment</p>
+      </div>
+
+      <div class="action-card" (click)="goToSupporttickets()">
+        <i class="pi pi-wrench"></i>
+        <h3>Report Issue</h3>
+        <p>Create a support ticket for problems</p>
+      </div>
+
+      <div class="action-card" (click)="goToTracktickets()">
+        <i class="pi pi-list"></i>
+        <h3>Track Requests</h3>
+        <p>Check status of your submissions</p>
+      </div>
+    </div>
+  </div>
+
+</div>

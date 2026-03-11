@@ -1,13 +1,10 @@
 export interface TrackTicket{
-
-    ticketId: number,
+    id:number,
     issueCategory: string,
     issueDescription: string,
     priority:string,
-    assetConcerned: string,
-    statusName: string,
-    statusCategory: string,
-    statusCode: number
+    asset: string,
+    status:string,
     ticketStatus:number,
     resolutionNotes:string
 }

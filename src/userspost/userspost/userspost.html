@@ -1,193 +1,254 @@
-<h4 class="mb-3">User Details</h4>
 
-<div class="buttonrow mb-3">
-  <button class="btn btn-primary" (click)="goBack()">
-    ← Back to Dashboard
-  </button>
-</div>
-
-<div class="container">
-  <p-table
-    #dt
-    [value]="users"
-    class="p-datatable-lg"
-    [paginator]="true"
-    [rows]="10"
-    responsiveLayout="scroll"
-    [globalFilterFields]="['name','email','contact','role']">
-
-
-    <ng-template pTemplate="caption">
-      <span class="p-input-icon-left">
-        <i class="pi pi-search"></i>
-        <input
-          pInputText
-          type="text"
-          placeholder="Search users..."
-          (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
-      </span>
-    </ng-template>
-
-
-    <ng-template pTemplate="header">
-      <tr>
-        <th pSortableColumn="id">Id <p-sortIcon field="id"></p-sortIcon></th>
-        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
-        <th>Email</th>
-        <th>Contact</th>
-        <th>Role</th>
-        <th>Created On</th>
-        <th class="text-center" style="min-width:180px">Actions</th>
-      </tr>
-    </ng-template>
-
-
-    <ng-template pTemplate="body" let-user>
-      <tr>
-        <td>{{ user.id }}</td>
-        <td>{{ user.name }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.contact }}</td>
-        <td>{{ user.role }}</td>
-        <td>{{ user.createdOn | date:'short' }}</td>
-
-        <td class="text-center">
-          <div class="action-icons">
-            <i class="pi pi-headphones action-icon"
-               title="View Assets"
-               (click)="openUserAssignments(user)">
-            </i>
-
-            <i class="pi pi-pencil action-icon edit"
-               title="Edit User"
-               (click)="openEditModal(user)">
-            </i>
-
-            <i class="pi pi-ban action-icon danger"
-               title="Deactivate User"
-               (click)="openDeactivateModal(user)">
-            </i>
-          </div>
-        </td>
-      </tr>
-    </ng-template>
-
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="7" class="text-center">No users found</td>
-      </tr>
-    </ng-template>
-  </p-table>
-</div>
-
-<div class="modal-overlay" *ngIf="showUserAssignmentModal"></div>
-<div class="modal-container" *ngIf="showUserAssignmentModal">
-  <div class="modal-header">
-    <h3>Assets Assigned to {{ selectedUser?.name }}</h3>
-    <button (click)="closeUserAssignmentModal()">×</button>
-  </div>
-
-  <div class="modal-body">
-    <p *ngIf="loadingAssignments">Loading assets...</p>
-
-    <p *ngIf="!loadingAssignments && assignedAssets.length === 0">
-      No assets assigned.
-    </p>
-
-    <div *ngFor="let asset of assignedAssets"
-         class="asset-item"
-         [class.active]="selectedAsset?.assetId === asset.assetId"
-         (click)="selectAsset(asset)">
-
-      <i class="pi pi-caret-right caret"
-         [class.rotate]="selectedAsset?.assetId === asset.assetId">
-      </i>
-
-      <span class="asset-tag">{{ asset.assetTag }}</span>
-      <span class="status-pill status-active">{{ asset.assetType }}</span>
+<div class="users-layout">
+  <div class="page-header">
+    <div class="page-title-group">
+      <h3>User Management</h3>
+      <span class="page-subtitle">Manage system users, roles and assigned assets</span>
     </div>
-
-    <div class="asset-details" *ngIf="selectedAsset">
-      <h4>{{ selectedAsset.assetTag }}</h4>
-      <p><b>Asset ID:</b> {{ selectedAsset.assetId }}</p>
-      <p><b>Type:</b> {{ selectedAsset.assetType }}</p>
-      <p><b>Brand:</b> {{ selectedAsset.brand }}</p>
-      <p><b>Model:</b> {{ selectedAsset.model }}</p>
-      <p><b>Serial:</b> {{ selectedAsset.serialNumber }}</p>
-      <p><b>Assigned On:</b> {{ selectedAsset.assignedOn | date }}</p>
-    </div>
-  </div>
-
-  <div class="modal-footer">
-    <button class="btn btn-secondary" (click)="closeUserAssignmentModal()">
-      Close
+    <button class="btn btn-dark" (click)="goBack()">
+      ← Back to Dashboard
     </button>
   </div>
+
+  <div class="table-wrapper">
+    <p-table
+      #dt
+      class="p-datatable-sm"
+      [value]="users"
+      [paginator]="true"
+      [rows]="10"
+      responsiveLayout="scroll"
+      [globalFilterFields]="['name','email','contact','role']">
+
+      <ng-template pTemplate="caption">
+        <div class="table-caption">
+          <div class="search-wrapper">
+            <i class="pi pi-search"></i>
+            <input
+              pInputText
+              type="text"
+              placeholder="Search users..."
+              (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+          <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+          <th>Email</th>
+          <th>Contact</th>
+          <th>Role</th>
+          <th>Created On</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>
+            <div class="user-name-cell">
+              <span class="user-avatar">{{ user.name?.charAt(0) }}</span>
+              {{ user.name }}
+            </div>
+          </td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.contact }}</td>
+          <td>
+            <span class="role-badge"
+              [class.role-admin]="user.role === 'Admin'"
+              [class.role-it]="user.role === 'IT'"
+              [class.role-user]="user.role === 'User'">
+              {{ user.role }}
+            </span>
+          </td>
+          <td>{{ user.createdOn | date:'MMM d, y' }}</td>
+          <td class="text-center">
+            <div class="action-icons">
+              <i class="pi pi-desktop action-icon"
+                 title="View Assigned Assets"
+                 (click)="openUserAssignments(user)">
+              </i>
+              <i class="pi pi-pencil action-icon edit"
+                 title="Edit User"
+                 (click)="openEditModal(user)">
+              </i>
+              <i class="pi pi-ban action-icon danger"
+                 title="Deactivate User"
+                 (click)="openDeactivateModal(user)">
+              </i>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center">No users found</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>
 
-<div class="modal-overlay" *ngIf="showEditModal"></div>
+
+<div class="modal-overlay" *ngIf="showUserAssignmentModal" (click)="closeUserAssignmentModal()"></div>
+<div class="modal-container modal-lg" *ngIf="showUserAssignmentModal">
+  <div class="modal-header">
+    <div class="modal-title-group">
+      <i class="pi pi-desktop"></i>
+      <span>Assets — {{ selectedUser?.name }}</span>
+    </div>
+    <button class="close-btn" (click)="closeUserAssignmentModal()">✕</button>
+  </div>
+
+  <div class="modal-body assets-modal-body">
+
+
+    <div class="assets-panel">
+      <p class="panel-label">Assigned Assets</p>
+
+      <div *ngIf="loadingAssignments" class="loading-state">
+        <i class="pi pi-spin pi-spinner"></i> Loading...
+      </div>
+
+      <div *ngIf="!loadingAssignments && assignedAssets.length === 0" class="empty-state">
+        <i class="pi pi-inbox"></i>
+        <p>No assets assigned</p>
+      </div>
+
+      <div *ngFor="let asset of assignedAssets"
+           class="asset-item"
+           [class.active]="selectedAsset?.assetId === asset.assetId"
+           (click)="selectAsset(asset)">
+        <i class="pi pi-desktop asset-icon"></i>
+        <div class="asset-item-info">
+          <span class="asset-tag">{{ asset.assetTag }}</span>
+          <span class="asset-type">{{ asset.assetType }}</span>
+        </div>
+        <i class="pi pi-chevron-right caret"
+           [class.rotate]="selectedAsset?.assetId === asset.assetId">
+        </i>
+      </div>
+    </div>
+
+    <!-- Asset Detail -->
+    <div class="asset-detail-panel" *ngIf="selectedAsset">
+      <p class="panel-label">Asset Details</p>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">Tag</span>
+          <span class="detail-value">{{ selectedAsset.assetTag }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Type</span>
+          <span class="detail-value">{{ selectedAsset.assetType }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Brand</span>
+          <span class="detail-value">{{ selectedAsset.brand }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Model</span>
+          <span class="detail-value">{{ selectedAsset.model }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Serial</span>
+          <span class="detail-value">{{ selectedAsset.serialNumber }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Assigned On</span>
+          <span class="detail-value">{{ selectedAsset.assignedOn | date:'MMM d, y' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="asset-detail-panel empty-detail" *ngIf="!selectedAsset && assignedAssets.length > 0">
+      <i class="pi pi-arrow-left"></i>
+      <p>Select an asset to view details</p>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-dark" (click)="closeUserAssignmentModal()">Close</button>
+  </div>
+</div>
+
+<!-- ── EDIT USER MODAL ── -->
+<div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()"></div>
 <div class="modal-container" *ngIf="showEditModal">
   <div class="modal-header">
-    <h3>Edit User</h3>
-    <button (click)="closeEditModal()">×</button>
+    <div class="modal-title-group">
+      <i class="pi pi-user-edit"></i>
+      <span>Edit User — {{ selectedUser?.name }}</span>
+    </div>
+    <button class="close-btn" (click)="closeEditModal()">✕</button>
   </div>
 
   <div class="modal-body">
-    <div class="form-group">
-      <label>Full Name</label>
-      <input type="text" [(ngModel)]="selectedUser.name" />
-    </div>
-
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" [(ngModel)]="selectedUser.email" disabled />
-    </div>
-
-    <div class="form-group">
-      <label>Contact</label>
-      <input type="text" [(ngModel)]="selectedUser.contact" />
-    </div>
-
-    <div class="form-group">
-      <label>Role</label>
-      <select [(ngModel)]="selectedUser.role">
-        <option value="Admin">Admin</option>
-        <option value="IT">IT</option>
-        <option value="Employee">Employee</option>
-      </select>
+    <div class="form-grid">
+      <div class="form-group full-width">
+        <label>Full Name</label>
+        <input type="text" [(ngModel)]="selectedUser.name" placeholder="Full name" />
+      </div>
+      <div class="form-group full-width">
+        <label>Email <span class="hint">(read only)</span></label>
+        <input type="email" [(ngModel)]="selectedUser.email" disabled />
+      </div>
+      <div class="form-group">
+        <label>Contact</label>
+        <input type="text" [(ngModel)]="selectedUser.contact" placeholder="Contact number" />
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <select [(ngModel)]="selectedUser.role">
+          <option value="Admin">Admin</option>
+          <option value="IT">IT</option>
+          <option value="Employee">Employee</option>
+        </select>
+      </div>
     </div>
   </div>
 
   <div class="modal-footer">
-    <button class="btn secondary" (click)="closeEditModal()">Cancel</button>
-    <button class="btn primary" (click)="saveUserEdits()">Save</button>
+    <button class="btn btn-dark" (click)="closeEditModal()">Cancel</button>
+    <button class="btn btn-primary" (click)="saveUserEdits()">Save Changes</button>
   </div>
 </div>
 
-<div class="modal-overlay" *ngIf="showDeactivateModal"></div>
-
-<div class="modal-container" *ngIf="showDeactivateModal">
-  <div class="modal-header danger">
-    <h3>Deactivate User</h3>
-    <button (click)="closeDeactivateModal()">×</button>
+<!-- ── DEACTIVATE MODAL ── -->
+<div class="modal-overlay" *ngIf="showDeactivateModal" (click)="closeDeactivateModal()"></div>
+<div class="modal-container modal-sm" *ngIf="showDeactivateModal">
+  <div class="modal-header modal-header-danger">
+    <div class="modal-title-group">
+      <i class="pi pi-exclamation-triangle"></i>
+      <span>Deactivate User</span>
+    </div>
+    <button class="close-btn close-btn-danger" (click)="closeDeactivateModal()">✕</button>
   </div>
 
   <div class="modal-body">
-    <p>
-      Are you sure you want to deactivate
-      <strong>{{ selectedUser?.name }}</strong>?
-    </p>
-    <p class="hint">
-      This user will lose access, but data will be retained.
-    </p>
+    <div class="confirm-body">
+      <div class="confirm-icon">
+        <i class="pi pi-ban"></i>
+      </div>
+      <p class="confirm-text">
+        Are you sure you want to deactivate
+        <strong>{{ selectedUser?.name }}</strong>?
+      </p>
+      <p class="hint">This user will lose access, but all data will be retained.</p>
+    </div>
   </div>
 
   <div class="modal-footer">
-    <button class="btn secondary" (click)="closeDeactivateModal()">Cancel</button>
-    <button class="btn danger"
+    <button class="btn btn-dark" (click)="closeDeactivateModal()">Cancel</button>
+    <button class="btn btn-danger"
             [disabled]="!selectedUser"
             (click)="confirmDeactivateUser()">
-      Deactivate
+      <i class="pi pi-ban"></i> Deactivate
     </button>
   </div>
 </div>

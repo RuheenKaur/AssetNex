@@ -8,22 +8,29 @@ export class AuthGuard implements CanActivate {
 
   constructor(private router: Router) {}
 
-  canActivate(): boolean {
-    const userStr = localStorage.getItem('user');
+  // canActivate(): boolean {
+  //   const userStr = localStorage.getItem('user');
 
-    if (!userStr) {
-      this.router.navigate(['/landing']);
-      return false;
-    }
+  //   if (!userStr) {
+  //     this.router.navigate(['/landing']);
+  //     return false;
+  //   }
 
-    const user = JSON.parse(userStr);
+  //   const user = JSON.parse(userStr);
 
-    // Optional: check role if needed
-    if (!user.role) {
-      this.router.navigate(['/landing']);
-      return false;
-    }
+  //   // Optional: check role if needed
+  //   if (!user.role) {
+  //     this.router.navigate(['/landing']);
+  //     return false;
+  //   }
 
+  //   return true;
+  // }
+
+
+
+  canActivate(): boolean{
+    console.log('Giard executed');
     return true;
   }
 }
