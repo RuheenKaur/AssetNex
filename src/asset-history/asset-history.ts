@@ -1,57 +1,84 @@
-import { Component } from '@angular/core';
-import {Router} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AssetsHistoryModel } from './asset-history.model';
-import { Observable, of} from 'rxjs';
-import { Table, TableModule } from 'primeng/table';
-import { DashboardService } from '../maindashboard/dashboard.service';
-import { ChartModule } from 'primeng/chart';
+import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
 import { AssetHistoryService } from './asset-history.service';
 
 @Component({
   selector: 'app-asset-history',
-  imports: [CommonModule,TableModule,ChartModule,],
-  templateUrl: './asset-history.html',
-  styleUrl: './asset-history.css',
+  imports: [CommonModule, TableModule, FormsModule, InputTextModule],
+  templateUrl: 'asset-history.html',
+  styleUrl: 'asset-history.css',
 })
+export class AssetHistory implements OnInit {
 
-export class AssetHistory {
+  // Table data
+  history: AssetsHistoryModel[] = [];
+  filteredHistory: AssetsHistoryModel[] = [];
+  selectedEventType: string = '';
 
-history:AssetsHistoryModel[]=[];
-history$?: Observable<AssetsHistoryModel[]>= of([]);
+  // Drawer state
+  drawerOpen: boolean = false;
+  selectedAssetTag: string = '';
+  assetTimeline: AssetsHistoryModel[] = [];
 
-goTo:any;
+  constructor(
+    private router: Router,
+    private assetHistoryService: AssetHistoryService
+  ) {}
 
-
-goBack()
-{
-  this.router.navigateByUrl('/admin/dashboard');
-}
-
-goToDashboardUser()
-{
-  this.router.navigateByUrl('/dashboarduser');
-}
-
-
-model: Partial<AssetsHistoryModel> = {};
-
-  constructor(private router:Router, private assetHistoryService:AssetHistoryService){
-  }
-
-  ngOnInit(): void
-{
-
-this.history$ = this.assetHistoryService.getAllAssetsHistory();
+  ngOnInit(): void {
     this.assetHistoryService.getAllAssetsHistory().subscribe({
       next: (data) => {
         this.history = data;
-        console.log('ADMIN ASSET REQUESTS:', data);
+        this.filteredHistory = data;
+        console.log('Asset History loaded:', data);
       },
-      error: (err) => {
-        console.error('Failed to load asset requests', err);
-      }
+      error: (err) => console.error('Failed to load history', err)
     });
+  }
 
-}
+  // Filter table by event type
+  filterByEvent(): void {
+    if (!this.selectedEventType) {
+      this.filteredHistory = this.history;
+    } else {
+      this.filteredHistory = this.history.filter(
+        h => h.eventType === this.selectedEventType
+      );
+    }
+  }
+
+  // Open drawer — load all events for clicked asset
+  openDrawer(item: AssetsHistoryModel): void {
+    this.selectedAssetTag = item.asset?.assetTag || `Asset #${item.assetId}`;
+
+    // Filter all history for this specific asset, sorted oldest first
+    this.assetTimeline = this.history
+      .filter(h => h.assetId === item.assetId)
+      .sort((a, b) =>
+        new Date(a.performedAt).getTime() - new Date(b.performedAt).getTime()
+      );
+
+    this.drawerOpen = true;
+  }
+
+  // Close drawer
+  closeDrawer(): void {
+    this.drawerOpen = false;
+    this.selectedAssetTag = '';
+    this.assetTimeline = [];
+  }
+
+  // Count events of a specific type for current asset
+  getEventCount(eventType: string): number {
+    return this.assetTimeline.filter(e => e.eventType === eventType).length;
+  }
+
+  goBack(): void {
+    this.router.navigateByUrl('/admin/dashboard');
+  }
 }

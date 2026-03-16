@@ -154,25 +154,6 @@ private loadUserData(userId: number): void{
   })
 }
 
-submiForm():void{
-  Object.keys(this.supportForm.controls).forEach(key =>{
-    this.supportForm.get(key)?.markAsTouched();
-  });
-  if(this.supportForm.invalid){
-    console.log('Form is invalid');
-    return;
-  }
-
-  this.isSubmitting = true;
-  const formValue = this.supportForm.getRawValue();
-  const payload = {
-    assetId: formValue.assetId,
-    issueCategory: formValue.issueCategory,
-    issueDescription:formValue.issueDescription,
-    priority:formValue.priority
-  };
-  console.log('Submitting ticket:', payload);
-}
 
 
   submitForm(): void {

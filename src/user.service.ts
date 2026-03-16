@@ -39,7 +39,7 @@ return this.http.get<Users[]>(`${environment.apibaseUrl}/api/Users`);
 
   getAssignedAssets(userId: number) {
   return this.http.get<any[]>(
-    `https://localhost:7297/api/AssetAssignments/user/${userId}`
+    `https://localhost:7195/api/AssetAssignments/user/${userId}`
   );
 }
 }

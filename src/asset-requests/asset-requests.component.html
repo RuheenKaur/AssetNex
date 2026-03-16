@@ -1,58 +1,92 @@
 
-<div class="request-container">
-  <form [formGroup]="requestForm" (ngSubmit)="submitForm()">
+<div class="page-wrapper">
+  <div class="request-container">
 
-    <legend><b>Raise Request for an Asset!</b></legend>
-    <div class="form-row">
-      <label>Name</label>
-          <input type="text" formControlName="name" readonly />
+    <div class="form-header">
+      <h2>Raise an Asset Request</h2>
+      <p>Fill in the details below to submit your request</p>
     </div>
 
-    <div class="form-row">
-      <label>Email</label>
-      <input type="email" formControlName="email" readonly />
-    </div>
+    <form [formGroup]="requestForm" (ngSubmit)="submitForm()">
 
-    <div class="form-row" >
-      <label >Contact</label>
-      <input type="text" formControlName="contact" class="form-control" [disabled]="true">
-    </div>
+      <!-- User Info Section -->
+      <div class="section-label">Your Information</div>
 
-    <hr>
-    <div class="form-row">
-      <label>Requested Asset Type</label>
-      <select formControlName="requestedAssetType">
-        <option value="">-- Select Asset Type --</option>
-        <option>Laptop</option>
-        <option>Monitor</option>
-        <option>Mouse</option>
-        <option>Keyboard</option>
-        <option>Headset</option>
-        <option>Charger</option>
-        <option>HDMICable</option>
-        <option>PenDrive</option>
-        <option>HardDisk</option>
-        <option>MemoryCardReader</option>
-        <option>SmartPhone</option>
-        <option>Tablet</option>
-        <option>Other</option>
-      </select>
-    </div>
+      <div class="form-row two-col">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" formControlName="name" readonly placeholder="Your name" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" formControlName="email" readonly placeholder="Your email" />
+        </div>
+      </div>
 
-    <div class="form-row">
-      <label>Reason</label>
-      <textarea class="m-md-1" rows="4" formControlName="reason" placeholder="Why do you need this asset?"></textarea>
-    </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Contact</label>
+          <input type="text" formControlName="contact" [disabled]="true" placeholder="Your contact" />
+        </div>
+      </div>
 
-    <div *ngIf="success" class="success-message">
-      ✔ Asset Request submitted successfully!
-    </div>
+      <div class="divider"></div>
 
-    <div class="button-row">
-      <button class="btn btn-dark" (click)="goToLanding()">Back</button>
-      <button [disabled]="requestForm.invalid" class="btn btn-primary">Submit Request</button>
-    </div>
-<!-- <pre>{{ requestForm.value | json }}</pre> -->
-  </form>
+      <!-- Request Details -->
+      <div class="section-label">Request Details</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Asset Type Required</label>
+          <select formControlName="requestedAssetType">
+            <option value="">-- Select Asset Type --</option>
+            <option>Laptop</option>
+            <option>Monitor</option>
+            <option>Mouse</option>
+            <option>Keyboard</option>
+            <option>Headset</option>
+            <option>Charger</option>
+            <option>HDMI Cable</option>
+            <option>Pen Drive</option>
+            <option>Hard Disk</option>
+            <option>Memory Card Reader</option>
+            <option>Smart Phone</option>
+            <option>Tablet</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Reason for Request</label>
+          <textarea
+            formControlName="reason"
+            placeholder="Why do you need this asset?"
+            rows="4">
+          </textarea>
+        </div>
+      </div>
+
+      <!-- Success Message -->
+      <div *ngIf="success" class="success-message">
+        <i class="pi pi-check-circle"></i>
+        Asset request submitted successfully!
+      </div>
+
+      <!-- Buttons -->
+      <div class="button-row">
+        <button type="button" class="btn-back" (click)="goToLanding()">
+          ← Back
+        </button>
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="requestForm.invalid">
+          Submit Request
+        </button>
+      </div>
+
+    </form>
+  </div>
 </div>
-

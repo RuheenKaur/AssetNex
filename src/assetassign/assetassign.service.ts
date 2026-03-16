@@ -11,12 +11,11 @@ import { environment } from '../environments/environment';
 })
 export class AssetAssignService {
 
-
   constructor(private http: HttpClient) {}
 
-  getAssignedAssets(Id: number): Observable<Assetassign[]> {
+  getAssignedAssets(UserId: number): Observable<Assetassign[]> {
     return this.http.get<Assetassign[]>(
-      `${environment.apibaseUrl}/api/AssetAssignments/user/${Id}`
+      `${environment.apibaseUrl}/api/AssetAssignments/user/${UserId}`
     );
   }
   assignAsset(

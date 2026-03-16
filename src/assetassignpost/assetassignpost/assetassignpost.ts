@@ -49,7 +49,7 @@ export class Assetassignpost implements OnInit {
   }
 
   loadUsers() {
-    this.http.get<any[]>('https://localhost:7297/api/Users')
+    this.http.get<any[]>('https://localhost:7195/api/Users')
       .subscribe(users => {
         this.users = users.map(u => ({
           id: u.id,

@@ -1,160 +1,279 @@
+<div class="page-wrapper">
 
-<h3 class="mb-3"><u>Asset History</u></h3>
-<div class="buttonrow">
-    <button routerLink="admin/dashboard" (click)="goBack()">← Back To Dash</button>
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h2>Asset History</h2>
+      <p>Complete lifecycle log — click any row to view asset timeline</p>
+    </div>
+    <button class="btn-back" (click)="goBack()">← Back to Dashboard</button>
   </div>
 
-<div class="table">
-  <p-table
-    #dt
-    [value]="history"
-    class="p-datatable-sm"
-    [paginator]="true"
-    [rows]="10"
-    [responsiveLayout]="'scroll'"
-    [globalFilterFields]="[ 'user' ,'asset']">
-    <ng-template pTemplate="caption">
-      <span class="p-input-icon-left">
-        <i class="pi pi-search"></i>
-        <input
-          pInputText
-          type="text"
-          (input)="dt.filterGlobal($event.target.value, 'contains')"
-          placeholder="Search asset history..."/>
-      </span>
-    </ng-template>
-        <ng-template pTemplate="header">
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <span class="p-input-icon-left search-wrapper">
+      <i class="pi pi-search"></i>
+      <input
+        pInputText
+        type="text"
+        (input)="dt.filterGlobal($event.target.value, 'contains')"
+        placeholder="Search by asset, user or event..." />
+    </span>
+    <select class="event-filter" [(ngModel)]="selectedEventType" (change)="filterByEvent()">
+      <option value="">All Events</option>
+      <option value="Assigned">Assigned</option>
+      <option value="Returned">Returned</option>
+      <option value="InRepair">In Repair</option>
+      <option value="ReAssigned">ReAssigned</option>
+      <option value="Disposed">Disposed</option>
+    </select>
+  </div>
 
-            <tr>
-                <th pSortableColumn="id">Id
-                    <p-sortIcon field="id"></p-sortIcon>
-                </th>
+  <!-- Table -->
+  <div class="table-card">
+    <p-table
+      #dt
+      [value]="filteredHistory"
+      [paginator]="true"
+      [rows]="10"
+      [responsiveLayout]="'scroll'"
+      [globalFilterFields]="['asset', 'user', 'eventType', 'remarks']"
+      styleClass="p-datatable-sm">
 
-                <th pSortableColumn="assetId">AssetId
-                    <p-sortIcon field="assetId"></p-sortIcon>
-                </th>
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="performedAt">Date <p-sortIcon field="performedAt"></p-sortIcon></th>
+          <th pSortableColumn="asset">Asset <p-sortIcon field="asset"></p-sortIcon></th>
+          <th pSortableColumn="user">User <p-sortIcon field="user"></p-sortIcon></th>
+          <th pSortableColumn="eventType">Event <p-sortIcon field="eventType"></p-sortIcon></th>
+          <th>Remarks</th>
+          <th pSortableColumn="costIncurred">Cost <p-sortIcon field="costIncurred"></p-sortIcon></th>
+          <th>Vendor</th>
+        </tr>
+      </ng-template>
 
-                <th pSortableColumn="asset">Asset
-                    <p-sortIcon field="asset"></p-sortIcon>
-                </th>
+      <ng-template pTemplate="body" let-item>
+        <tr class="clickable-row" (click)="openDrawer(item)">
+          <td>
+            <div class="date-cell">
+              <span class="date-main">{{ item.performedAt | date:'dd MMM yyyy' }}</span>
+              <span class="date-time">{{ item.performedAt | date:'HH:mm' }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="asset-cell">
+              <i class="pi pi-desktop"></i>
+              {{ item.asset?.assetTag || '—' }}
+            </div>
+          </td>
+          <td>{{ item.user?.fullName || '—' }}</td>
+          <td>
+            <span class="event-badge" [ngClass]="{
+              'event-assigned':   item.eventType === 'Assigned',
+              'event-returned':   item.eventType === 'Returned',
+              'event-repair':     item.eventType === 'InRepair',
+              'event-reassigned': item.eventType === 'ReAssigned',
+              'event-disposed':   item.eventType === 'Disposed'
+            }">{{ item.eventType }}</span>
+          </td>
+          <td>{{ item.remarks || '—' }}</td>
+          <td>{{ item.costIncurred > 0 ? ('₹' + item.costIncurred) : '—' }}</td>
+          <td>{{ item.vendor || '—' }}</td>
+        </tr>
+      </ng-template>
 
-                <th pSortableColumn="userId">UserId
-                    <p-sortIcon field="userId"></p-sortIcon>
-                </th>
-
-                  <th pSortableColumn="user">User
-                    <p-sortIcon field="user"></p-sortIcon>
-                </th>
-
-             <th pSortableColumn="statusId">StatusId
-                    <p-sortIcon field="statusId"></p-sortIcon>
-              </th>
-
-                <th pSortableColumn="status">Status
-                    <p-sortIcon field="status"></p-sortIcon>
-                </th>
-
-                <th pSortableColumn="referenceTicketId">ReferenceTicketId
-                    <p-sortIcon field="referenceTicketId"></p-sortIcon>
-                </th>
-
-                    <th pSortableColumn="eventType">EventType
-                    <p-sortIcon field="eventType"></p-sortIcon>
-                </th>
-
-                          <th pSortableColumn="eventDate">EventDate
-                    <p-sortIcon field="eventDate"></p-sortIcon>
-                </th>
-
-                <th pSortableColumn="assignedDate">AssignedDate
-                    <p-sortIcon field="assignedDate"></p-sortIcon>
-                </th>
-
-                <th pSortableColumn="returnedDate">ReturnedDate
-                    <p-sortIcon field="returnedDate"></p-sortIcon>
-                </th>
-
-                <th pSortableColumn="remarks">Remarks
-                    <p-sortIcon field="remarks"></p-sortIcon>
-                </th>
-
-               <th pSortableColumn="performedAt">PerformedAt
-                    <p-sortIcon field="performedAt"></p-sortIcon>
-                </th>
-
-                <th pSortableColumn="vendor">Vendor
-                    <p-sortIcon field="vendor"></p-sortIcon>
-                </th>
-
-               <th pSortableColumn="costIncurred">CostIncurred
-                    <p-sortIcon field="costIncurred"></p-sortIcon>
-                </th>
-
-                <th>Actions</th>
-            </tr>
-
-        </ng-template>
-
-        <ng-template pTemplate ="body" let-history>
-            <tr>
-                <td>{{history.id}}</td>
-                <td>{{history.assetId}}</td>
-                <td>{{history.asset}}</td>
-                <td>{{history.userId}}</td>
-                <td>{{history.user}}</td>
-                <td>{{history.statusId}}</td>
-                <td>{{history.status}}</td>
-                <td>{{history.referenceTicketId}}</td>
-                <td>{{history.eventType}}</td>
-                <td>{{history.eventDate}}</td>
-                 <td>{{history.assignedDate}}</td>
-                <td>{{history.returnedDate}}</td>
-                <td>{{history.remarks}}</td>
-                <td>{{history.performedAt}}</td>
-                 <td>{{history.vendor}}</td>
-                <td>{{history.costIncurred}}</td>
-
-            </tr>
-              <td class="text-center">
-          <div class="action-icons">
-            <i
-              class="pi pi-pencil action-icon"
-              title="Edit Assignment"
-              >
-            </i>
-          </div>
-        </td>
-
-    </ng-template>
-
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="4" class="text-center">
-          No asset requests found
-        </td>
-      </tr>
-
-        </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="empty-message">
+            <i class="pi pi-history"></i>
+            No history records found.
+          </td>
+        </tr>
+      </ng-template>
     </p-table>
   </div>
 
+  <!-- Overlay -->
+  <div class="drawer-overlay" *ngIf="drawerOpen" (click)="closeDrawer()"></div>
+
+  <!-- Drawer -->
+  <div class="drawer" [class.drawer-open]="drawerOpen">
+
+    <div class="drawer-header">
+      <div class="drawer-title">
+        <div class="drawer-icon"><i class="pi pi-desktop"></i></div>
+        <div>
+          <h3>{{ selectedAssetTag }}</h3>
+          <span>Asset Lifecycle Timeline</span>
+        </div>
+      </div>
+      <button class="drawer-close" (click)="closeDrawer()">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="lifecycle-summary">
+      <div class="summary-card">
+        <span class="summary-value">{{ assetTimeline.length }}</span>
+        <span class="summary-label">Total Events</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-value blue">{{ getEventCount('Assigned') + getEventCount('ReAssigned') }}</span>
+        <span class="summary-label">Assignments</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-value yellow">{{ getEventCount('InRepair') }}</span>
+        <span class="summary-label">Repairs</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-value green">{{ getEventCount('Returned') }}</span>
+        <span class="summary-label">Returns</span>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="drawer-body">
+      <div class="timeline-label">FULL HISTORY</div>
+
+      <div class="timeline">
+        <div class="timeline-item" *ngFor="let event of assetTimeline; let last = last">
+
+          <div class="timeline-left">
+            <div class="timeline-dot" [ngClass]="{
+              'dot-assigned':   event.eventType === 'Assigned',
+              'dot-returned':   event.eventType === 'Returned',
+              'dot-repair':     event.eventType === 'InRepair',
+              'dot-reassigned': event.eventType === 'ReAssigned',
+              'dot-disposed':   event.eventType === 'Disposed'
+            }"></div>
+            <div class="timeline-line" *ngIf="!last"></div>
+          </div>
+
+          <div class="timeline-content">
+            <div class="timeline-top">
+              <span class="event-badge small" [ngClass]="{
+                'event-assigned':   event.eventType === 'Assigned',
+                'event-returned':   event.eventType === 'Returned',
+                'event-repair':     event.eventType === 'InRepair',
+                'event-reassigned': event.eventType === 'ReAssigned',
+                'event-disposed':   event.eventType === 'Disposed'
+              }">{{ event.eventType }}</span>
+              <span class="timeline-date">{{ event.performedAt | date:'dd MMM yyyy, HH:mm' }}</span>
+            </div>
+            <div class="timeline-user" *ngIf="event.user?.fullName">
+              <i class="pi pi-user"></i> {{ event.user?.fullName }}
+            </div>
+            <div class="timeline-remarks" *ngIf="event.remarks">
+              {{ event.remarks }}
+            </div>
+            <div class="timeline-cost" *ngIf="event.costIncurred > 0">
+              <i class="pi pi-tag"></i> ₹{{ event.costIncurred }}
+              <span *ngIf="event.vendor"> · {{ event.vendor }}</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div *ngIf="assetTimeline.length === 0" class="no-timeline">
+          No events found for this asset.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
   1.ng content for html slots, parent component can pass content into child component direclty using this,
-  ideal for card, dropdowns and lists etc 2.transaction has four steps begin save commit check rollback,
+  ideal for card, dropdowns and lists etc,<div class="card">
+  <div class="header">
+    <ng-content select="[header]"></ng-content>
+  </div>
+  <div class="body">
+    <ng-content select="[body]"></ng-content>
+  </div>
+</div>
+
+
+
+
+   <!-- 2.transaction has four steps begin save commit check rollback,
   if any step fails we can rollback to previous state, if all steps succeed we can commit the transaction,
    this ensures data integrity and consistency in database operations.
+   begin will start and begin the transaction, it can have several savechangesasync under it and savechangesasync will persist the changes for current dbcontext
+   using var transaction = await _context.db.begintransactionasync()
+
+   try{
+
+   }
+   await _context.Savechangesasync();
+   await transaction.commitasync();
+
+   catch{
+    await trans.rollbackasync();
+    throw;
+   }
    3.sql injection - raw queries we can handle such a situation by using
    parameterized queries, or prepared statements,
     which separate SQL code from data, preventing attackers
-    from injecting malicious SQL code through user input. 4.extension methods-> using this for  a
+    from injecting malicious SQL code through user input.
+    var users = await _context.Users.FromSqlRaw("SELECT* FROM Users WHERE Name= {0}
+    ,userInput).ToListAsync(); 0 as parameter
+
+    4.extension methods-> using this for  a
     static class, means it cant be instantiated again using new keyword,
     we can call the method directly on the type we want to extend, this string is an
     example of extension method, we can call it like this
      "hello world".ToTitleCase() and it will return "Hello World"
+
+
       5.forkjoin is a methods to call observables in
        parallel and wait for all of them to complete before emitting a combined result, if one fails ,
        the result will be an error, if all succeed we get the combined result,
        this is useful for optimizing performance
-       when we have multiple independent API calls.
+       when we have multiple independent API calls. you use catcherror in individual calls.
+       statuses: this.service.getStatuses().pipe(catchError(() => of([]))),
+
+  users: this.service.getUsers().pipe(catchError(() => of([])))
+  6.viewencapsulated-> none , default, shadowdom , none for global css styles.
+
+  7. findasync or findordefaultasync -> find async if it finds the values that is the response or
+  if none then exception thrown and latter either response data or a default value no exceptions
+
+  8.switchmap is an rxjs operator, that helps cut off interaction with last obs and switches to a new input, new observable, switched over,
+  debounce time and switch map ideal best combo for search box inputs. waits before
+  firing and takes latest value only.
+
+  9. singleton is forever,
+         scoped is for per instance of a http request, transient is for every time we request a new instance,
+        scoped service like dbcontext should never be singleton because mutiple api call communication request and response
+        from one instance of dbcontext will cause data corruption,race conditions and unpredictable behavior,
+        the file will show error at the time of startup only. scoped services like need multiple instances for each http request,
+        thread is safe in dbcontext as scoped and unworkable as singleton.
+
+  10.trackby tells angular to search or look for an item uniquely. without it all doms element update
+  and with it only changes ones update.
+
+  11.unknown is safer as it enforces type checking, any bypasses all.
+
+  12.take until auto unubscribes when subject emits.
+
+  13.whenall will wait for all tasks to complete before continuing, whenany will continue if any one task
+   also completes
+
+   14. singleton is forever,
+         scoped is for per instance of a http request, transient is for every time we request a new instance,
+        scoped service like dbcontext should never be singleton because mutiple api call communication request and response
+        from one instance of dbcontext will cause data corruption,race conditions and unpredictable behavior,
+        the file will show error at the time of startup only. scoped services like need multiple instances for each http request, as that is safe for the thre
+  foreach (var entry in ChangeTracker.Entries())
+
+    if (entry.State == EntityState.Added)
+
+      entry.Property("CreatedAt").CurrentValue = DateTime.UtcNow;
+
+      15.onpush a change detection method, gets triggered once an input ref changd, or markforchecked or inside observable emits
+      , does not run all the time like default, it is efficient and runs only when triggered.
+
        6. func t takes input and gives an output, action return a void,
        predicate returns a boolean, func can be used for any type of method,
        func is ideal for methods that return a value,
@@ -164,10 +283,10 @@
         7.ng content with named slots,
         we can have multiple ng content tags with select attribute to specify
         which content goes where,
-        8.shadow property not there in .net c# class, but there in model mapped to a column in the database
+        8.hadow property -not there in .net c# class, but there in model mapped to a column in the database
         like createdby = datetime.utcnow, this is a shadow property,
          it is not defined in the class but it is mapped to a column in the database,
-         it is used to store metadata about the entity, such as who created it and when it was created,
+         it is used to store metadata about the entity, such as who created it and when it was created,s
          9.behaviour subject requires an initial value,
          it is a type of observable that always holds the latest value emitted to its
          subscribers,
@@ -178,8 +297,7 @@
          scoped is for per instance of a http request, transient is for every time we request a new instance,
         scoped service like dbcontext should never be singleton because mutiple api call communication request and response
         from one instance of dbcontext will cause data corruption,race conditions and unpredictable behavior,
-        the file will show error at the time of startup only. scoped services like need multiple instances for each http request, as that is safe for the thre
-
+        the file will show error at the time of startup only. scoped services like need multiple instances for each http request, as that is safe for the three
 
         1.cors => cross origin resource sharing , here we need to establish cors inorder to
         allow frontened and backend to communicate and share resources, as they have different ports,
@@ -202,3 +320,62 @@
         SOLID principle should be followed,
         controller should be for api calls, api controller, and they should be thin.
         service should be for business logic, and repository should be for database communication.
+
+
+        //1.component for compilation of your html which has structural directives etc ngfor, css templates and styles, more or less
+        like a event binding, parent child communication, event listener, button logics, route calling , navigation , change detection, lifecycle hooks
+        //services mainly for api calling , main communication between backend and front happens here
+        via the http client calls via httpclientmodules, it can have other imporratnt critical business logics as well
+        that you do not want to show in ui which may happen in the case of components that on rendering may leak info
+        in console.
+
+  2.controller is for establishing our endpoints, the apicontroller, http endpoints api calls,
+  the controller houses them , their logic resides in the services and access in the repos.
+  controllers should always be thin. all layers have their own responsibility. separation of concerns
+should be maintained.
+
+when apis are called via service it hits the controller then the response is fetched and response again
+goes out via controller
+
+3.Entity Frameworkcore- is an ORM , an object relational mapper,
+maintains comm between backend and database, migration schema handling, entity models creation
+has its own get fetch async repo patterns as well, connects the data between both , establishes
+relationship, database and data access both maintained by it
+
+4.purpose of a dto is crucial for  security and performance, entity models usually are large
+have all fields and properties and some even have onmodel builders and other logics that need
+not be exposed everytime during creation of new features.  like a login fetaure requires two fields
+email and password , not 10 other fields , in such cases it is important to return and create dtos
+an entity model may have many subsets like many dtos under it that serve different purposes
+for security scalability and reusability and maintainability . dtos are very important.
+
+5. create read update delete one of the main principles for a restful practice of apis,
+
+create or post a new entity, read or just get and fetch the data, update by put , make changes in existing model and save, delete for removing the existing content
+
+6.json web token , user logs in at front end, credentials get validated, if fine it hits backend
+goes to the authcontroller, where it gets verfied, a token is created, it is encrypted and signed by a security
+algorithm hmac sha 256 it has user claims in it, user id , roles etc. goes back to the front end gets
+stored in the local storage and gets used in subsequent login requests by the user, it gets appended in
+the auth bearer header by the http interceptor and stays valid for future logins till the access token hasnt expired
+after which the refresh token logic exists. web token that should preferably be stored in the http only cookies for
+security purposes
+
+7.so that it is remembered on subsequent logins for the same user profile so as long the access token is valid.
+
+8.401 - you are trying to login as some one else, user vs admin conflict, authguards activated
+403- forbidden trying to make changes as user when the requirement is for admin, reader vs writer profile
+500- internal server error - error on  the server side in backend, null exceptions invalid columns table doesnt exist etc
+
+9.DI in asp.net core reusing interfaces , services, scoped like dbcontext repos and services transient like some loggers and services
+ and singleton like config , avoid tightcoupling,
+promotes loose coupling, dependency inversion, segregation, no hardcoding, reusability increases, scalability and testability
+
+10. primary key unique identity in own table, foreign key , a key that comes from differnt table
+that holds references to data of the other table
+like users has id which is its pk, now this id becomes userid in an assets table , where this will indicate that a
+particular asset is assigned to this userid whose other details are there in the users table.
+
+
+
+ -->
