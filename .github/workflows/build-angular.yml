@@ -27,5 +27,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: angular-dist
-          path: ./dist/newassetnext/browser/
+          path: ./dist/newassetnexit/browser/
           retention-days: 1
