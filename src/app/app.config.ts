@@ -15,6 +15,8 @@ export const appConfig: ApplicationConfig = {
 };
 
 
+//issues - dashboard admin too big everything , colors not right, 
+
 // import { ApplicationConfig } from '@angular/core';
 // import { provideRouter } from '@angular/router';
 // import { appRoutes } from './app.routes';

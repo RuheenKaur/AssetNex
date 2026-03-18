@@ -1,56 +1,42 @@
-name: Deploy AssetNexIT to Azure App Service
+name: Build Angular
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  build_and_deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install Angular dependencies
-        working-directory: ./NewAssetNexIT
+      - name: Install dependencies
+        working-directory: ./NewAssetNexIT/NewAssetNexIT
         run: npm install
 
       - name: Build Angular
-        working-directory: ./NewAssetNexIT
+        working-directory: ./NewAssetNexIT/NewAssetNexIT
         run: npm run build -- --configuration production
 
-      - name: Copy Angular dist to wwwroot
-        run: |
-          mkdir -p ./AssetNexAPI/wwwroot
-          cp -r ./NewAssetNexIT/dist/newassetnext/browser/* ./AssetNexAPI/wwwroot/
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - name: Upload dist as artifact
+        uses: actions/upload-artifact@v4
         with:
-          dotnet-version: '9.0.x'
+          name: angular-dist
+          path: ./NewAssetNexIT/NewAssetNexIT/dist/newassetnext/browser/
+          retention-days: 1
+```
 
-      - name: Restore .NET dependencies
-        working-directory: ./AssetNexAPI
-        run: dotnet restore
+---
 
-      - name: Build .NET API
-        working-directory: ./AssetNexAPI
-        run: dotnet build --configuration Release
-
-      - name: Publish .NET API
-        working-directory: ./AssetNexAPI
-        run: dotnet publish --configuration Release --output ./publish
-
-      - name: Deploy to Azure App Service
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'AssetNexIT'
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: ./AssetNexAPI/publish
+## Every path updated:
+```
+Install    → ./NewAssetNexIT/NewAssetNexIT
+Build      → ./NewAssetNexIT/NewAssetNexIT
+Artifact   → ./NewAssetNexIT/NewAssetNexIT/dist/newassetnext/browser/

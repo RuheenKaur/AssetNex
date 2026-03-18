@@ -9,8 +9,7 @@ import { AssetRequestsPayload } from './assetrequestspayload';
 import { AdminAssetRequest } from './admin-assetrequests/adminassetrequest.model';
 @Injectable({ providedIn: 'root' })
 export class AssetRequestService {
-
-  constructor(private http: HttpClient) {}
+constructor(private http: HttpClient) {}
 
 createRequest(payload: AssetRequestsPayload) {
   return this.http.post(

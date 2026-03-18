@@ -15,12 +15,10 @@ import { AssetHistoryService } from './asset-history.service';
 })
 export class AssetHistory implements OnInit {
 
-  // Table data
+
   history: AssetsHistoryModel[] = [];
   filteredHistory: AssetsHistoryModel[] = [];
   selectedEventType: string = '';
-
-  // Drawer state
   drawerOpen: boolean = false;
   selectedAssetTag: string = '';
   assetTimeline: AssetsHistoryModel[] = [];
@@ -41,7 +39,7 @@ export class AssetHistory implements OnInit {
     });
   }
 
-  // Filter table by event type
+
   filterByEvent(): void {
     if (!this.selectedEventType) {
       this.filteredHistory = this.history;
@@ -52,11 +50,11 @@ export class AssetHistory implements OnInit {
     }
   }
 
-  // Open drawer — load all events for clicked asset
+
   openDrawer(item: AssetsHistoryModel): void {
     this.selectedAssetTag = item.asset?.assetTag || `Asset #${item.assetId}`;
 
-    // Filter all history for this specific asset, sorted oldest first
+
     this.assetTimeline = this.history
       .filter(h => h.assetId === item.assetId)
       .sort((a, b) =>
@@ -66,14 +64,13 @@ export class AssetHistory implements OnInit {
     this.drawerOpen = true;
   }
 
-  // Close drawer
+
   closeDrawer(): void {
     this.drawerOpen = false;
     this.selectedAssetTag = '';
     this.assetTimeline = [];
   }
 
-  // Count events of a specific type for current asset
   getEventCount(eventType: string): number {
     return this.assetTimeline.filter(e => e.eventType === eventType).length;
   }
