@@ -31,12 +31,7 @@ jobs:
           name: angular-dist
           path: ./NewAssetNexIT/NewAssetNexIT/dist/newassetnext/browser/
           retention-days: 1
-```
 
----
-
-## Every path updated:
-```
 Install    → ./NewAssetNexIT/NewAssetNexIT
 Build      → ./NewAssetNexIT/NewAssetNexIT
 Artifact   → ./NewAssetNexIT/NewAssetNexIT/dist/newassetnext/browser/
