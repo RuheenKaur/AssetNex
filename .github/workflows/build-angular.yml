@@ -28,4 +28,4 @@ jobs:
         with:
           name: angular-dist
           path: ./dist/newassetnexit/browser/
-          retention-days: 1
+          retention-days: 90
