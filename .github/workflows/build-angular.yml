@@ -3,6 +3,8 @@ name: Build Angular
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+
 
 jobs:
   build:
