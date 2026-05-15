@@ -1,121 +1,224 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { AssetsMasterService } from './assets-master.service';
 import { SelectModule } from 'primeng/select';
-import { TableModule } from 'primeng/table';
+import { TableModule, Table } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Table } from 'primeng/table';
 import { UserService } from '../user.service';
-import { AssetMaster } from './asset-master.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-asset-master',
-  imports: [SelectModule, FormsModule, ReactiveFormsModule, CommonModule, TableModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule,
+    TableModule, SelectModule, DialogModule, ButtonModule],
   templateUrl: './assets-master.component.html',
   styleUrls: ['./assets-master.component.css']
 })
 export class AssetsMasterComponent implements OnInit {
+
   @ViewChild('dt') dt!: Table;
 
-  assets: AssetMaster[] = [];
-  selectedAsset: any = null;
-  showAssignModal = false;
+  assets: any[] = [];
   users: any[] = [];
-  totalRecords = 0;
-  search = '';
+  selectedAsset: any = null;
   selectedUserId: number | null = null;
-  showEditModal = false;
-  selectedStatus: number | null = null;
-  loading = false;
-  pageNumber = 1;
-  pageSize = 10;
-  totalCount = 0;
 
+  showCreateModal = false;
+  showEditModal = false;
+  showAssignModal = false;
+
+  newAsset: any = { assetTag: '', assetType: '', brand: '', model: '', serialNumber: '', statusId: 1 };
+  newAssetErrors: any = {};
+
+  createLoading = false;
+  createError = '';
+  createSuccess = false;
+  editLoading = false;
+  editErrors: any = {};
+  editError = '';
+  assignLoading = false;
+  assignError = '';
+  unassignLoading = false;
+  loading = false;
+  search = '';
+  totalRecords = 0;
+  pageSize = 15;
   private searchTimeout: any;
 
   statusList = [
-    { id: 1, name: 'Available' },
-    { id: 2, name: 'Assigned' },
-    { id: 3, name: 'In Repair' },
-    { id: 4, name: 'Resolved' },
-    { id: 5, name: 'Closed' }
-  ];
+  { id: 6,  name: 'InActive' },
+  { id: 7,  name: 'In Use' },
+  { id: 8,  name: 'Requested' },
+  { id: 9,  name: 'Assigned' },
+  { id: 10, name: 'Active' },
+];
 
   constructor(
     private assetService: AssetsMasterService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.loadAssets({ first: 0, rows: 10 });
+    this.loadAssets({ first: 0, rows: this.pageSize });
     this.loadUsers();
   }
 
 
-  onSearchChange() {
-    if (this.searchTimeout) {
-      clearTimeout(this.searchTimeout);
+  private isGibberish(value: string): boolean {
+    if (!value?.trim()) return false;
+    if (/^(.)\1{3,}$/.test(value.trim())) return true;
+    if (/^[^a-zA-Z0-9\s\-]+$/.test(value.trim())) return true;
+    return false;
+  }
+
+  private validateAssetForm(asset: any): any {
+    const errors: any = {};
+    const tag = asset.assetTag?.trim();
+    const brand = asset.brand?.trim();
+    const model = asset.model?.trim();
+
+    if (!tag) {
+      errors.assetTag = 'Asset Tag is required.';
+    } else if (tag.length < 3) {
+      errors.assetTag = 'Asset Tag must be at least 3 characters.';
+    } else if (this.isGibberish(tag)) {
+      errors.assetTag = 'Please enter a valid Asset Tag.';
     }
+
+    if (!asset.assetType) {
+      errors.assetType = 'Asset Type is required.';
+    }
+
+    if (!brand) {
+      errors.brand = 'Brand is required.';
+    } else if (brand.length < 2) {
+      errors.brand = 'Brand must be at least 2 characters.';
+    } else if (this.isGibberish(brand)) {
+      errors.brand = 'Please enter a valid brand name.';
+    }
+
+    if (model && model.length < 2) {
+      errors.model = 'Model must be at least 2 characters if provided.';
+    } else if (model && this.isGibberish(model)) {
+      errors.model = 'Please enter a valid model name.';
+    }
+
+    return errors;
+  }
+
+
+  onSearchChange() {
+    clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
-      console.log('Searching for:', this.search);
       this.loadAssets({ first: 0, rows: this.pageSize });
-    }, 500);
+    }, 400);
   }
 
   refreshAssets() {
     this.search = '';
-    this.selectedStatus = null;
     this.loadAssets({ first: 0, rows: this.pageSize });
   }
 
   loadUsers() {
     this.userService.getUser().subscribe({
-      next: res => {
-        this.users = res;
-        console.log('Users loaded:', this.users.length);
+      next: (res) => { this.users = res;
+           console.log('Users loaded for dropdown:', res);
+
       },
-      error: err => {
-        console.error('Users load failed', err);
-        alert('Failed to load users');
-      }
+      error: (err) => console.error('Users failed', err)
     });
   }
 
   loadAssets(event: any) {
     this.loading = true;
-    const page = event ? Math.floor(event.first / event.rows) + 1 : this.pageNumber;
+    const page = event ? Math.floor(event.first / event.rows) + 1 : 1;
     const pageSize = event?.rows || this.pageSize;
-    console.log('Loading assets - Page:', page, 'Size:', pageSize, 'Search:', this.search);
+
     this.assetService.getAssetsPaged(page, pageSize, this.search).subscribe({
       next: (res) => {
-        console.log('API Response:', res);
-        this.assets = res.data;
-        this.totalRecords = res.pagination.totalCount;
-        this.totalCount = res.pagination.totalCount;
-        this.loading = false;
-        console.log('Assets loaded:', this.assets.length);
+        setTimeout(() => {
+          this.assets = res.data;
+          this.totalRecords = res.pagination.totalCount;
+          this.loading = false;
+          this.cdr.detectChanges();
+        });
       },
       error: (err) => {
         console.error('Asset loading failed', err);
         this.loading = false;
-        alert('Failed to load assets');
       }
     });
   }
 
-  filterByStatus() {
-    if (!this.selectedStatus) {
-      this.loadAssets({ first: 0, rows: this.pageSize });
-      return;
-    }
-    this.assets = this.assets.filter(a => a.statusId === this.selectedStatus);
+  openCreateModal() {
+  this.newAsset = { assetTag: '', assetType: '', brand: '', model: '', serialNumber: '', statusId: 1 };
+  this.newAssetErrors = {};
+  this.createError = '';
+  this.createSuccess = false;
+  setTimeout(() => {
+    this.showCreateModal = true;
+    this.cdr.detectChanges();
+  });
+}
+
+  closeCreateModal() {
+    this.showCreateModal = false;
   }
 
-  openEditModal(asset:any)
-  {
-    this.selectedAsset = {...asset};
+  saveNewAsset() {
+  console.log('newAsset:', this.newAsset);
+    this.newAssetErrors = this.validateAssetForm(this.newAsset);
+      console.log('validation errors:', this.newAssetErrors);
+    if (Object.keys(this.newAssetErrors).length > 0) return;
+
+    this.createLoading = true;
+    this.createError = '';
+
+    const payload = {
+      assetTag: this.newAsset.assetTag.trim(),
+      assetType: this.newAsset.assetType,
+      brand: this.newAsset.brand.trim(),
+      model: this.newAsset.model?.trim() || '',
+      serialNumber: this.newAsset.serialNumber?.trim() || '',
+      statusId: this.newAsset.statusId || 1,
+      raM_GB: '',
+      storage_GB: '',
+      purchaseCost: 0,
+      warrantyDate: null,
+      purchaseDate: new Date().toISOString(),
+      departmentId: 1
+    };
+
+    this.assetService.createAsset(payload).subscribe({
+      next: () => {
+        this.createLoading = false;
+        this.createSuccess = true;
+        setTimeout(() => {
+          this.closeCreateModal();
+          this.loadAssets({ first: 0, rows: this.pageSize });
+        }, 800);
+      },
+      error: (err) => {
+        this.createLoading = false;
+        setTimeout(() => {
+          this.createError = err.error?.message || err.error || 'Failed to create asset.';
+          this.cdr.detectChanges();
+        });
+      }
+    });
+  }
+
+
+  openEditModal(asset: any) {
+    this.selectedAsset = { ...asset };
+    this.editErrors = {};
+    this.editError = '';
     this.showEditModal = true;
-    console.log('Editing asset:', this.selectedAsset);
   }
 
   closeEditModal() {
@@ -123,41 +226,57 @@ export class AssetsMasterComponent implements OnInit {
     this.selectedAsset = null;
   }
 
-
-
   saveAssetEdits() {
-  if (!this.selectedAsset) return;
-  this.assetService.updateAsset(this.selectedAsset).subscribe({
-    next: () => {
-      this.closeEditModal();
-      this.loadAssets({ first: 0, rows: this.pageSize });
-    },
-    error: (err) => console.error('Update failed:', err)
-  });
-}
+    if (!this.selectedAsset) return;
+    this.editErrors = this.validateAssetForm(this.selectedAsset);
+    if (Object.keys(this.editErrors).length > 0) return;
 
-  updateStatus(asset: any) {
-    console.log('Updating status for asset:', asset.assetId, 'to status:', asset.statusId);
+    this.editLoading = true;
+    this.editError = '';
 
-    this.assetService.updateAssetStatus(asset.assetId, asset.statusId).subscribe({
-      next: (response) => {
-        console.log('Status updated:', response);
-        alert('Status updated successfully');
+    this.assetService.updateAsset(this.selectedAsset).subscribe({
+      next: () => {
+        this.editLoading = false;
+        this.closeEditModal();
         this.loadAssets({ first: 0, rows: this.pageSize });
       },
       error: (err) => {
-        console.error('Status update failed:', err);
-        alert('Status update failed: ' + (err.error?.message || 'Unknown error'));
-
-        this.loadAssets({ first: 0, rows: this.pageSize });
+  this.createLoading = false;
+  setTimeout(() => {
+    let msg = 'Failed to create asset.';
+    try {
+      if (typeof err.error === 'string') {
+        msg = err.error;
+      } else if (err.error?.errors) {
+        msg = Object.entries(err.error.errors)
+          .map(([field, msgs]: [string, any]) => `${field}: ${msgs.join(', ')}`)
+          .join(' | ');
+      } else if (err.error?.title) {
+        msg = err.error.title;
+      } else if (err.error?.message) {
+        msg = err.error.message;
       }
+    } catch(e) {
+      msg = 'Failed to create asset.';
+    }
+    this.createError = msg;
+    this.cdr.detectChanges();
+  });
+}
     });
   }
 
+  updateStatus(asset: any) {
+    this.assetService.updateAssetStatusOnly(asset.id, asset.statusId).subscribe({
+      next: () => console.log('Status updated'),
+      error: (err) => console.error('Status update failed', err)
+    });
+  }
   openAssignModal(asset: any) {
     this.selectedAsset = asset;
+    this.selectedUserId = null;
+    this.assignError = '';
     this.showAssignModal = true;
-    console.log('Assigning asset:', this.selectedAsset);
   }
 
   closeAssignModal() {
@@ -166,19 +285,60 @@ export class AssetsMasterComponent implements OnInit {
     this.selectedUserId = null;
   }
 
-assignAsset() {
-  if (!this.selectedUserId || !this.selectedAsset) return;
-  const loggedInUserId = Number(localStorage.getItem('userId'));
-  this.assetService.assignAsset(
-    this.selectedAsset.assetId,
-    this.selectedUserId,
-    loggedInUserId
-  ).subscribe({
-    next: () => {
-      this.closeAssignModal();
-      this.loadAssets({ first: 0, rows: this.pageSize });
-    },
-    error: (err) => console.error('Assignment failed:', err)
-  });
-}
+  assignAsset() {
+
+  console.log('Selected asset:', this.selectedAsset);
+  console.log('Asset ID being sent:', this.selectedAsset?.id);
+    if (!this.selectedUserId || !this.selectedAsset) return;
+    this.assignLoading = true;
+    this.assignError = '';
+
+    const action = this.selectedAsset.assignedTo
+      ? this.assetService.reassignAsset(this.selectedAsset.id, this.selectedUserId)
+      : this.assetService.assignAsset(
+          this.selectedAsset.id,
+          this.selectedUserId,
+          JSON.parse(localStorage.getItem('user') || '{}').numericId
+        );
+
+    action.subscribe({
+      next: () => {
+        this.assignLoading = false;
+        this.closeAssignModal();
+        this.loadAssets({ first: 0, rows: this.pageSize });
+      },
+      error: (err) => {
+        this.assignLoading = false;
+        setTimeout(() => {
+          this.assignError = err.error?.message || 'Assignment failed.';
+          this.cdr.detectChanges();
+        });
+      }
+    });
+  }
+
+  unassignAsset() {
+    if (!this.selectedAsset) return;
+    this.unassignLoading = true;
+    this.assignError = '';
+
+    this.assetService.unassignAsset(this.selectedAsset.id).subscribe({
+      next: () => {
+        this.unassignLoading = false;
+        this.closeAssignModal();
+        this.loadAssets({ first: 0, rows: this.pageSize });
+      },
+      error: (err) => {
+        this.unassignLoading = false;
+        setTimeout(() => {
+          this.assignError = err.error?.message || 'Unassign failed.';
+          this.cdr.detectChanges();
+        });
+      }
+    });
+  }
+
+  goBack() {
+    this.router.navigateByUrl('/admin/dashboard');
+  }
 }

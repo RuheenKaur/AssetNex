@@ -1,177 +1,145 @@
+<div class="page-container">
+
   <div class="page-header">
     <div class="page-title-group">
-
       <h3>Asset Assigned</h3>
-      <span class="page-subtitle">Manage asset tracking and details</span>
+      <span class="page-subtitle">Manage assigned and returned assets</span>
     </div>
-
-      <div class="top-actions">
-        <span class="p-input-icon-left">
-          <div class="page-header">
-      </div>
-
-<div class="buttonrow">
-    <button routerLink="admin/dashboard" (click)="goBack()">← Back To Dash</button>
+    <button class="btn-dark" (click)="goToDashboard()">
+      ← Back to Dashboard
+    </button>
   </div>
 
-<div class="container">
-  <p-table
-    #dt
-    [value]="assets"
-    class="p-datatable-lg"
-    [paginator]="true"
-    [rows]="10"
-    [responsiveLayout]="'scroll'"
-    [globalFilterFields]="['assetAssigned','userId']">
-    <ng-template pTemplate="caption">
-      <span class="p-input-icon-left">
+  <div class="table-card">
+    <div class="table-toolbar">
+      <div class="search-bar">
         <i class="pi pi-search"></i>
         <input
-          pInputText
           type="text"
-          (input)="dt.filterGlobal($event.target.value, 'contains')"
-          placeholder="Search asset assignments..." />
-      </span>
-    </ng-template>
-
-    <ng-template pTemplate="header">
-      <tr>
-        <th pSortableColumn="assetAssigned">
-          Asset Assigned
-          <p-sortIcon field="assetAssigned"></p-sortIcon>
-        </th>
-
-        <th pSortableColumn="assignedOn">
-          Assigned Date
-          <p-sortIcon field="assignedOn"></p-sortIcon>
-        </th>
-
-        <th pSortableColumn="returnedOn">
-          Returned Date
-          <p-sortIcon field="returnedOn"></p-sortIcon>
-        </th>
-
-        <th class="text-center" style="min-width:160px">
-          Actions
-        </th>
-      </tr>
-
-    </ng-template>
-
-    <!-- Body -->
-    <ng-template pTemplate="body" let-asset>
-      <tr>
-        <td>{{ asset.assetAssigned }}</td>
-        <td>{{ asset.assignedOn | date:'short' }}</td>
-        <td>
-          {{ asset.returnedOn ? (asset.returnedOn | date:'short') : '—' }}
-        </td>
-
-        <td class="text-center">
-          <div class="action-icons">
-            <i
-              class="pi pi-pencil action-icon"
-              title="Edit Assignment"
-              (click)="openAssignmentModal(asset)">
-            </i>
-          </div>
-        </td>
-      </tr>
-    </ng-template>
-
-
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="4" class="text-center">
-          No asset assignments found
-        </td>
-      </tr>
-    </ng-template>
-
-  </p-table>
-</div>
-
-
-<div class="modal-overlay"
-     *ngIf="selectedAssignment"
-     (click)="closeAssignmentModal()">
-</div>
-
-  <div class="modal-container" *ngIf="selectedAssignment as assignment">
-  <div class="modal-header">
-    <div>
-      <h3>Edit Asset Assignment</h3>
-      <span class="subtitle">
-        {{ selectedAssignment.assetAssigned }}
-      </span>
+          placeholder="Search asset assignments..."
+          (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
+      </div>
+      <button class="btn-refresh" (click)="refreshAssignments()">
+        <i class="pi pi-refresh"></i>
+      </button>
     </div>
-    <button class="close-btn" (click)="closeAssignmentModal()">×</button>
+
+    <p-table
+      #dt
+      [value]="assets"
+      [paginator]="true"
+      [rows]="10"
+      responsiveLayout="scroll"
+      styleClass="app-table"
+      [globalFilterFields]="['assetAssigned','userId']">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="assetAssigned">Asset Assigned <p-sortIcon field="assetAssigned"></p-sortIcon></th>
+          <th pSortableColumn="assignedOn">Assigned Date <p-sortIcon field="assignedOn"></p-sortIcon></th>
+          <th pSortableColumn="returnedOn">Returned Date <p-sortIcon field="returnedOn"></p-sortIcon></th>
+          <th>Status</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-asset>
+        <tr>
+          <td>{{ asset.assetAssigned }}</td>
+          <td>{{ asset.assignedOn | date:'MMM d, y' }}</td>
+          <td>{{ asset.returnedOn ? (asset.returnedOn | date:'MMM d, y') : '—' }}</td>
+          <td>
+            <span class="badge"
+              [class.assigned]="!asset.returnedOn"
+              [class.returned]="asset.returnedOn">
+              {{ asset.returnedOn ? 'Returned' : 'Active' }}
+            </span>
+          </td>
+          <td class="text-center">
+            <div class="action-icons">
+              <button
+                type="button"
+                class="action-icon edit"
+                title="Edit Assignment"
+                (click)="openAssignmentModal(asset)">
+                <i class="pi pi-pencil"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="empty-text">No asset assignments found</td>
+        </tr>
+      </ng-template>
+
+    </p-table>
   </div>
+</div>
 
-  <div class="modal-body">
+<!-- ASSIGNMENT MODAL — converted to p-dialog -->
+<p-dialog
+  header="Edit Asset Assignment"
+  [(visible)]="showModal"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '480px' }"
+  appendTo="body">
 
-    <div class="info-grid">
-      <div>
-        <label>Assignment ID</label>
-        <span>{{ selectedAssignment.id }}</span>
-      </div>
+  <div *ngIf="selectedAssignment" class="dialog-body">
 
-      <div>
-        <label>Assigned On</label>
-        <span>{{ selectedAssignment.assignedOn | date:'medium' }}</span>
-      </div>
-
-      <div>
-        <label>Status</label>
+    <div class="detail-row">
+      <span class="detail-label">Asset</span>
+      <span class="detail-value">{{ selectedAssignment.assetAssigned }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Assignment ID</span>
+      <span class="detail-value">{{ selectedAssignment.id }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Assigned On</span>
+      <span class="detail-value">{{ selectedAssignment.assignedOn | date:'MMM d, y' }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Status</span>
+      <span class="detail-value">
         <span class="badge"
-              [ngClass]="selectedAssignment.returnedOn ? 'returned' : 'assigned'">
-              {{ selectedAssignment.returnedOn ? 'Returned' : 'Active' }}
+          [class.assigned]="!selectedAssignment.returnedOn"
+          [class.returned]="selectedAssignment.returnedOn">
+          {{ selectedAssignment.returnedOn ? 'Returned' : 'Active' }}
         </span>
-      </div>
-
+      </span>
     </div>
 
-    <div class="form-group">
-      <label>User</label>
-
-<p-select
-  [options]="users"
-  optionLabel="name"
-  optionValue="id"
-  [(ngModel)]="selectedUserId"
-  [ngModelOptions]="{standalone: true }"
-  placeholder="Select user">
-</p-select>
+    <div class="field" style="margin-top: 18px;">
+      <label>Select User</label>
+      <select class="status-dropdown" [(ngModel)]="selectedUserId">
+        <option [ngValue]="null" disabled>Select user</option>
+        <option *ngFor="let u of users" [ngValue]="u.id">{{ u.name }}</option>
+      </select>
     </div>
 
-
+    <div class="dialog-actions">
+      <button class="btn-cancel" (click)="closeAssignmentModal()">Cancel</button>
+      <button
+        *ngIf="!selectedAssignment.returnedOn"
+        class="btn-warning"
+        [disabled]="!selectedUserId"
+        (click)="confirmReassign()">
+        Confirm Reassign
+      </button>
+      <button
+        *ngIf="selectedAssignment.returnedOn"
+        class="btn-success"
+        [disabled]="!selectedUserId"
+        (click)="assignAsset()">
+        Confirm Assign
+      </button>
     </div>
-<div class="modal-footer" *ngIf="selectedAssignment">
 
-
-  <button
-    *ngIf="!selectedAssignment.returnedOn"
-    class="btn btn-warning"
-    (click)="confirmReassign()"
-    [disabled]="!selectedUserId">
-    Confirm Reassign
-  </button>
-
-
-  <button
-    *ngIf="selectedAssignment.returnedOn"
-    class="btn btn-success"
-    (click)="assignAsset()"
-    [disabled]="!selectedUserId">
-    Confirm Assign
-  </button>
-
-
-  <button
-    class="btn btn-secondary"
-    (click)="closeAssignmentModal()">
-    Cancel
-  </button>
-
-</div>
-</div>
+  </div>
+</p-dialog>

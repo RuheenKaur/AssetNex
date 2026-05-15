@@ -1,0 +1,93 @@
+<div class="navbar">
+  <div class="logo-wrapper">
+    <h1 class="logo" (click)="goTo('/landing')">AssetNex<span class="highlight">IT</span></h1>
+    <p class="below">TRACK | MANAGE | DISPOSE</p>
+  </div>
+  <ul class="nav-links">
+    <li><a (click)="goTo('/explore')"><span>EXPLORE</span></a></li>
+    <li><a (click)="goTo('/assets/support')"><span>SUPPORT</span></a></li>
+    <li><a (click)="goTo('/about')"><span>ABOUT</span></a></li>
+  </ul>
+  <button class="login-btn" (click)="goTo('/login/auth')">Sign In</button>
+</div>
+
+<div class="about-wrapper">
+
+  <div class="about-hero">
+    <span class="badge">About AssetNex<span class="highlight">IT</span></span>
+    <h1>Built to solve a <span class="highlight">real problem</span></h1>
+    <p>AssetNexIT is a full-stack IT asset management system developed as part of a structured software engineering training programme - designed to reflect real-world enterprise practices from day one.</p>
+  </div>
+
+  <div class="section two-col">
+    <div class="section-text">
+      <h2>What is AssetNexIT?</h2>
+      <p>AssetNexIT is a centralized platform for managing IT assets across an organization. It eliminates manual tracking and replaces spreadsheets and emails with a structured, role-based digital system.</p>
+      <p style="margin-top: 14px;">Admins have full control over assets, users, assignments, and support tickets. Users can view their assigned equipment and raise support requests - all from a clean, responsive interface.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-row"><span class="info-label">Project Type</span><span class="info-value">Full Stack Web Application</span></div>
+      <div class="info-row"><span class="info-label">Backend</span><span class="info-value">.NET 8 Web API</span></div>
+      <div class="info-row"><span class="info-label">Frontend</span><span class="info-value">Angular 18</span></div>
+      <div class="info-row"><span class="info-label">Database</span><span class="info-value">SQL Server</span></div>
+      <div class="info-row"><span class="info-label">Cloud</span><span class="info-value">Microsoft Azure</span></div>
+      <div class="info-row"><span class="info-label">CI/CD</span><span class="info-value">GitHub Actions</span></div>
+      <div class="info-row"><span class="info-label">Auth</span><span class="info-value">JWT + Role Based Access</span></div>
+    </div>
+  </div>
+
+  <div class="section bg-soft">
+    <h2 class="section-title">Architecture at a Glance</h2>
+    <p class="section-sub">Every layer built with industry-standard practices.</p>
+    <div class="arch-grid">
+      <div class="arch-card"><div class="arch-num">01</div><h3>Angular Frontend</h3><p>Standalone components, reactive forms, HTTP interceptors for JWT, route guards for role protection, and paginated tables with real-time search and sort.</p></div>
+      <div class="arch-card"><div class="arch-num">02</div><h3>.NET 8 Web API</h3><p>Layered architecture - Controllers, Services, Repositories. Async/await throughout, global exception handling, API versioning, and Swagger with Bearer auth.</p></div>
+      <div class="arch-card"><div class="arch-num">03</div><h3>Azure Cloud</h3><p>App Service hosts the API. Blob Storage serves Angular. Key Vault stores all secrets. Managed Identity handles authentication — no credentials in code anywhere.</p></div>
+      <div class="arch-card"><div class="arch-num">04</div><h3>CI/CD Pipeline</h3><p>GitHub Actions across two repos. Angular builds and uploads artifacts. API pipeline downloads and deploys to Azure — fully automated on every push to main.</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Built on solid principles</h2>
+    <p class="section-sub">Every decision was made with reasoning - not just implementation.</p>
+    <div class="principles-grid">
+      <div class="principle"><span class="principle-icon"></span><h3>Security First</h3><p>JWT tokens, role-based authorization, Key Vault secret management, and passwordless SQL via Managed Identity.</p></div>
+      <div class="principle"><span class="principle-icon"></span><h3>SOLID Architecture</h3><p>Repository pattern, dependency injection, interface segregation - each layer has a single responsibility.</p></div>
+      <div class="principle"><span class="principle-icon"></span><h3>Performance Aware</h3><p>AsNoTracking on read queries, paginated APIs, debounced search, and lazy loading on Angular routes.</p></div>
+    </div>
+  </div>
+
+  <div class="section bg-orange">
+    <div class="developer-card">
+      <div class="dev-avatar">RK</div>
+      <div class="dev-info">
+        <h2>Developed by Ruheen Kaur</h2>
+        <p>Trainee Software Engineer - building AssetNexIT as part of a structured full-stack development training programme, under the mentorship of Kavitha Ma'am.</p>
+        <div class="dev-tags">
+          <span class="dev-tag">.NET 8</span>
+          <span class="dev-tag">Angular 18</span>
+          <span class="dev-tag">Azure</span>
+          <span class="dev-tag">SQL Server</span>
+          <span class="dev-tag">GitHub Actions</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section cta-section">
+    <h2>Want to see it in action?</h2>
+    <p>Sign in to explore the full Admin and User dashboards.</p>
+    <button class="cta-btn" (click)="goTo('/login/auth')">Sign In to Dashboard →</button>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="bottom">
+    <span>© 2025 AssetNexIT</span>
+    <span>·</span>
+    <span>Built with .NET 8 and Angular 18</span>
+    <span>·</span>
+    <span>Deployed on Azure</span>
+  </div>
+</div>

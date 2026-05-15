@@ -3,14 +3,14 @@
         <li>
             <div class="align" (click)="getAllAssetMaster()" routerLink="/assetmaster">
                 <i class="pi pi-desktop"></i>
-                <a>Asset Master</a>
+                <a>Assets</a>
             </div>
         </li>
 
         <li>
             <div class="align" (click)="getAllUsers()" routerLink="/users">
                 <i class="pi pi-users"></i>
-                <a>Users Master</a>
+                <a>Users</a>
             </div>
         </li>
 
@@ -20,20 +20,21 @@
                 <a>Support Tickets</a>
             </div>
         </li>
-
+<!--
         <li>
-            <div class="align" (click)="getAllAssignedAssets()" routerLink="/assetassign">
+            <div class="align" (click)="getAllAssignedAssets()" routerLink="/assetassign" [style.pointerEvents]="isDisabled ? 'none' : 'auto'">
                 <i class="pi pi-info"></i>
                 <a>Assigned Assets</a>
-            </div>
-        </li>
 
-        <li>
-            <div class="align" (click)="getAllAssetSoftware()" routerLink="/assetsoftware">
+            </div>
+        </li> -->
+
+        <!-- <li>
+            <div class="align" (click)="getAllAssetSoftware()" routerLink="/assetsoftware" [style.pointerEvents]="isDisabled ? 'none' : 'auto'">
                 <i class="pi pi-code"></i>
                 <a>Asset Software</a>
             </div>
-        </li>
+        </li> -->
 
         <li>
             <div class="align" (click)="getAllAssetsRequests()" routerLink="/requests">
@@ -49,22 +50,23 @@
             </div>
         </li>
 
-        <li>
-            <div class="align" routerLink="/departments">
+        <!-- <li>
+            <div class="align" routerLink="/departments" [style.pointerEvents]="isDisabled ? 'none' : 'auto'">
                 <i class="pi pi-address-book"></i>
                 <a>Departments</a>
             </div>
         </li>
 
+
         <li>
-            <div class="align" routerLink="/roles">
+            <div class="align" routerLink="/roles" [style.pointerEvents]="isDisabled ? 'none' : 'auto'">
                 <i class="pi pi-user"></i>
                 <a>Roles</a>
             </div>
-        </li>
+        </li> -->
     </ul>
 
-    <button class="sidebar-toggle-btn" (click)="toggleSidebar()">
+    <!-- <button class="sidebar-toggle-btn" (click)="toggleSidebar()">
         {{ isSidebarCollapsed ? '►' : '☰' }}
-    </button>
+    </button> -->
 </div>

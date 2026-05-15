@@ -1,109 +1,46 @@
-<div class="app-layout">
+<div class="page-container">
 
-    <div class="main-content">
   <div class="page-header">
     <div class="page-title-group">
-
-      <h3>Asset Master</h3>
+      <h3>Assets</h3>
       <span class="page-subtitle">Manage asset tracking and details</span>
     </div>
-
-      <div class="top-actions">
-        <span class="p-input-icon-left">
-          <div class="page-header">
-      </div>
-
-<div class="top-actions">
-</div>
-      <i class="pi pi-search"></i>
-       <input pInputText class="search"
-       type="text"
-       placeholder="Search assets..."
-       [(ngModel)]="search"
-      (input)="onSearchChange()" />
-  </span>
-  <button class="btn btn-refresh" (click)="refreshAssets()">⟳</button>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button class="btn-add" (click)="openCreateModal()">
+        <i class="pi pi-plus"></i> Add Asset
+      </button>
+      <button class="btn-refresh" (click)="refreshAssets()">
+        <i class="pi pi-refresh"></i>
+      </button>
+      <button class="btn-dark" (click)="goBack()">
+        ← Back to Dashboard
+      </button>
+    </div>
   </div>
-<p-table
-  #dt
-  [value]="assets"
-  class="p-datatable-lg"
-  [lazy]="true"
-  [paginator]="true"
-  [rows]="15"
-  [totalRecords]="totalRecords"
-  [loading]="loading"
-  (onLazyLoad)="loadAssets($event)"
-  class="p-datatable-lg"
-  [responsiveLayout]="'scroll'"
->
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Tag</th>
-      <th>Type</th>
-      <th>Brand</th>
-      <th>Model</th>
-      <th>Status</th>
-      <th class="text-center">Actions</th>
-    </tr>
-  </ng-template>
 
+  <div class="table-card">
+    <div class="table-toolbar">
+      <div class="search-bar">
+        <i class="pi pi-search"></i>
+        <input
+          type="text"
+          placeholder="Search assets..."
+          [(ngModel)]="search"
+          (input)="onSearchChange()" />
+      </div>
+    </div>
 
-  <ng-template pTemplate="body" let-asset>
-    <tr>
-
-      <td>{{ asset.assetTag }}</td>
-      <td>{{ asset.assetType }}</td>
-      <td>{{ asset.brand }}</td>
-      <td>{{ asset.model }}</td>
-      <td>
-        <select class="status-select" [(ngModel)]="asset.statusId" (change)="updateStatus(asset)"></select>
-        <select
-          [(ngModel)]="asset.statusId"
-          (change)="updateStatus(asset)"
-        >
-          <option *ngFor="let s of statusList"
-                  [value]="s.id">
-            {{ s.name }}
-          </option>
-        </select>
-      </td>
-
-
-      <td class="text-center">
-        <div class="icons">
-          <i class="pi pi-pencil"
-             title="Edit Asset"
-             (click)="openEditModal(asset)">
-          </i>
-
-          <i class="pi pi-user-plus"
-             title="Assign Asset"
-             (click)="openAssignModal(asset)">
-          </i>
-        </div>
-      </td>
-    </tr>
-  </ng-template>
-
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td colspan="6" class="text-center">
-        No assets found
-      </td>
-    </tr>
-  </ng-template>
-
-</p-table>
-
-    <!-- <p-table
+    <p-table
       #dt
       [value]="assets"
+      [lazy]="true"
       [paginator]="true"
-      class="p-datatable-lg"
-      [rows]="15"
-      [responsiveLayout]="'scroll'"
-      [globalFilterFields]="['assetTag','assetType','brand','model']">
+      [rows]="pageSize"
+      [totalRecords]="totalRecords"
+      [loading]="loading"
+      (onLazyLoad)="loadAssets($event)"
+      responsiveLayout="scroll"
+      styleClass="app-table">
 
       <ng-template pTemplate="header">
         <tr>
@@ -111,6 +48,9 @@
           <th>Type</th>
           <th>Brand</th>
           <th>Model</th>
+          <th>Assigned To</th>
+          <th>Created</th>
+
           <th>Status</th>
           <th class="text-center">Actions</th>
         </tr>
@@ -118,104 +58,273 @@
 
       <ng-template pTemplate="body" let-asset>
         <tr>
-
-          <td>{{asset.assetTag}}</td>
-          <td>{{asset.assetType}}</td>
-          <td>{{asset.brand}}</td>
-          <td>{{asset.model}}</td>
+          <td>{{ asset.assetTag }}</td>
+          <td>{{ asset.assetType }}</td>
+          <td>{{ asset.brand }}</td>
+          <td>{{ asset.model || '—' }}</td>
           <td>
-            <select [(ngModel)]="asset.statusId"
-                    (change)="updateStatus(asset)">
-              <option *ngFor="let s of statusList"
-                      [value]="s.id">
-                {{s.name}}
-              </option>
-            </select>
+            <span *ngIf="asset.assignedTo" class="assigned-chip">
+              {{ asset.assignedTo }}
+            </span>
+            <span *ngIf="!asset.assignedTo" class="unassigned">—</span>
           </td>
-
+          <td>{{ asset.createdOn | date:'MMM d, y' }}</td>
           <td>
-            <div class="icons">
-              <i class="pi pi-pencil"
-                 (click)="openEditModal(asset)"></i>
-
-              <i class="pi pi-user-plus"
-                 (click)="openAssignModal(asset)"></i>
+            <span class="status-chip"
+              [ngClass]="'status-' + (asset.statusName?.toLowerCase()?.replace(' ', '-') || 'available')">
+              {{ asset.statusName || '-' }}
+            </span>
+          </td>
+          <td class="text-center">
+            <div class="action-icons">
+              <button type="button" class="action-icon edit"
+                title="Edit Asset"
+                (click)="openEditModal(asset)">
+                <i class="pi pi-pencil"></i>
+              </button>
+              <button type="button" class="action-icon assign"
+                title="Assign / Unassign"
+                (click)="openAssignModal(asset)">
+                <i class="pi pi-user-plus"></i>
+              </button>
             </div>
           </td>
-
         </tr>
       </ng-template>
 
-    </p-table> -->
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="empty-text">No assets found</td>
+        </tr>
+      </ng-template>
 
+    </p-table>
   </div>
 </div>
 
+<!-- CREATE MODAL -->
+<p-dialog
+  header="Add New Asset"
+  [(visible)]="showCreateModal"
+  [modal]="true" [closable]="true"
+  [draggable]="false" [resizable]="false"
+  [style]="{ width: '520px' }"
+  appendTo="body">
+
+  <div class="dialog-body">
+    <div class="form-row-two">
+      <div class="field">
+        <label>Asset Tag <span class="required">*</span></label>
+        <input type="text" class="dialog-input"
+          [class.input-error]="newAssetErrors.assetTag"
+          [(ngModel)]="newAsset.assetTag"
+          placeholder="e.g. LAP-001" />
+        <span class="field-error" *ngIf="newAssetErrors.assetTag">
+          {{ newAssetErrors.assetTag }}
+        </span>
+      </div>
+      <div class="field">
+        <label>Asset Type <span class="required">*</span></label>
+        <select class="status-dropdown"
+          [class.input-error]="newAssetErrors.assetType"
+          [(ngModel)]="newAsset.assetType">
+          <option value="">-- Select Type --</option>
+          <option>Laptop</option>
+          <option>Desktop</option>
+          <option>Monitor</option>
+          <option>Keyboard</option>
+          <option>Mouse</option>
+        </select>
+        <span class="field-error" *ngIf="newAssetErrors.assetType">
+          {{ newAssetErrors.assetType }}
+        </span>
+      </div>
+    </div>
+
+    <div class="form-row-two">
+      <div class="field">
+        <label>Brand <span class="required">*</span></label>
+        <input type="text" class="dialog-input"
+          [class.input-error]="newAssetErrors.brand"
+          [(ngModel)]="newAsset.brand"
+          placeholder="e.g. Dell" />
+        <span class="field-error" *ngIf="newAssetErrors.brand">
+          {{ newAssetErrors.brand }}
+        </span>
+      </div>
+      <div class="field">
+        <label>Model</label>
+        <input type="text" class="dialog-input"
+          [class.input-error]="newAssetErrors.model"
+          [(ngModel)]="newAsset.model"
+          placeholder="e.g. Latitude 5520" />
+        <span class="field-error" *ngIf="newAssetErrors.model">
+          {{ newAssetErrors.model }}
+        </span>
+      </div>
+    </div>
+
+    <div class="form-row-two">
+      <div class="field">
+        <label>Serial Number</label>
+        <input type="text" class="dialog-input"
+          [(ngModel)]="newAsset.serialNumber"
+          placeholder="e.g. SN123456" />
+      </div>
+      <div class="field">
+        <label>Initial Status</label>
+        <select class="status-dropdown" [(ngModel)]="newAsset.statusId">
+          <option *ngFor="let s of statusList" [ngValue]="s.id">{{ s.name }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="createError" class="error-msg">{{ createError }}</div>
+    <div *ngIf="createSuccess" class="success-msg">
+      <i class="pi pi-check-circle"></i> Asset created successfully!
+    </div>
+
+    <div class="dialog-actions">
+      <button class="btn-cancel" (click)="closeCreateModal()">Cancel</button>
+      <button class="btn-save" [disabled]="createLoading" (click)="saveNewAsset()">
+        {{ createLoading ? 'Creating...' : 'Create Asset' }}
+      </button>
+    </div>
+  </div>
+</p-dialog>
 
 <!-- EDIT MODAL -->
-<div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()"></div>
-<div class="modal-container" *ngIf="showEditModal">
-  <div class="modal-header">
-    <span>Edit Asset — {{ selectedAsset?.assetTag }}</span>
-    <button class="close-btn" (click)="closeEditModal()">✕</button>
-  </div>
-  <div class="modal-body">
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Tag</label>
-        <input type="text" [(ngModel)]="selectedAsset.assetTag" placeholder="Asset Tag" />
+<p-dialog
+  header="Edit Asset"
+  [(visible)]="showEditModal"
+  [modal]="true" [closable]="true"
+  [draggable]="false" [resizable]="false"
+  [style]="{ width: '500px' }"
+  appendTo="body">
+
+  <div *ngIf="selectedAsset" class="dialog-body">
+    <div class="form-row-two">
+      <div class="field">
+        <label>Asset Tag <span class="required">*</span></label>
+        <input type="text" class="dialog-input"
+          [class.input-error]="editErrors.assetTag"
+          [(ngModel)]="selectedAsset.assetTag" />
+        <span class="field-error" *ngIf="editErrors.assetTag">
+          {{ editErrors.assetTag }}
+        </span>
       </div>
-      <div class="form-group">
-        <label>Type</label>
-        <input type="text" [(ngModel)]="selectedAsset.assetType" placeholder="Asset Type" />
-      </div>
-      <div class="form-group">
-        <label>Brand</label>
-        <input type="text" [(ngModel)]="selectedAsset.brand" placeholder="Brand" />
-      </div>
-      <div class="form-group">
-        <label>Model</label>
-        <input type="text" [(ngModel)]="selectedAsset.model" placeholder="Model" />
+      <div class="field">
+        <label>Asset Type <span class="required">*</span></label>
+        <select class="status-dropdown"
+          [class.input-error]="editErrors.assetType"
+          [(ngModel)]="selectedAsset.assetType">
+          <option>Laptop</option>
+          <option>Desktop</option>
+          <option>Monitor</option>
+          <option>Keyboard</option>
+          <option>Mouse</option>
+        </select>
+        <span class="field-error" *ngIf="editErrors.assetType">
+          {{ editErrors.assetType }}
+        </span>
       </div>
     </div>
+
+    <div class="form-row-two">
+      <div class="field">
+        <label>Brand <span class="required">*</span></label>
+        <input type="text" class="dialog-input"
+          [class.input-error]="editErrors.brand"
+          [(ngModel)]="selectedAsset.brand" />
+        <span class="field-error" *ngIf="editErrors.brand">
+          {{ editErrors.brand }}
+        </span>
+      </div>
+      <div class="field">
+        <label>Model</label>
+        <input type="text" class="dialog-input"
+          [class.input-error]="editErrors.model"
+          [(ngModel)]="selectedAsset.model" />
+        <span class="field-error" *ngIf="editErrors.model">
+          {{ editErrors.model }}
+        </span>
+      </div>
+    </div>
+
+    <div *ngIf="editError" class="error-msg">{{ editError }}</div>
+
+    <div class="dialog-actions">
+      <button class="btn-cancel" (click)="closeEditModal()">Cancel</button>
+      <button class="btn-save" [disabled]="editLoading" (click)="saveAssetEdits()">
+        {{ editLoading ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </div>
   </div>
-  <div class="modal-footer">
-    <button class="btn btn-dark" (click)="closeEditModal()">Cancel</button>
-    <button class="btn btn-primary" (click)="saveAssetEdits()">Save Changes</button>
-  </div>
-</div>
+</p-dialog>
 
 <!-- ASSIGN MODAL -->
-<div class="modal-overlay" *ngIf="showAssignModal" (click)="closeAssignModal()"></div>
-<div class="modal-container modal-sm" *ngIf="showAssignModal">
-  <div class="modal-header">
-    <span>Assign Asset — {{ selectedAsset?.assetTag }}</span>
-    <button class="close-btn" (click)="closeAssignModal()">✕</button>
-  </div>
-  <div class="modal-body">
-    <div class="assign-info">
-      <div class="assign-info-row">
-        <span class="info-label">Asset</span>
-        <span class="info-value">{{ selectedAsset?.assetTag }} — {{ selectedAsset?.model }}</span>
-      </div>
-      <div class="assign-info-row">
-        <span class="info-label">Type</span>
-        <span class="info-value">{{ selectedAsset?.assetType }}</span>
-      </div>
+<p-dialog
+  header="Manage Assignment"
+  [(visible)]="showAssignModal"
+  [modal]="true" [closable]="true"
+  [draggable]="false" [resizable]="false"
+  [style]="{ width: '460px' }"
+  appendTo="body">
+
+  <div *ngIf="selectedAsset" class="dialog-body">
+
+    <div class="detail-row">
+      <span class="detail-label">Asset</span>
+      <span class="detail-value">{{ selectedAsset.assetTag }}</span>
     </div>
-    <div class="form-group" style="margin-top: 16px;">
-      <label>Select User</label>
-      <select [(ngModel)]="selectedUserId" class="assign-select">
-        <option [ngValue]="null" disabled>Choose a user...</option>
-        <option *ngFor="let user of users" [ngValue]="user.id">{{ user.name }}</option>
+    <div class="detail-row">
+      <span class="detail-label">Type</span>
+      <span class="detail-value">{{ selectedAsset.assetType }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Currently</span>
+      <span class="detail-value">
+        <span *ngIf="selectedAsset.assignedTo" class="assigned-chip">
+          {{ selectedAsset.assignedTo }}
+        </span>
+        <span *ngIf="!selectedAsset.assignedTo" class="unassigned">
+          Unassigned
+        </span>
+      </span>
+    </div>
+
+    <!-- unassign section — only if currently assigned -->
+    <div *ngIf="selectedAsset.assignedTo" class="unassign-box">
+      <p class="unassign-label">Remove current assignment</p>
+      <button class="btn-unassign" [disabled]="unassignLoading"
+        (click)="unassignAsset()">
+        <i class="pi pi-user-minus"></i>
+        {{ unassignLoading ? 'Removing...' : 'Unassign ' + selectedAsset.assignedTo }}
+      </button>
+    </div>
+
+    <div class="divider-line"></div>
+
+    <div class="field">
+      <label>
+        {{ selectedAsset.assignedTo ? 'Reassign To' : 'Assign To' }}
+      </label>
+      <select class="status-dropdown" [(ngModel)]="selectedUserId">
+        <option [ngValue]="null" disabled>Select user</option>
+        <option *ngFor="let u of users" [ngValue]="u.id">{{ u.name }}</option>
       </select>
     </div>
+
+    <div *ngIf="assignError" class="error-msg">{{ assignError }}</div>
+
+    <div class="dialog-actions">
+      <button class="btn-cancel" (click)="closeAssignModal()">Cancel</button>
+      <button class="btn-save"
+        [disabled]="!selectedUserId || assignLoading"
+        (click)="assignAsset()">
+        {{ assignLoading ? 'Saving...' : (selectedAsset.assignedTo ? 'Reassign' : 'Assign') }}
+      </button>
+    </div>
+
   </div>
-  <div class="modal-footer">
-    <button class="btn btn-dark" (click)="closeAssignModal()">Cancel</button>
-    <button class="btn btn-primary" (click)="assignAsset()"
-      [disabled]="!selectedUserId">
-      <i class="pi pi-user-plus"></i> Assign
-    </button>
-  </div>
-</div>
+</p-dialog>

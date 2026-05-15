@@ -1,10 +1,11 @@
-export interface TrackTicket{
-    id:number,
-    issueCategory: string,
-    issueDescription: string,
-    priority:string,
-    asset: string,
-    status:string,
-    ticketStatus:number,
-    resolutionNotes:string
+export interface TrackTicket {
+  ticketId: number;
+  issueCategory: string;
+  issueDescription: string;
+  priority: string;
+  assetConcerned: string;
+  statusName: string;
+  statusCategory: string;
+  resolutionNotes: string;
+  createdAt: string;
 }

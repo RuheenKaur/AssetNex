@@ -1,109 +1,136 @@
-<h3 class="mb-3"><u>Asset Requests</u></h3>
-<div class="buttonrow">
-    <button routerLink="admin/dashboard" (click)="goBack()">← Back To Dash</button>
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="page-title-group">
+      <h3>Asset Requests</h3>
+      <span class="page-subtitle">Manage and review asset requests</span>
+    </div>
+    <button class="btn-dark" (click)="goBack()">← Back to Dashboard</button>
   </div>
 
-<div class="table">
-  <p-table
-    #dt
-    [value]="assetRequests"
-    class="p-datatable-sm"
-    [paginator]="true"
-    [rows]="10"
+  <div class="table-card">
 
-    [responsiveLayout]="'scroll'"
-    [globalFilterFields]="['user','asset']">
-    <ng-template pTemplate="caption">
-      <span class="p-input-icon-left">
+    <div class="table-toolbar">
+      <div class="search-bar">
         <i class="pi pi-search"></i>
         <input
           pInputText
           type="text"
-          (input)="dt.filterGlobal($event.target.value, 'contains')"
-          placeholder="Search asset requests..."/>
-      </span>
-    </ng-template>
+          placeholder="Search asset requests..."
+          (input)="dt.filterGlobal($event.target.value, 'contains')" />
+      </div>
+    </div>
 
-  <ng-template pTemplate="header">
+    <p-table
+      #dt
+      [value]="assetRequests"
+      class="app-table"
+      [paginator]="true"
+      [rows]="10"
+      responsiveLayout="scroll"
+      [globalFilterFields]="['user','asset']">
 
-      <tr>
-      <th>Id</th>
-      <th pSortableColumn="assetId">AssetId  <p-sortIcon field="assetId"></p-sortIcon></th>
-      <th>Asset</th>
-      <th>UserId</th>
-      <th>User</th>
-      <th>Requested Asset Type</th>
-      <th>Reason</th>
-      <th>StatusId</th>
-      <th>Status</th>
-      <th>RequestedOn</th>
-      <th>Action</th>
-    </tr>
-</ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ID</th>
+          <th pSortableColumn="assetId">Asset ID <p-sortIcon field="assetId"></p-sortIcon></th>
+          <th>Asset</th>
+          <th>User ID</th>
+          <th>User</th>
+          <th>Requested Type</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th>Requested On</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </ng-template>
 
+      <ng-template pTemplate="body" let-req>
+        <tr>
+          <td>{{ req.id }}</td>
+          <td>{{ req.assetId }}</td>
+          <td>{{ req.asset }}</td>
+          <td>{{ req.userId }}</td>
+          <td>{{ req.name }}</td>
+          <td>{{ req.requestedAssetType }}</td>
+          <td>{{ req.reason }}</td>
+          <td>
+            <span class="sn-status-pill" [ngClass]="'status-' + getStatusClass(req.statusId)">
+              {{ getStatusName(req.statusId) }}
+            </span>
+          </td>
+          <td>{{ req.requestedOn | date:'MMM d, y' }}</td>
+          <td class="text-center">
+            <div class="action-icons">
+              <i
+                class="pi pi-pencil action-icon edit"
+                title="Edit Request"
+                (click)="openEditDialog(req)">  <!-- ← click handler added -->
+              </i>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
 
-    <ng-template pTemplate="body" let-req>
-      <tr>
-      <td>{{ req.id }}</td>
-      <td>{{ req.assetId }}</td>
-      <td>{{ req.asset }}</td>
-      <td>{{ req.userId }}</td>
-      <td>{{ req.user }}</td>
-      <td>{{ req.requestedAssetType }}</td>
-      <td>{{req.reason}}</td>
-      <td>{{req.statusId}}</td>
-      <td>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="10" class="empty-text">No asset requests found</td>
+        </tr>
+      </ng-template>
 
-<p-select
-  [options]="statusList"
-  optionLabel="name"
-  optionValue="id"
-  [(ngModel)]="req.statusId"
-  [ngModelOptions]="{ standalone: true }"
-  (onChange)="onStatusChange(req)"
-  styleClass="sn-status-dropdown"
->
-
-  <ng-template pTemplate="selectedItem" let-value>
-    <span
-      class="sn-status-pill"
-      [ngClass]="'status-' + getStatusClass(value)">
-      {{ getStatusName(value) }}
-    </span>
-  </ng-template>
-
-
-  <ng-template pTemplate="item" let-status>
-    <span
-      class="sn-status-pill"
-      [ngClass]="'status-' + getStatusClass(status.id)">
-      {{ status.name }}
-    </span>
-  </ng-template>
-
-</p-select>
-</td>
-      <td>{{req.requestedOn}}</td>
-
-        <td class="text-center">
-          <div class="action-icons">
-            <i
-              class="pi pi-pencil action-icon"
-              title="Edit Assignment"
-              >
-            </i>
-          </div>
-        </td>
-      </tr>
-    </ng-template>
-
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="4" class="text-center">
-          No asset requests found
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+    </p-table>
+  </div>
 </div>
 
+<!-- EDIT DIALOG -->
+<p-dialog
+  header="Update Request Status"
+  [(visible)]="showDialog"
+  [modal]="true"
+  [style]="{ width: '420px' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="closeDialog()">
+
+  <div *ngIf="selectedRequest" style="display:flex; flex-direction:column; gap:16px; padding: 8px 0;">
+
+    <div>
+      <label style="font-size:12px; color:#6b7280; font-weight:600;">REQUEST ID</label>
+      <p style="margin:4px 0 0 0; font-weight:600;">#{{ selectedRequest.id }}</p>
+    </div>
+
+    <div>
+      <label style="font-size:12px; color:#6b7280; font-weight:600;">USER</label>
+      <p style="margin:4px 0 0 0;">{{ selectedRequest.name }}</p>
+    </div>
+
+    <div>
+      <label style="font-size:12px; color:#6b7280; font-weight:600;">REQUESTED TYPE</label>
+      <p style="margin:4px 0 0 0;">{{ selectedRequest.requestedAssetType }}</p>
+    </div>
+
+    <div>
+      <label style="font-size:12px; color:#6b7280; font-weight:600;">REASON</label>
+      <p style="margin:4px 0 0 0;">{{ selectedRequest.reason }}</p>
+    </div>
+
+    <div>
+      <label style="font-size:12px; color:#6b7280; font-weight:600; display:block; margin-bottom:6px;">
+        UPDATE STATUS
+      </label>
+<div class="dialog-field">
+  <select class="native-select" [(ngModel)]="selectedStatusId">
+    <option value="" disabled>Select status</option>
+    <option *ngFor="let s of statusList" [value]="s.id">{{ s.name }}</option>
+  </select>
+</div>
+    </div>
+
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button class="btn-dark" style="margin-right:8px" (click)="closeDialog()">Cancel</button>
+    <button class="btn-orange" (click)="saveStatus()">Save</button>
+  </ng-template>
+
+</p-dialog>

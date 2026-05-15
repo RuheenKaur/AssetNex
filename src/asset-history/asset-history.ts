@@ -15,13 +15,15 @@ import { AssetHistoryService } from './asset-history.service';
 })
 export class AssetHistory implements OnInit {
 
-
   history: AssetsHistoryModel[] = [];
   filteredHistory: AssetsHistoryModel[] = [];
   selectedEventType: string = '';
-  drawerOpen: boolean = false;
-  selectedAssetTag: string = '';
+  drawerOpen = false;
+  selectedAssetTag = '';
+  selectedAssetType = '';
   assetTimeline: AssetsHistoryModel[] = [];
+  currentAssignee = '-';
+  totalEvents = 0;
 
   constructor(
     private router: Router,
@@ -29,46 +31,59 @@ export class AssetHistory implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadHistory();
+  }
+
+  loadHistory(): void {
     this.assetHistoryService.getAllAssetsHistory().subscribe({
       next: (data) => {
-        this.history = data;
-        this.filteredHistory = data;
+        this.history = data ?? [];
+        this.filteredHistory = this.history;
         console.log('Asset History loaded:', data);
       },
-      error: (err) => console.error('Failed to load history', err)
+      error: (err) => console.error('Failed to load history', err),
     });
   }
 
-
   filterByEvent(): void {
-    if (!this.selectedEventType) {
-      this.filteredHistory = this.history;
-    } else {
-      this.filteredHistory = this.history.filter(
-        h => h.eventType === this.selectedEventType
-      );
-    }
+    this.filteredHistory = !this.selectedEventType
+      ? this.history
+      : this.history.filter(h => h.eventType === this.selectedEventType);
   }
 
-
   openDrawer(item: AssetsHistoryModel): void {
-    this.selectedAssetTag = item.asset?.assetTag || `Asset #${item.assetId}`;
-
+    this.selectedAssetTag = item.assetTag || '—';
+    this.selectedAssetType = item.assetType || '—';
 
     this.assetTimeline = this.history
       .filter(h => h.assetId === item.assetId)
       .sort((a, b) =>
-        new Date(a.performedAt).getTime() - new Date(b.performedAt).getTime()
+        new Date(b.performedAt).getTime() - new Date(a.performedAt).getTime()
       );
 
+    this.totalEvents = this.assetTimeline.length;
+
+    const lastAssigned = this.assetTimeline.find(
+      e => e.eventType === 'Assigned' || e.eventType === 'ReAssigned'
+    );
+    const lastReturned = this.assetTimeline.find(
+      e => e.eventType === 'Returned'
+    );
+
+    if (lastAssigned && (!lastReturned ||
+      new Date(lastAssigned.performedAt) > new Date(lastReturned.performedAt))) {
+      this.currentAssignee = lastAssigned.userName || '—';
+    } else {
+      this.currentAssignee = 'Unassigned';
+    }
     this.drawerOpen = true;
   }
-
 
   closeDrawer(): void {
     this.drawerOpen = false;
     this.selectedAssetTag = '';
     this.assetTimeline = [];
+    this.currentAssignee = '-';
   }
 
   getEventCount(eventType: string): number {
@@ -79,3 +94,4 @@ export class AssetHistory implements OnInit {
     this.router.navigateByUrl('/admin/dashboard');
   }
 }
+

@@ -34,26 +34,28 @@ export class AssetassignComponent implements OnInit {
     private userService:UserService
   ) {}
 
+
+
 ngOnInit(): void {
-const userIdStr = localStorage.getItem('userId');
-const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-this.userId= userIdStr?Number(userIdStr) : null;
-this.userName = storedUser.name;
-console.log('Stored user:', storedUser);
-console.log('UserId used for asset API:', this.userId);
-console.log('User name:', this.userName);
-if(!this.userId)
-{
-  console.error('Numeric userId not found');
-  return;
-}
-this.userService.getAssignedAssets(this.userId).subscribe({
-  next:(res:Assetassign[])=>
-  {console.log('Assigned Assets:', res)
-    this.assigned = res;
-  },
-  error:(err) => console.error("Error loading assetes:", err),
-})
+  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  this.userName = storedUser.name || storedUser.email || 'User';
+  this.userId = storedUser.numericId;
+
+  console.log('Stored user:', storedUser);
+  console.log('NumericId for asset API:', this.userId);
+
+  if (!this.userId) {
+    console.error('Numeric userId not found in localStorage');
+    return;
+  }
+
+  this.userService.getAssignedAssets(this.userId).subscribe({
+    next: (res: Assetassign[]) => {
+      console.log('Assigned Assets:', res);
+      this.assigned = res;
+    },
+    error: (err) => console.error('Error loading assets:', err)
+  });
 }
 
   selectAsset(asset: Assetassign) {
@@ -68,18 +70,6 @@ this.userService.getAssignedAssets(this.userId).subscribe({
   goToLanding() {
     this.router.navigateByUrl('/landing');
   }
-
-// raiseTicket(selectedAsset: any) {
-//    localStorage.setItem('ticketAsset', JSON.stringify(selectedAsset));
-//   this.router.navigate(['/user/support/create'], {
-//     state: {
-//       Id: selectedAsset?.Id,
-//       assetCategory: selectedAsset.assetCategory,
-//       assetConcerned: selectedAsset.assetConcerned
-//     }
-//   });
-// }
-
 
 raiseTicket(selectedAsset: any) {
   console.log('Raising ticket for asset:', selectedAsset);
@@ -101,16 +91,10 @@ private determineCategory(assetType: string): string {
       type.includes('keyboard')) {
     return 'Hardware';
   }
-
   if (type.includes('router') || type.includes('switch')) {
     return 'Network';
   }
-
   return 'Software';
 }
 }
 
-//there is a button in assetassigned raise a ticket on clicking that it should take to raise asset form where the assetconcerend
-//and issue category should prefill on clicking the button', it should show the assetdetails current
-
-//where as if form is  accessed from the sidebar menu the fields should be empty how do we do that

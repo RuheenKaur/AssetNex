@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AssetAssignPostService } from './assetassignpost.service';
 import { AssetAssignPost } from './assetassignpost.model';
 import { Router } from '@angular/router';
@@ -6,22 +6,24 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
+import { DialogModule } from 'primeng/dialog';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-assetassignpost',
   standalone: true,
-  imports: [CommonModule, TableModule, FormsModule, SelectModule],
+  imports: [CommonModule, TableModule, FormsModule, SelectModule, DialogModule],
   templateUrl: './assetassignpost.html',
   styleUrl: './assetassignpost.css',
 })
-
 export class Assetassignpost implements OnInit {
 
   assets: AssetAssignPost[] = [];
   users: { id: number; name: string }[] = [];
-  selectedAssignment: AssetAssignPost | null=null;
+  selectedAssignment: AssetAssignPost | null = null;
   selectedUserId: number | null = null;
+  showModal = false;
+  loggedInUserId: any;
 
   constructor(
     private assetassignService: AssetAssignPostService,
@@ -30,173 +32,75 @@ export class Assetassignpost implements OnInit {
     private cdRef: ChangeDetectorRef
   ) {}
 
-  loggedInUserId : any;
-
   ngOnInit(): void {
     this.loadAssignments();
     this.loadUsers();
   }
 
-  loadAssignments() {
-    this.assetassignService.getAllAssigned()
-      .subscribe(data => this.assets = data);
-     this.assetassignService.getAllAssigned().subscribe(res => {
-  setTimeout(() => {
-    this.assets = res;
-  });
-}
-);
+  loadAssignments(): void {
+    this.assetassignService.getAllAssigned().subscribe({
+      next: (data) => {
+        this.assets = data;
+        this.cdRef.detectChanges();
+      },
+      error: (err) => console.error('Failed to load assignments', err)
+    });
   }
 
-  loadUsers() {
-    this.http.get<any[]>('https://localhost:7195/api/Users')
-      .subscribe(users => {
-        this.users = users.map(u => ({
-          id: u.id,
-          name: u.name
-        }));
-      });
+  loadUsers(): void {
+    this.http.get<any[]>('https://localhost:7195/api/Users').subscribe({
+      next: (users) => {
+        this.users = users.map(u => ({ id: u.id, name: u.name }));
+      },
+      error: (err) => console.error('Failed to load users', err)
+    });
   }
 
-openAssignmentModal(row: any) {
-  setTimeout(() => {
+  refreshAssignments(): void {
+    this.loadAssignments();
+  }
+
+  openAssignmentModal(row: AssetAssignPost): void {
     this.selectedAssignment = row;
-    this.selectedUserId = row.userId;
-  });
-}
+    this.selectedUserId = row.userId ?? null;
+    this.showModal = true;
+  }
 
-  closeAssignmentModal() {
+  closeAssignmentModal(): void {
     this.selectedAssignment = null;
     this.selectedUserId = null;
+    this.showModal = false;
   }
 
-  confirmReassign() {
+  confirmReassign(): void {
     if (!this.selectedAssignment || !this.selectedUserId) return;
     this.assetassignService.reassign({
       assignmentId: this.selectedAssignment.id,
       newUserId: this.selectedUserId
-    }).subscribe(() => this.afterSuccess());
+    }).subscribe({
+      next: () => this.afterSuccess(),
+      error: (err) => console.error('Reassign failed', err)
+    });
   }
 
-  assignAsset() {
+  assignAsset(): void {
     if (!this.selectedAssignment || !this.selectedUserId) return;
     this.assetassignService.assignAsset(
       this.selectedAssignment.assetId,
       this.selectedUserId,
-       this.loggedInUserId
-    ).subscribe(() => this.afterSuccess());
+      this.loggedInUserId
+    ).subscribe({
+      next: () => this.afterSuccess(),
+      error: (err) => console.error('Assign failed', err)
+    });
   }
 
-  unassignAsset(assignment: AssetAssignPost) {
-    if (!confirm('Unassign this asset?')) return;
-    this.assetassignService.unassign(assignment.id)
-      .subscribe(() => this.afterSuccess());
-  }
-
-  afterSuccess() {
+  afterSuccess(): void {
     this.closeAssignmentModal();
     this.loadAssignments();
   }
 
-  goBack() {
+  goToDashboard(): void {
     this.router.navigateByUrl('/admin/dashboard');
   }
 }
-
-// import { Component, OnInit } from '@angular/core';
-// import { Router } from '@angular/router';
-
-// interface AssetAssignment {
-//   id: number;
-//   assetAssigned: string;
-//   assignedOn: string;
-//   returnedOn?: string | null;
-//   userId: number;
-// }
-
-// interface User {
-//   id: number;
-//   name: string;
-// }
-
-// @Component({
-//   selector: 'app-asset-assign',
-//   templateUrl: './asset-assign.component.html',
-//   styleUrls: ['./asset-assign.component.css']
-// })
-// export class AssetAssignComponent implements OnInit {
-
-//   assets: AssetAssignment[] = [];
-//   users: User[] = [];
-
-//   selectedAssignment: AssetAssignment | null = null;
-//   selectedUserId: number | null = null;
-
-//   constructor(private router: Router) {}
-
-//   ngOnInit(): void {
-//     this.loadAssignments();
-//     this.loadUsers();
-//   }
-
-//   // ---------------- DATA LOADERS ----------------
-
-//   loadAssignments(): void {
-//     // API call later
-//     this.assets = [];
-//   }
-
-//   loadUsers(): void {
-//     // API call later
-//     this.users = [];
-//   }
-
-//   // ---------------- UI ACTIONS ----------------
-
-//   goBack(): void {
-//     this.router.navigate(['admin/dashboard']);
-//   }
-
-//   openAssignmentModal(asset: AssetAssignment): void {
-//     this.selectedAssignment = asset;
-//     this.selectedUserId = asset.userId;
-//   }
-
-//   closeAssignmentModal(): void {
-//     this.selectedAssignment = null;
-//     this.selectedUserId = null;
-//   }
-
-//   // ---------------- ASSIGN / REASSIGN ----------------
-
-//   confirmReassign(): void {
-//     if (!this.selectedAssignment || !this.selectedUserId) return;
-
-//     const payload = {
-//       assignmentId: this.selectedAssignment.id,
-//       newUserId: this.selectedUserId
-//     };
-
-//     // call API here
-//     this.closeAssignmentModal();
-//   }
-
-//   assignAsset(): void {
-//     if (!this.selectedAssignment || !this.selectedUserId) return;
-
-//     const payload = {
-//       assignmentId: this.selectedAssignment.id,
-//       userId: this.selectedUserId
-//     };
-
-//     // call API here
-//     this.closeAssignmentModal();
-//   }
-
-//   // ---------------- FILTER (STRICT SAFE) ----------------
-
-//   onGlobalFilter(event: Event, table: any): void {
-//     const input = event.target as HTMLInputElement;
-//     table.filterGlobal(input.value, 'contains');
-//   }
-// }

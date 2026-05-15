@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -8,29 +9,33 @@ export class AuthGuard implements CanActivate {
 
   constructor(private router: Router) {}
 
-  // canActivate(): boolean {
-  //   const userStr = localStorage.getItem('user');
+  canActivate(route: ActivatedRouteSnapshot): boolean {
+    const token = localStorage.getItem('accessToken');
 
-  //   if (!userStr) {
-  //     this.router.navigate(['/landing']);
-  //     return false;
-  //   }
+    if (!token) {
+      this.router.navigate(['/landing']);
+      return false;
+    }
 
-  //   const user = JSON.parse(userStr);
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
+      this.router.navigate(['/landing']);
+      return false;
+    }
 
-  //   // Optional: check role if needed
-  //   if (!user.role) {
-  //     this.router.navigate(['/landing']);
-  //     return false;
-  //   }
+    const user = JSON.parse(userStr);
+    const expectedRole = route.data['role'];
 
-  //   return true;
-  // }
+    if (expectedRole && user.role !== expectedRole) {
+      // Wrong role — redirect to their correct dashboard
+      if (user.role === 'Admin') {
+        this.router.navigate(['/admin/dashboard']);
+      } else {
+        this.router.navigate(['/user/dashboard']);
+      }
+      return false;
+    }
 
-
-
-  canActivate(): boolean{
-    console.log('Giard executed');
     return true;
   }
 }

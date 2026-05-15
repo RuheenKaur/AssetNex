@@ -1,0 +1,143 @@
+<div class="navbar">
+  <div class="logo-wrapper">
+    <h1 class="logo" (click)="goTo('/landing')">AssetNex<span class="highlight">IT</span></h1>
+    <p class="below">TRACK | MANAGE | DISPOSE</p>
+  </div>
+  <ul class="nav-links">
+    <li><a (click)="goTo('/assets/explore')"><span>EXPLORE</span></a></li>
+    <li><a (click)="goTo('/assets/support')"><span>SUPPORT</span></a></li>
+    <li><a (click)="goTo('/about')"><span>ABOUT</span></a></li>
+  </ul>
+  <button class="login-btn" (click)="goTo('/login/auth')">Sign In</button>
+</div>
+
+<div class="explore-wrapper">
+
+  <div class="hero">
+    <div class="hero-text">
+      <span class="badge">Asset Management Platform</span>
+      <h1>Explore <span class="highlight">AssetNexIT</span></h1>
+      <p>A centralized system to track, assign, and manage IT assets across your organization - built for clarity, security, and control.</p>
+      <button class="cta-btn" (click)="goTo('/login/auth')">Get Started →</button>
+    </div>
+    <div class="hero-visual">
+      <div class="visual-card">
+        <div class="stat-row">
+          <div class="stat">
+            <span class="stat-num">150+</span>
+            <span class="stat-label">Assets Tracked</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">50+</span>
+            <span class="stat-label">Users Managed</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">100%</span>
+            <span class="stat-label">Secure</span>
+          </div>
+        </div>
+        <div class="asset-preview">
+          <div class="asset-row">
+            <span class="asset-icon">💻</span>
+            <div class="asset-info">
+              <span class="asset-name">Dell Latitude 5420</span>
+              <span class="asset-tag">AST-001</span>
+            </div>
+            <span class="status-badge assigned">Assigned</span>
+          </div>
+          <div class="asset-row">
+            <span class="asset-icon">🖥️</span>
+            <div class="asset-info">
+              <span class="asset-name">HP EliteDesk 800</span>
+              <span class="asset-tag">AST-007</span>
+            </div>
+            <span class="status-badge available">Available</span>
+          </div>
+          <div class="asset-row">
+            <span class="asset-icon">⌨️</span>
+            <div class="asset-info">
+              <span class="asset-name">Logitech K120</span>
+              <span class="asset-tag">LAP-003</span>
+            </div>
+            <span class="status-badge assigned">Assigned</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="features-section">
+    <h2>Everything you need to manage IT assets</h2>
+    <p class="section-sub">Built with .NET 8, Angular 19, and Azure — designed for real organizations.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔐</div>
+        <h3>Role-Based Access</h3>
+        <p>Admins manage everything. Users see only what's assigned to them. Secure by design with JWT authentication.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <h3>Asset Lifecycle</h3>
+        <p>Track every asset from procurement to disposal. Full history log — every assignment, return, and status change recorded automatically.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎫</div>
+        <h3>Support Tickets</h3>
+        <p>Users raise tickets for asset issues. Admins manage, prioritize, and resolve — all from one dashboard.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">☁️</div>
+        <h3>Azure Cloud Deployed</h3>
+        <p>Hosted on Azure App Service with Key Vault secret management, Managed Identity, and automated CI/CD pipelines.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Search & Filter</h3>
+        <p>Paginated tables with real-time search, multi-column sort, and filter — across assets, users, and tickets.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Dashboard Analytics</h3>
+        <p>Visual overview of asset distribution, hardware status, e-waste tracking, and support ticket status at a glance.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="tech-section">
+    <h2>Built on a modern tech stack</h2>
+    <p class="section-sub">Industry-standard technologies chosen for performance, security, and scalability.</p>
+    <div class="tech-grid">
+      <div class="tech-pill">.NET 8 Web API</div>
+      <div class="tech-pill">Angular 19</div>
+      <div class="tech-pill">Azure App Service</div>
+      <div class="tech-pill">Azure Key Vault</div>
+      <div class="tech-pill">SQL Server</div>
+      <div class="tech-pill">GitHub Actions</div>
+      <div class="tech-pill">JWT Auth</div>
+      <div class="tech-pill">Entity Framework Core</div>
+      <div class="tech-pill">Blob Storage</div>
+      <div class="tech-pill">Managed Identity</div>
+      <div class="tech-pill">xUnit + Moq</div>
+    </div>
+  </div>
+
+
+  <div class="cta-section">
+    <h2>Ready to take control of your IT assets?</h2>
+    <p>Sign in to access your dashboard and start managing assets efficiently.</p>
+    <button class="cta-btn" (click)="goTo('/login/auth')">Sign In to Dashboard →</button>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="bottom">
+    <span>© 2025 AssetNexIT</span>
+    <span>·</span>
+    <span>Built with .NET 8 & Angular 19</span>
+    <span>·</span>
+    <span>Deployed on Azure</span>
+  </div>
+</div>

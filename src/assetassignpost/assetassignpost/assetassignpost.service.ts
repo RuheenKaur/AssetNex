@@ -10,12 +10,12 @@ export class AssetAssignPostService {
   constructor(private http: HttpClient) {}
 
   getAllAssigned() {
-    return this.http.get<AssetAssignPost[]>(`${environment.apibaseUrl}/api/asset-assignments`);
+    return this.http.get<AssetAssignPost[]>(`${environment.apibaseUrl}/api/AssetAssignments`);
   }
 
   reassign(payload: { assignmentId: number; newUserId: number }) {
     return this.http.put(
-      `${environment.apibaseUrl}/api/asset-assignments/reassign`,
+      `${environment.apibaseUrl}/api/AssetAssignments/assign`,
       payload
     );
   }
@@ -30,7 +30,7 @@ export class AssetAssignPostService {
   {return this.http.put (`${environment.apibaseUrl}/api/asset-assignments/reassign`, payload);}
   assignAsset(assetId: number, assignedToUserId: number, assignedByUserId: number) {
   return this.http.post(
-    `${environment.apibaseUrl}/api/asset-assignments/assign`,
+    `${environment.apibaseUrl}/api/AssetAssignments/assign`,
     null,
     {
       params: {

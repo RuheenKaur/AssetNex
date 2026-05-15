@@ -1,1 +1,50 @@
-/* You can add global styles to this file, and also import other style files */
+@import './admin-shared.css';
+ body {
+  margin: 0;
+  padding: 0;
+  font-family: calibri, sans-serif;
+  background: #f5f7fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.p-dialog {
+  border-radius: 16px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+}
+
+.p-dialog .p-dialog-header {
+  background: #f0842c !important;
+  color: #ffffff !important;
+  padding: 18px 22px;
+  border-bottom: none;
+}
+
+.p-dialog .p-dialog-title {
+  color: #ffffff !important;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.p-dialog .p-dialog-header-icon {
+  color: #ffffff !important;
+}
+
+.p-dialog .p-dialog-header-icon:hover {
+  background: rgba(255,255,255,0.18);
+  border-radius: 6px;
+}
+
+.p-dialog .p-dialog-content {
+  padding: 24px !important;
+  background: #ffffff !important;
+}
+
+.p-dialog-mask {
+  backdrop-filter: blur(4px);
+  background: rgba(0,0,0,0.35) !important;
+}

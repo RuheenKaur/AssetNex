@@ -1,16 +1,15 @@
 <!-- User Sidebar Component HTML -->
 <div class="content-wrapper">
-  <!-- Top Welcome Banner -->
-  <div class="welcome">USER'S ASSETS</div>
 
-  <!-- Sidebar -->
+
+
   <aside class="sidebar">
-    <!-- User Greeting -->
-    <h6 class="user-greeting">Hello, {{ userName }}! 👋</h6>
 
-    <!-- Navigation Menu -->
+    <h6 class="user-greeting">Hello, {{ userName }}! </h6>
+
+
     <ul class="sidebar-nav">
-      <!-- My Assets -->
+
       <li>
         <a class="nav-item" (click)="goToAssetAssign()">
           <i class="pi pi-desktop"></i>
@@ -18,7 +17,7 @@
         </a>
       </li>
 
-      <!-- Asset Request with NEW badge -->
+
       <li>
         <a class="nav-item" (click)="goToAssetRequest()">
           <i class="pi pi-send"></i>
@@ -27,16 +26,15 @@
         </a>
       </li>
 
-      <!-- Divider -->
+
       <div class="divider"></div>
 
-      <!-- Support Section Header -->
+
       <li class="section-title">
         <i class="pi pi-headphones"></i>
         <span>Support</span>
       </li>
 
-      <!-- Raise Ticket -->
       <li>
         <a class="nav-item" (click)="goToSupporttickets()">
           <i class="pi pi-plus-circle"></i>
@@ -44,7 +42,7 @@
         </a>
       </li>
 
-      <!-- Track Tickets -->
+
       <li>
         <a class="nav-item" (click)="goToTracktickets()">
           <i class="pi pi-list-check"></i>
@@ -52,10 +50,10 @@
         </a>
       </li>
 
-      <!-- Divider -->
+
       <div class="divider"></div>
 
-      <!-- Settings -->
+
       <li>
         <a class="nav-item">
           <i class="pi pi-cog"></i>
@@ -63,7 +61,6 @@
         </a>
       </li>
 
-      <!-- Logout -->
       <li>
         <a class="nav-item logout" (click)="onLogOut()">
           <i class="pi pi-sign-out"></i>
@@ -73,8 +70,7 @@
     </ul>
   </aside>
 
-  <!-- Main Content Area -->
-  <div class="main-content">
+
     <router-outlet></router-outlet>
-  </div>
+
 </div>

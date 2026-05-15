@@ -1,116 +1,80 @@
-<body>
-    <div class="app-wrapper">
-        <section class="dashboard-section">
-            <h1 class="section-title">Dashboard Overview</h1>
-            <div class="chart-row">
-                <div class="chart-card">
-                    <h3 class="chart-title">Asset Distribution Overview</h3>
-                    <p-chart
-                        *ngIf="assetChartData"
-                        type="doughnut"
-                        [data]="assetChartData"
-                        [options]="assetChartOptions">
-                    </p-chart>
-                </div>
-   <div class="chart-card">
-                    <h3 class="chart-title">Hardware Overview</h3>
-                    <p-chart *ngIf="hardwareChartData"
-                        type="bar"
-                        [data]="hardwareChartData"
-                        [options]="hardwareChartOptions">
-                    </p-chart>
-                </div>
-                <div class="chart-card">
-                    <h3 class="chart-title">E-Waste Overview</h3>
-                    <p-chart
-                        *ngIf="eWasteChartData"
-                        type="doughnut"
-                        [data]="eWasteChartData"
-                        [options]="eWasteChartOptions">
-                    </p-chart>
-                </div>
+<div class="app-wrapper">
+  <section class="dashboard-section">
+    <h1 class="section-title">Dashboard Overview</h1>
+
+    <div class="kpi-row">
+  <div class="kpi-card" (click)="getAllAssetMaster()">
+    <div class="kpi-title">Assets Assigned</div>
+    <div class="kpi-value">
+      <span *ngIf="!loading">{{ assetsInUse }}</span>
+      <span *ngIf="loading" class="kpi-loading">—</span>
+    </div>
+    <div class="kpi-sub">Currently with users</div>
+  </div>
+
+  <div class="kpi-card" (click)="getAllAssetMaster()">
+    <div class="kpi-title">Active Assets</div>
+    <div class="kpi-value">
+      <span *ngIf="!loading">{{ availableAssets }}</span>
+      <span *ngIf="loading" class="kpi-loading">—</span>
+    </div>
+    <div class="kpi-sub">Ready for assignment</div>
+  </div>
+
+  <div class="kpi-card" (click)="getAllSupportTickets()">
+    <div class="kpi-title">Pending Tickets</div>
+    <div class="kpi-value">
+      <span *ngIf="!loading">{{ pendingTickets }}</span>
+      <span *ngIf="loading" class="kpi-loading">—</span>
+    </div>
+    <div class="kpi-sub">Awaiting resolution</div>
+  </div>
+
+  <div class="kpi-card" (click)="getAllUsers()">
+    <div class="kpi-title">Total Users</div>
+    <div class="kpi-value">
+      <span *ngIf="!loading">{{ totalUsers }}</span>
+      <span *ngIf="loading" class="kpi-loading">—</span>
+    </div>
+    <div class="kpi-sub">Active system users</div>
+  </div>
+</div>
+
+<div class="charts-grid">
+
+  <div class="chart-card">
+    <h3 class="chart-title">Asset Distribution</h3>
+    <div class="chart-center-label">
+      <span class="chart-big-number">{{ assetsInUse + availableAssets }}</span>
+      <span class="chart-big-label">Total</span>
+    </div>
+    <p-chart *ngIf="assetChartData" type="bar"
+      [data]="assetChartData" [options]="assetChartOptions">
+    </p-chart>
+  </div>
+
+  <div class="chart-card">
+    <h3 class="chart-title">Support Tickets</h3>
+    <p-chart *ngIf="ticketChartData" type="line"
+      [data]="ticketChartData" [options]="ticketChartOptions">
+    </p-chart>
+  </div>
+
+  <div class="chart-card">
+    <h3 class="chart-title">Asset Requests</h3>
+    <p-chart *ngIf="requestChartData" type="pie"
+      [data]="requestChartData" [options]="requestChartOptions">
+    </p-chart>
+  </div>
+</div>
+<footer class="footer">
+  <div class="bottom">
+    <span>AssetNexIT</span>
+    <span>&#169;</span>
+    <span>2025 All Rights Reserved</span>
+  </div>
+</footer>
 
 
 
 
-                <div class="chart-card">
-                    <h3 class="chart-title">Support Tickets Status</h3>
-                    <p-chart
-                        *ngIf="supportChartData"
-                        type="doughnut"
-                        [data]="supportChartData"
-                        [options]="supportChartOptions">
-                    </p-chart>
-                </div>
-            </div>
-
-        <section class="dashboard-section">
-            <h1 class="section-title">Platform Features</h1>
-            <div class="card-grid-container">
-                <div class="card-body">
-                  <div class="card-icon">
-                    <img src="assets/images/image (3).svg" alt="Asset Inventory"/></div>
-                    <h2 class="text-center">Asset Inventory</h2>
-                    <p>Get a comprehensive view of all deployed assets in a single click. Quick assessment of asset distribution, status, and allocation across your organization.</p>
-                </div>
-
-                <div class="card-body">
-                  <div class="card-icon">
-                    <img src="assets/images/image (4).svg" alt="E-Waste"/></div>
-                    <h2 class = "text-center">E-Waste Disposal</h2>
-                    <p>Effortlessly manage your e-waste disposal process with our streamlined solution. Track, schedule, and document the disposal of electronic assets ensuring compliance with environmental regulations.</p>
-                </div>
-
-                <div class="card-body">
-                  <div class="card-icon">
-                    <img src="assets/images/image (5).svg" alt="Integration"/></div>
-                    <h2 class="text-center">IT System Integration</h2>
-                    <p>Seamlessly integrate AssetNexIT with your existing IT systems. Our platform supports API integrations, allowing you to synchronize data and enhance your asset management workflows.</p>
-                </div>
-
-                <div class="card-body">
-                  <div class="card-icon">
-                    <img src="assets/images/image (6).svg" alt="Support"/></div>
-                    <h2>Support Desk</h2>
-                    <p>Enhance your IT support operations with our integrated support desk. Track and manage support tickets, monitor response times, and ensure timely resolution of IT issues.</p>
-                </div>
-
-                <div class = "card-body">
-                  <div class="card-icon">
-                  <img src = "assets/images/image (9).svg" alt = "Request Management"/></div>
-                  <p>Enhance your IT asset request management with our streamlined solution. Track, manage and fulfil asset requests ensuring efficient allocation and timely fulfillment.</p>
-                </div>
-
-                <div class="card-body">
-                  <div class="card-icon">
-                    <img src="assets/images/image (7).svg" alt="Analytics"/></div>
-                    <h2 class="text-center">Reporting & Analytics</h2>
-                    <p>Gain valuable insights into your asset management processes with our robust reporting and analytics features. Make data-driven decisions to optimize your IT operations.</p>
-                </div>
-
-                <div class="card-body">
-                <div class="card-icon">
-                    <img src="assets/images/image (8).svg" alt="Security"/></div>
-                    <h2 class="text-center">Security & Compliance</h2>
-                    <p>Ensure the security and compliance of your IT assets with AssetNexIT. Allows for a quick and safe process that ensures asset well-being and regulatory adherence.</p>
-                </div>
-            </div>
-        </section>
-
-    <footer class="footer">
-        <div class="bottom">
-            <span>AssetNexIT</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-c-circle" viewBox="0 0 16 16">
-                <path d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.146 4.992c-1.212 0-1.927.92-1.927 2.502v1.06c0 1.571.703 2.462 1.927 2.462.979 0 1.641-.586 1.729-1.418h1.295v.093c-.1 1.448-1.354 2.467-3.03 2.467-2.091 0-3.269-1.336-3.269-3.603V7.482c0-2.261 1.201-3.638 3.27-3.638 1.681 0 2.935 1.054 3.029 2.572v.088H9.875c-.088-.879-.768-1.512-1.729-1.512"/>
-            </svg>
-            <span>2025 All Rights Reserved</span>
-            <span>|</span>
-            <a href="#">Terms of Service</a>
-            <span>|</span>
-            <a href="#">Privacy Policy</a>
-            <span>|</span>
-            <a href="#">Contact Us</a>
-            <span>|</span>
-            <a href="#">Cookies</a>
-        </div>
-    </footer>

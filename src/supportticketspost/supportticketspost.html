@@ -1,267 +1,276 @@
+<div class="page-container">
+
   <div class="page-header">
     <div class="page-title-group">
-      <h3>SupportTicket Management</h3>
+      <h3>Support Ticket Management</h3>
       <span class="page-subtitle">Manage support tickets and status</span>
     </div>
 
-<div class="nav-loading-bar" *ngIf="isNavigating"></div>
-
-
-<div class="d-flex justify-content-between mb-3">
-  <button (click)="goBack()" class="btn btn-primary">← Back To Dashboard</button>
-</div>
-<div class="nav-loading-bar" *ngIf="isNavigating"></div>
-<p-table
-  [value]="supportTickets"
-  [paginator]="true"
-  [lazy]="true"
-  [loading]="loading"
-  (onLazyLoad)="loadTickets($event)"
-  [rows]="pageSize"
-  [totalRecords]="totalRecords"
-  [rowsPerPageOptions]="[5, 10, 20, 50]"
-  [showCurrentPageReport]="true"
-  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tickets"
-  class="p-datatable-sm">
-
-  <!-- Search Box -->
-  <ng-template pTemplate="caption">
-    <span class="p-input-icon-left">
-      <i class="pi pi-search"></i>
-      <input
-        pInputText
-        type="text"
-        [(ngModel)]="searchText"
-        (input)="onGlobalSearch($event)"
-        placeholder="Search tickets..." />
-    </span>
-  </ng-template>
-
-  <!-- Table Header -->
-  <ng-template pTemplate="header">
-    <tr>
-      <th>ID</th>
-      <th>Asset</th>
-      <th>Category</th>
-      <th>Description</th>
-      <th>Priority</th>
-      <th>Status</th>
-      <th>Created</th>
-      <th class="text-center">Actions</th>
-    </tr>
-  </ng-template>
-
-  <!-- Table Body -->
-  <ng-template pTemplate="body" let-ticket>
-    <tr>
-      <td>{{ ticket.id }}</td>
-      <td>{{ ticket.assetConcerned || 'N/A' }}</td>
-      <td>{{ ticket.issueCategory }}</td>
-      <td>{{ ticket.issueDescription | slice:0:50 }}{{ ticket.issueDescription?.length > 50 ? '...' : '' }}</td>
-      <td>
-        <span [class]="'priority-' + ticket.priority?.toLowerCase()">
-          {{ ticket.priority }}
-        </span>
-      </td>
-      <td>
-        <p-select
-          [options]="statusList"
-          optionLabel="name"
-          optionValue="id"
-          [(ngModel)]="ticket.statusId"
-          (onChange)="updateStatus(ticket)"
-          [appendTo]="'body'"
-          placeholder="Select Status">
-        </p-select>
-      </td>
-      <td>{{ ticket.createdAt | date:'short' }}</td>
-      <td class="text-center">
-        <i
-          class="pi pi-eye action-icon"
-          title="View Details"
-          (click)="openViewModal(ticket)"
-          style="cursor: pointer; color: #007bff; margin-right: 10px;">
-        </i>
-        <i
-          class="pi pi-comments action-icon"
-          title="View Activity"
-          (click)="openActivityModal(ticket)"
-          style="cursor: pointer; color: #28a745; margin-right: 10px;">
-        </i>
-        <i
-          class="pi pi-trash action-icon"
-          title="Delete Ticket"
-          (click)="openDeleteModal(ticket)"
-          style="cursor: pointer; color: #dc3545;">
-        </i>
-      </td>
-    </tr>
-  </ng-template>
-
-
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td colspan="8" class="text-center" style="padding: 20px;">
-        <i class="pi pi-inbox" style="font-size: 2rem; color: #999;"></i>
-        <p>No tickets found</p>
-      </td>
-    </tr>
-  </ng-template>
-</p-table>
-
-<!-- ACTIVITY MODAL -->
-<div class="modal-overlay" *ngIf="showActivityModal" (click)="closeActivityModal()"></div>
-<div class="modal-container modal-lg" *ngIf="showActivityModal">
-  <div class="modal-header">
-    <div class="modal-title-group">
-      <i class="pi pi-comments"></i>
-      <span>Ticket Activity — #{{ selectedTicket?.id }}</span>
-    </div>
-    <button class="close-btn" (click)="closeActivityModal()">✕</button>
-  </div>
-
-  <div class="modal-body activity-body">
-
-    <!-- Comments List -->
-    <div class="comments-list">
-      <div *ngIf="ticketComments.length === 0" class="no-comments">
-        <i class="pi pi-inbox"></i>
-        <p>No activity yet</p>
-      </div>
-
-      <div *ngFor="let comment of ticketComments"
-           class="comment-box"
-           [class.internal]="comment.type === 'Internal'"
-           [class.user]="comment.type === 'User'">
-        <div class="comment-header">
-          <span class="comment-type-badge" [class.badge-internal]="comment.type === 'Internal'"
-                [class.badge-user]="comment.type === 'User'">
-            {{ comment.type === 'Internal' ? '🔒 Internal Note' : '💬 Reply to User' }}
-          </span>
-          <span class="comment-date">{{ comment.createdAt | date:'MMM d, y, h:mm a' }}</span>
-        </div>
-        <p class="comment-message">{{ comment.message }}</p>
-      </div>
-    </div>
-
-    <!-- Add Comment -->
-    <div class="add-comment">
-      <p class="add-comment-label">Add Message</p>
-      <textarea
-        rows="3"
-        class="comment-input"
-        placeholder="Write a message..."
-        [(ngModel)]="message">
-      </textarea>
-
-      <div class="message-options">
-        <label class="radio-label" [class.selected]="messageType === 'Internal'">
-          <input type="radio" value="Internal" [(ngModel)]="messageType" name="messageType">
-          🔒 Internal Note
-        </label>
-        <label class="radio-label" [class.selected]="messageType === 'User'">
-          <input type="radio" value="User" [(ngModel)]="messageType" name="messageType">
-          💬 Reply to User
-        </label>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="modal-footer">
-    <button class="btn btn-dark" (click)="closeActivityModal()">Close</button>
-    <button class="btn btn-primary" (click)="sendMessage()" [disabled]="!message">
-      <i class="pi pi-send"></i> Send Message
+    <button class="btn-dark" (click)="goBack()">
+      ← Back to Dashboard
     </button>
+  </div>
+
+  <div class="table-card">
+    <div class="table-toolbar">
+      <div class="search-bar">
+        <i class="pi pi-search"></i>
+        <input
+          type="text"
+          [(ngModel)]="searchText"
+          (input)="onGlobalSearch($event)"
+          placeholder="Search tickets..." />
+      </div>
+      <button class="btn-refresh" (click)="refreshTickets()">
+        <i class="pi pi-refresh"></i>
+      </button>
+    </div>
+
+    <p-table
+      [value]="supportTickets"
+      [paginator]="true"
+      [lazy]="true"
+      [loading]="loading"
+      (onLazyLoad)="loadTickets($event)"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords"
+      [rowsPerPageOptions]="[5,10,20,50]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tickets"
+      responsiveLayout="scroll"
+      styleClass="app-table">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ID</th>
+          <th>Asset</th>
+          <th>Category</th>
+          <th>Description</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-ticket>
+        <tr>
+          <td>{{ ticket.id }}</td>
+          <td>{{ ticket.assetConcerned || 'N/A' }}</td>
+          <td>{{ ticket.issueCategory }}</td>
+          <td>
+            {{ ticket.issueDescription | slice:0:50 }}{{ ticket.issueDescription?.length > 50 ? '...' : '' }}
+          </td>
+          <td>
+            <span class="priority-badge"
+              [class.priority-low]="ticket.priority === 'Low'"
+              [class.priority-medium]="ticket.priority === 'Medium'"
+              [class.priority-high]="ticket.priority === 'High'">
+              {{ ticket.priority }}
+            </span>
+          </td>
+          <td>
+            <select
+              class="status-dropdown"
+              [(ngModel)]="ticket.statusId"
+              (change)="updateStatus(ticket)">
+              <option *ngFor="let s of statusList" [ngValue]="s.id">
+                {{ s.name }}
+              </option>
+            </select>
+          </td>
+          <td>{{ ticket.createdAt | date:'MMM d, y' }}</td>
+          <td class="text-center">
+            <div class="action-icons">
+              <button type="button" class="action-icon view"
+                title="View Details"
+                (click)="openViewModal(ticket)">
+                <i class="pi pi-eye"></i>
+              </button>
+              <button type="button" class="action-icon edit"
+                title="View Activity"
+                (click)="openActivityModal(ticket)">
+                <i class="pi pi-comments"></i>
+              </button>
+              <button type="button" class="action-icon danger"
+                title="Delete Ticket"
+                (click)="openDeleteModal(ticket)">
+                <i class="pi pi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8" class="empty-text">No tickets found</td>
+        </tr>
+      </ng-template>
+
+    </p-table>
   </div>
 </div>
 
 <!-- VIEW MODAL -->
-<div class="modal-overlay" *ngIf="showViewModal" (click)="closeViewModal()"></div>
-<div class="modal-container" *ngIf="showViewModal">
-  <div class="modal-header">
-    <div class="modal-title-group">
-      <i class="pi pi-eye"></i>
-      <span>Ticket Details — #{{ selectedTicket?.id }}</span>
+<p-dialog
+  header="Ticket Details"
+  [(visible)]="showViewModal"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '520px' }"
+  appendTo="body">
+
+  <div *ngIf="selectedTicket" class="dialog-body">
+
+    <div class="detail-row">
+      <span class="detail-label">Ticket ID</span>
+      <span class="detail-value">#{{ selectedTicket.id }}</span>
     </div>
-    <button class="close-btn" (click)="closeViewModal()">✕</button>
-  </div>
 
-  <div class="modal-body">
-    <div class="detail-grid">
+    <div class="detail-row">
+      <span class="detail-label">Asset</span>
+      <span class="detail-value">{{ selectedTicket.assetConcerned || 'N/A' }}</span>
+    </div>
 
-      <div class="detail-item">
-        <span class="detail-label">Asset Concerned</span>
-        <span class="detail-value">{{ selectedTicket?.assetConcerned || 'N/A' }}</span>
-      </div>
+    <div class="detail-row">
+      <span class="detail-label">Category</span>
+      <span class="detail-value">{{ selectedTicket.issueCategory }}</span>
+    </div>
 
-      <div class="detail-item">
-        <span class="detail-label">Issue Category</span>
-        <span class="detail-value">{{ selectedTicket?.issueCategory }}</span>
-      </div>
-
-      <div class="detail-item full-width">
-        <span class="detail-label">Issue Description</span>
-        <p class="detail-value detail-desc">{{ selectedTicket?.issueDescription }}</p>
-      </div>
-
-      <div class="detail-item">
-        <span class="detail-label">Priority</span>
+    <div class="detail-row">
+      <span class="detail-label">Priority</span>
+      <span class="detail-value">
         <span class="priority-badge"
-          [class.priority-low]="selectedTicket?.priority === 'Low'"
-          [class.priority-medium]="selectedTicket?.priority === 'Medium'"
-          [class.priority-high]="selectedTicket?.priority === 'High'">
-          {{ selectedTicket?.priority }}
+          [class.priority-low]="selectedTicket.priority === 'Low'"
+          [class.priority-medium]="selectedTicket.priority === 'Medium'"
+          [class.priority-high]="selectedTicket.priority === 'High'">
+          {{ selectedTicket.priority }}
         </span>
-      </div>
-
-      <div class="detail-item">
-        <span class="detail-label">Status</span>
-        <span class="status-badge">{{ getStatusName(selectedTicket?.statusId) }}</span>
-      </div>
-
-      <div class="detail-item full-width">
-        <span class="detail-label">Created At</span>
-        <span class="detail-value">{{ selectedTicket?.createdAt | date:'MMM d, y, h:mm a' }}</span>
-      </div>
-
+      </span>
     </div>
-  </div>
 
-  <div class="modal-footer">
-    <button class="btn btn-dark" (click)="closeViewModal()">Close</button>
+    <div class="detail-row">
+      <span class="detail-label">Status</span>
+      <span class="detail-value">{{ getStatusName(selectedTicket.statusId) }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">Created</span>
+      <span class="detail-value">{{ selectedTicket.createdAt | date:'MMM d, y, h:mm a' }}</span>
+    </div>
+
+    <div class="detail-row description-row">
+      <span class="detail-label">Description</span>
+      <span class="detail-value">{{ selectedTicket.issueDescription }}</span>
+    </div>
+
+    <div class="dialog-actions">
+      <button class="btn-cancel" (click)="closeViewModal()">Close</button>
+    </div>
+
   </div>
+</p-dialog>
+
+<!-- ACTIVITY MODAL -->
+<p-dialog
+  header="Ticket Activity"
+  [(visible)]="activityModalVisible"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '540px' }"
+  appendTo="body">
+
+  <div *ngIf="selectedTicket" class="dialog-body">
+
+    <div class="detail-row">
+      <span class="detail-label">Ticket</span>
+      <span class="detail-value">#{{ selectedTicket.id }} — {{ selectedTicket.issueCategory }}</span>
+    </div>
+
+    <div class="field">
+  <label>Resolution Notes</label>
+  <textarea
+    class="dialog-input"
+    rows="2"
+    [(ngModel)]="selectedTicket.resolutionNotes"
+    placeholder="Add resolution notes...">
+  </textarea>
+  <button
+    class="btn-save"
+    style="margin-top: 8px;"
+    (click)="saveResolutionNotes()">
+    Save Notes
+  </button>
 </div>
 
+    <div class="comments-box">
+      <div *ngIf="ticketComments.length === 0" class="no-comments">
+        No activity yet
+      </div>
+      <div *ngFor="let c of ticketComments" class="comment-item">
+        <span class="comment-text">{{ c.comment }}</span>
+        <span class="comment-time">{{ c.createdAt | date:'MMM d, h:mm a' }}</span>
+      </div>
+    </div>
 
+    <!-- <div class="field" style="margin-top: 16px;">
+      <label>Add Comment</label>
+      <textarea
+        class="dialog-input"
+        rows="3"
+        [(ngModel)]="message"
+        placeholder="Type your message...">
+      </textarea>
+    </div> -->
 
-<!-- DELETE MODAL -->
-<div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()"></div>
-<div class="modal-container small" *ngIf="showDeleteModal">
-  <div class="modal-header danger">
-    <h3>⚠️ Remove Ticket</h3>
-    <button class="close-btn" (click)="closeDeleteModal()">×</button>
+    <!-- <div class="field">
+      <label>Type</label>
+      <select class="status-dropdown" [(ngModel)]="messageType">
+        <option value="Internal">Internal</option>
+        <option value="User">User</option>
+      </select>
+    </div> -->
+
+    <div class="dialog-actions">
+      <button class="btn-cancel" (click)="closeActivityModal()">Close</button>
+      <button class="btn-dark" (click)="sendMessage()">Send</button>
+    </div>
+
   </div>
+</p-dialog>
 
-  <div class="modal-body">
-    <p>
-      Are you sure you want to remove ticket
-      <strong>#{{ selectedTicket?.id }}</strong>?
+
+<p-dialog
+  header="Delete Ticket"
+  [(visible)]="showDeleteModal"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '420px' }"
+  appendTo="body">
+
+  <div *ngIf="selectedTicket" class="dialog-body">
+
+    <p style="color: #111827; font-size: 0.95rem; margin-bottom: 8px;">
+      Are you sure you want to delete ticket <strong>#{{ selectedTicket.id }}</strong>?
     </p>
-    <p class="text-muted">
+    <p style="color: #6b7280; font-size: 0.88rem;">
       This action cannot be undone.
     </p>
-  </div>
 
-  <div class="modal-footer">
-    <button
-      class="btn btn-danger"
-      (click)="confirmDeleteTicket()"
-      [disabled]="!selectedTicket">
-      Delete Ticket
-    </button>
-    <button class="btn btn-secondary" (click)="closeDeleteModal()">
-      Cancel
-    </button>
+    <div class="dialog-actions">
+      <button class="btn-cancel" (click)="closeDeleteModal()">Cancel</button>
+      <button class="btn-dark" style="background:#dc2626;"
+        (click)="confirmDeleteTicket()">
+        Delete
+      </button>
+    </div>
   </div>
-</div>
+</p-dialog>
+

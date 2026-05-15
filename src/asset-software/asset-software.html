@@ -1,73 +1,128 @@
-<h3 class="mb-3"><u>Asset Software</u></h3>
-<div class="buttonrow">
-    <button routerLink="admin/dashboard" (click)="goBack()">← Back To Dash</button>
+<div class="page-container">
+
+  <!-- HEADER -->
+  <div class="page-header">
+
+    <div class="page-title-group">
+      <h3>Asset Software</h3>
+
+      <span class="page-subtitle">
+        Manage installed software and license details
+      </span>
+    </div>
+
+    <button
+      class="btn btn-dark"
+      (click)="goBack()">
+
+      ← Back to Dashboard
+
+    </button>
+
   </div>
 
-<div class="table">
+  <!-- TABLE CARD -->
+  <div class="table-card">
 
-  <p-table
+    <!-- TOOLBAR -->
+    <div class="table-toolbar">
 
-    #dt
-    [value]="software"
-    class="p-datatable-sm"
-    [paginator]="true"
-    [rows]="10"
-    [responsiveLayout]="'scroll'"
-    [globalFilterFields]="['version','asset']">
-    <ng-template pTemplate="caption">
-      <span class="p-input-icon-left">
+      <div class="search-bar">
+
         <i class="pi pi-search"></i>
+
         <input
           pInputText
           type="text"
-          (input)="dt.filterGlobal($event.target.value, 'contains')"
-          placeholder="Search asset software..."/>
-      </span>
-    </ng-template>
+          (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+          placeholder="Search asset software..." />
 
+      </div>
 
-  <ng-template pTemplate="header">
-      <tr>
-      <th >Id</th>
-      <th pSortableColumn="version">Version  <p-sortIcon field="version"></p-sortIcon></th>
-      <th>StatusId</th>
-      <th>AssetId</th>
-      <th>LicenseKey</th>
-      <th>InstalledAt</th>
-        <th>Actions</th>
-    </tr>
-</ng-template>
+    </div>
 
+    <!-- TABLE -->
+    <p-table
+      #dt
+      [value]="software"
+      class="app-table"
+      [paginator]="true"
+      [rows]="10"
+      responsiveLayout="scroll"
+      [globalFilterFields]="['version','asset']">
 
-    <ng-template pTemplate="body" let-software>
-      <tr>
-      <td>{{ software.id }}</td>
-      <td>{{ software.version }}</td>
-      <td >{{ software.statusId }}</td>
-      <td >{{ software.assetId }}</td>
-      <td>{{ software.license_Key }}</td>
-      <td>{{software.installedAt}}</td>
+      <ng-template pTemplate="header">
 
-        <td >
-          <div class="action-icons" >
-            <i
-              class="pi pi-pencil action-icon"
-              title="Edit Assignment"
-              >
-            </i>
-          </div>
-        </td>
-      </tr>
-    </ng-template>
+        <tr>
 
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="4" class="text-center">
-          No asset software found
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+          <th>ID</th>
+
+          <th pSortableColumn="version">
+            Version
+            <p-sortIcon field="version"></p-sortIcon>
+          </th>
+
+          <th>Status ID</th>
+
+          <th>Asset ID</th>
+
+          <th>License Key</th>
+
+          <th>Installed At</th>
+
+          <th class="text-center">Actions</th>
+
+        </tr>
+
+      </ng-template>
+
+      <ng-template pTemplate="body" let-software>
+
+        <tr>
+
+          <td>{{ software.id }}</td>
+
+          <td>{{ software.version }}</td>
+
+          <td>{{ software.statusId }}</td>
+
+          <td>{{ software.assetId }}</td>
+
+          <td>{{ software.license_Key }}</td>
+
+          <td>{{ software.installedAt | date:'MMM d, y' }}</td>
+
+          <td class="text-center">
+
+            <div class="action-icons">
+
+              <i
+                class="pi pi-pencil action-icon edit"
+                title="Edit Software">
+              </i>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+
+        <tr>
+
+          <td colspan="7" class="empty-text">
+            No asset software found
+          </td>
+
+        </tr>
+
+      </ng-template>
+
+    </p-table>
+
+  </div>
+
 </div>
-
-

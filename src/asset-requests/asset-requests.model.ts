@@ -21,7 +21,7 @@ export interface AdminAssetRequest
 {
     id: number,
     name:string,
-    contact:number,
+    contact:string,
     email:string,
     asset: string,
     requestedAssetType: string,

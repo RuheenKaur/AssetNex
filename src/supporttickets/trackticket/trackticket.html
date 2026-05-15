@@ -5,7 +5,12 @@
       <h2>Your Ticket Status</h2>
       <p>Track all your submitted support tickets</p>
     </div>
+    <div>
+    <button class="btn-refresh" (click)="loadTickets()">
+      <i class="pi pi-refresh"></i>
+    </button>
     <button class="btn-back" (click)="goBack()">← Back to Dashboard</button>
+  </div>
   </div>
 
   <div class="table-card">
@@ -40,29 +45,35 @@
           <th>Asset</th>
           <th>Status</th>
           <th>Resolution Notes</th>
+          <th pSortableColumn="createdAt">Created At <p-sortIcon field="createdAt"></p-sortIcon></th>
         </tr>
       </ng-template>
 
-      <ng-template pTemplate="body" let-ticket>
-        <tr>
-          <td>#{{ ticket.id }}</td>
-          <td>{{ ticket.issueCategory }}</td>
-          <td>{{ ticket.issueDescription }}</td>
-          <td>
-            <span class="priority-badge" [ngClass]="{
-              'priority-high': ticket.priority === 'High',
-              'priority-medium': ticket.priority === 'Medium',
-              'priority-low': ticket.priority === 'Low'
-            }">{{ ticket.priority }}</span>
-          </td>
-          <td>{{ ticket.asset }}</td>
-          <td>
-            <span class="status-badge">{{ ticket.status }}</span>
-          </td>
-          <td>{{ ticket.resolutionNotes || '—' }}</td>
-        </tr>
-      </ng-template>
-
+<ng-template pTemplate="body" let-ticket>
+  <tr>
+    <td>#{{ ticket.ticketId }}</td>
+    <td>{{ ticket.issueCategory }}</td>
+    <td>{{ ticket.issueDescription }}</td>
+    <td>
+      <span class="priority-badge" [ngClass]="{
+        'priority-high': ticket.priority === 'High',
+        'priority-medium': ticket.priority === 'Medium',
+        'priority-low': ticket.priority === 'Low'
+      }">{{ ticket.priority }}</span>
+    </td>
+    <td>{{ ticket.assetConcerned }}</td>
+    <td>
+      <span class="status-badge" [ngClass]="{
+        'status-open': ticket.statusName === 'Open',
+        'status-progress': ticket.statusName === 'In Progress',
+        'status-resolved': ticket.statusName === 'Resolved',
+        'status-closed': ticket.statusName === 'Closed'
+      }">{{ ticket.statusName }}</span>
+    </td>
+    <td>{{ ticket.resolutionNotes || '—' }}</td>
+    <td>{{ ticket.createdAt | date:'MMM d, y' }}</td>
+  </tr>
+</ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
           <td colspan="7" class="empty-message">
@@ -75,3 +86,4 @@
     </p-table>
   </div>
 </div>
+

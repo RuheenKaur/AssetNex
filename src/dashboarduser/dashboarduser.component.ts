@@ -16,9 +16,9 @@ export class DashboarduserComponent implements OnInit {
     constructor(
     private router: Router,
     private assetService: AssetAssignService,
-    private authService:AuthService
+    private authService:AuthService,
   ) {}
-
+ private initialized = false;
   userName: string = 'User';
   myAssetsCount: number = 0;
   pendingRequests: number = 0;
@@ -40,14 +40,17 @@ export class DashboarduserComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.loadDashboardData();
-    this.currentUser = JSON.parse(localStorage.getItem('user')!);
-  if(!this.currentUser) return;
-  this.userName= this.currentUser.name;
-  this.userId = this.currentUser.id;
+ if (this.initialized) return;
+  this.initialized = true;
+
+  console.log('Dashboard Init');
+    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  this.currentUser = storedUser;
+  this.userName = storedUser.name || storedUser.email || 'User';
+  this.userId = storedUser.numericId; // use numericId not id
   console.log('Current user:', this.currentUser);
-  console.log('UserId for asset API:', this.userId);
-  console.log('User name:', this.userName);
+  console.log('NumericId for API:', this.userId);
+  this.loadDashboardData();
   }
 
   loadDashboardData() {

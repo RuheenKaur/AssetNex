@@ -1,4 +1,3 @@
-
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AssetRequestService } from '../asset-requests.service';
@@ -6,90 +5,35 @@ import { FormsModule } from '@angular/forms';
 import { AdminAssetRequest } from './adminassetrequest.model';
 import { TableModule } from 'primeng/table';
 import { SelectModule } from 'primeng/select';
+import { DialogModule } from 'primeng/dialog';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-assetrequests',
-  imports: [CommonModule,FormsModule,TableModule,SelectModule],
+  imports: [CommonModule, FormsModule, TableModule, SelectModule, DialogModule],
   templateUrl: './admin-assetrequests.html',
   styleUrl: './admin-assetrequests.css',
 })
-
-export class AdminAssetrequests implements OnInit{
+export class AdminAssetrequests implements OnInit {
 
   assetRequests: AdminAssetRequest[] = [];
   loading = false;
-  constructor(private assetRequestService: AssetRequestService, private cdRef: ChangeDetectorRef, private router:Router) {}
+  statusList: { id: number; name: string }[] = [];
 
+  // dialog
+  showDialog = false;
+  selectedRequest: AdminAssetRequest | null = null;
+  selectedStatusId: number = 0;
 
-getStatusName(statusId: number): string {
-  return this.statusList.find(s => s.id === statusId)?.name ?? '—';
-}
+  constructor(
+    private assetRequestService: AssetRequestService,
+    private cdRef: ChangeDetectorRef,
+    private router: Router
+  ) {}
 
-getStatusClass(statusId: number): string {
-  const name = this.getStatusName(statusId);
-  return name
-    .toLowerCase()
-    .replace(/\s+/g, '-');
-}
-
-onStatusChange(req: AdminAssetRequest) {
-  this.assetRequestService
-    .updateStatus(req.id, req.statusId)
-    .subscribe();
-}
-
-ChangeOnStatus(req:AdminAssetRequest)
-{
-  this.assetRequestService.updateStatus(req.id, req.statusId).subscribe();
-}
-
-statusList: { id: number; name: string }[] = [];
-ngOnInit(): void {
-  this.loadRequests();
-  this.loadStatuses();
-}
-
-loadStatuses() {
-  this.assetRequestService.getStatuses('AssetRequest')
-    .subscribe(res => this.statusList = res);
-}
-  goBack()
-  {
-    this.router.navigateByUrl('/admin/dashboard');
-  }
-
-  RequestLoading()
-  {
-    this.loading = true;
-    this.assetRequestService.getAllRequests().subscribe({
-      next:(data) => {
-        this.assetRequests = data;
-        this.loading = false;
-        console.log('ADMIN ASSET REQUESTS:', data);
-      },
-      error:(err)=>{
-        console.error('Failed to load asset requests', err);
-        this.loading = false;
-      }
-    })
-  }
-
-
-  LoadingRequests()
-  {
-    this.loading = true;
-    this.assetRequestService.getAllRequests().subscribe({
-      next:(data)=>{
-    this.assetRequests = data;
-    this.loading = false;
-    console.log('ADMIN ASSET REQUESTS:', data);
-      },
-      error:(err) => {
-        console.error('Failed to load asset requests', err);
-        this.loading = false;
-      }
-    });
+  ngOnInit(): void {
+    this.loadRequests();
+    this.loadStatuses();
   }
 
   loadRequests() {
@@ -98,12 +42,63 @@ loadStatuses() {
       next: (data) => {
         this.assetRequests = data;
         this.loading = false;
-        console.log('ADMIN ASSET REQUESTS:', data);
       },
       error: (err) => {
         console.error('Failed to load asset requests', err);
         this.loading = false;
       }
     });
+  }
+
+loadStatuses() {
+  this.assetRequestService.getStatuses('AssetRequest')
+    .subscribe(res => this.statusList = res);
+}
+
+saveStatus() {
+  if (!this.selectedRequest) return;
+  this.assetRequestService.updateStatus(this.selectedRequest.id, this.selectedStatusId)
+    .subscribe({
+      next: () => {
+        const row = this.assetRequests.find(r => r.id === this.selectedRequest!.id);
+        if (row) {
+          row.statusId = this.selectedStatusId;
+          this.cdRef.detectChanges();  // ← force UI refresh
+        }
+        this.showDialog = false;
+        this.selectedRequest = null;
+      },
+      error: (err) => {
+        alert('Failed to update status: ' + (err.error?.message || err.message));
+      }
+    });
+}
+
+  getStatusName(statusId: number): string {
+    return this.statusList.find(s => s.id === statusId)?.name ?? '—';
+  }
+
+  getStatusClass(statusId: number): string {
+    return this.getStatusName(statusId).toLowerCase().replace(/\s+/g, '-');
+  }
+
+  onStatusChange(req: AdminAssetRequest) {
+    this.assetRequestService.updateStatus(req.id, req.statusId).subscribe();
+  }
+
+
+  openEditDialog(req: AdminAssetRequest) {
+    this.selectedRequest = { ...req };
+    this.selectedStatusId = req.statusId;
+    this.showDialog = true;
+  }
+
+  closeDialog() {
+    this.showDialog = false;
+    this.selectedRequest = null;
+  }
+
+  goBack() {
+    this.router.navigateByUrl('/admin/dashboard');
   }
 }

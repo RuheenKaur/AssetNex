@@ -1,12 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { Router } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { ChartModule } from 'primeng/chart';
 import { DashboardService } from './dashboard.service';
-import { SupportTicket } from '../supporttickets/supporttickets.model';
-import { SupportTicketsPostModel } from '../supportticketspost/supportticketspost.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,238 +12,150 @@ import { SupportTicketsPostModel } from '../supportticketspost/supportticketspos
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
+export class DashboardComponent implements OnInit {
 
-export class DashboardComponent {
-  constructor(private router: Router, private dashboardService: DashboardService) {}
+  constructor(
+    private router: Router,
+    private dashboardService: DashboardService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  assetChartData: any;
-  assetChartOptions: any;
-  eWasteChartData: any;
-  eWasteChartOptions: any;
-  hardwareChartData: any;
-  hardwareChartOptions: any;
-  supportChartData: any;
-  supportChartOptions: any;
+  assetsInUse = 0;
+  availableAssets = 0;
+  pendingTickets = 0;
+  totalUsers = 0;
+  loading = true;
 
-  tickets: SupportTicketsPostModel[] = [];
-  support: SupportTicket[] = [];
-  isSidebarCollapsed = false;
+  assetChartData: any = null;
+  ticketChartData: any = null;
+  requestChartData: any = null;
+  assetChartOptions: any = null;
+  ticketChartOptions: any = null;
+  requestChartOptions: any = null;
 
-  ngOnInit() {
-    this.initializeAssetChart();
-    this.initializeEwasteChart();
-    this.initializeHardwareChart();
-    this.initializeSupportChart();
+  ngOnInit(): void {
+    console.log('Dashboard ngOnInit fired');
+    setTimeout(() => {
+      this.loadDashboardStats();
+    }, 100);  // ← small delay ensures component is fully rendered
   }
 
-  // ============================================
-// CHART 1: ASSET DISTRIBUTION (ORANGE THEME)
-// ============================================
-initializeAssetChart() {
-  this.assetChartData = {
-    labels: ['In Use', 'Available', 'Disposed'],
-    datasets: [{
-      label: 'Asset Status',
-      data: [60, 30, 7],
-      backgroundColor: [
-        '#FF8C42',  // Bright Orange
-        '#FFB366',  // Light Orange
-        '#E67A2E'   // Dark Orange
-      ],
-      borderWidth: 2,
-      borderColor: '#fff'
-    }]
-  };
+  loadDashboardStats(): void {
+    console.log('Loading dashboard stats...');
+    this.dashboardService.getStats().subscribe({
+      next: (data) => {
+        console.log('Stats received:', data);
+        this.assetsInUse = data.assetsInUse ?? 0;
+        this.availableAssets = data.availableAssets ?? 0;
+        this.pendingTickets = data.pendingTickets ?? 0;
+        this.totalUsers = data.totalUsers ?? 0;
+        this.loading = false;
 
-  this.assetChartOptions = {
-    responsive: true,
-    maintainAspectRatio: true,
-    plugins: {
-      legend: {
-        position: 'bottom',
-        labels: {
-          padding: 15,
-          font: { size: 12 }
-        }
+        setTimeout(() => {
+          this.initAssetChart(data.assetsInUse, data.availableAssets);
+          this.initTicketChart(
+            data.tickets?.open ?? 0,
+            data.tickets?.inProgress ?? 0,
+            data.tickets?.resolved ?? 0
+          );
+          this.initRequestChart(
+            data.requests?.pending ?? 0,
+            data.requests?.approved ?? 0,
+            data.requests?.rejected ?? 0
+          );
+          this.cdr.detectChanges();
+        }, 50);
       },
-      title: {
-        display: false
-      },
-      tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        padding: 12
+      error: (err) => {
+        console.error('Dashboard stats error:', err);
+        this.loading = false;
+        this.assetsInUse = 0;
+        this.availableAssets = 0;
+        this.pendingTickets = 0;
+        this.totalUsers = 0;
+        this.cdr.detectChanges();
       }
-    }
-  };
-}
+    });
+  }
 
-// ============================================
-// CHART 2: E-WASTE (ORANGE THEME)
-// ============================================
-initializeEwasteChart() {
-  this.eWasteChartData = {
-    labels: ['Approved', 'Pending', 'Rejected'],
-    datasets: [{
-      label: 'E-Waste Status',
-      data: [10, 8, 7],
-      backgroundColor: [
-        '#F4A460',  // Sandy Orange (approved)
-        '#FFB74D',  // Golden Orange (pending)
-        '#FF7043'   // Red-Orange (rejected)
-      ],
-      borderWidth: 2,
-      borderColor: '#fff'
-    }]
-  };
-
-  this.eWasteChartOptions = {
-    responsive: true,
-    maintainAspectRatio: true,
-    plugins: {
-      legend: {
-        position: 'bottom',
-        labels: {
-          padding: 15,
-          font: { size: 12 }
-        }
-      },
-      title: {
-        display: false
-      }
-    }
-  };
-}
-
-// ============================================
-// CHART 3: HARDWARE (ORANGE THEME - BAR CHART)
-// ============================================
-initializeHardwareChart() {
-  this.hardwareChartData = {
-    labels: ['In-Use', 'Dysfunctional', 'Rejected'],
-    datasets: [{
-      label: 'Hardware Status',
-      data: [200, 15, 24],
-      backgroundColor: [
-        '#C8997A',  // Brown-Orange
-        '#FF8A80',  // Coral-Orange
-        '#FFA666'   // Peach-Orange
-      ],
-      borderWidth: 1,
-      borderColor: '#E1E8ED'
-    }]
-  };
-
-  this.hardwareChartOptions = {
-    responsive: true,
-    maintainAspectRatio: true,
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: '#E1E8ED'
+  initAssetChart(inUse: number, available: number): void {
+    this.assetChartData = {
+      labels: ['Assigned', 'Active'],
+      datasets: [{
+        data: [inUse, available],
+        backgroundColor: ['#f0842c', '#e5e7eb'],
+        borderWidth: 0,
+        hoverOffset: 6
+      }]
+    };
+    this.assetChartOptions = {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '70%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { padding: 16, font: { size: 12 }, usePointStyle: true }
         },
-        ticks: {
-          font: { size: 11 }
-        }
-      },
-      x: {
-        grid: {
-          display: false
+        tooltip: { backgroundColor: 'rgba(0,0,0,0.75)', padding: 12 }
+      }
+    };
+  }
+
+  initTicketChart(open: number, inProgress: number, resolved: number): void {
+    this.ticketChartData = {
+      labels: ['Open', 'In Progress', 'Resolved'],
+      datasets: [{
+        data: [open, inProgress, resolved],
+        backgroundColor: ['#f0842c', '#fbbf24', '#4ade80'],
+        borderWidth: 0,
+        hoverOffset: 6
+      }]
+    };
+    this.ticketChartOptions = {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '70%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { padding: 16, font: { size: 12 }, usePointStyle: true }
         },
-        ticks: {
-          font: { size: 11 }
-        }
+        tooltip: { backgroundColor: 'rgba(0,0,0,0.75)', padding: 12 }
       }
-    },
-    plugins: {
-      legend: {
-        display: false
-      },
-      title: {
-        display: false
-      },
-      tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        padding: 12
+    };
+  }
+
+  initRequestChart(pending: number, approved: number, rejected: number): void {
+    this.requestChartData = {
+      labels: ['Pending', 'Approved', 'Rejected'],
+      datasets: [{
+        data: [pending, approved, rejected],
+        backgroundColor: ['#fbbf24', '#4ade80', '#f87171'],
+        borderWidth: 0,
+        hoverOffset: 6
+      }]
+    };
+    this.requestChartOptions = {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '70%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { padding: 16, font: { size: 12 }, usePointStyle: true }
+        },
+        tooltip: { backgroundColor: 'rgba(0,0,0,0.75)', padding: 12 }
       }
-    }
-  };
-}
-
-initializeSupportChart() {
-  this.supportChartData = {
-    labels: ['Renewal', 'Outdated', 'Expired'],
-    datasets: [{
-      label: 'Support Status',
-      data: [50, 20, 32],
-      backgroundColor: [
-        '#FFB84D',
-        '#FF9966',  // Tangerine
-        '#E67E50'   // Burnt Orange
-      ],
-      borderWidth: 2,
-      borderColor: '#fff'
-    }]
-  };
-
-  this.supportChartOptions = {
-    responsive: true,
-    maintainAspectRatio: true,
-    plugins: {
-      legend: {
-        position: 'bottom',
-        labels: {
-          padding: 15,
-          font: { size: 12 }
-        }
-      },
-      title: {
-        display: false
-      }
-    }
-  };
-}
-
-  // ============================================
-  // NAVIGATION METHODS (unchanged)
-  // ============================================
-  getAllAssetMaster() {
-    this.router.navigateByUrl('/assetsmaster');
+    };
   }
 
-  getAllAssignedAssets() {
-    this.router.navigateByUrl('admin/allassignedassets');
-  }
-
-  getAllUsers() {
-    this.router.navigateByUrl('/users');
-  }
-
-  getAllAssetSoftware() {
-    this.router.navigateByUrl('/assetsoftware');
-  }
-
-  goToLanding() {
-    this.router.navigateByUrl('/landing');
-  }
-
-  getAllAssetHistory() {
-    this.router.navigateByUrl('/assethistory');
-  }
-
-  getAllAssetsRequests() {
-    this.router.navigateByUrl('/admin/asset-requests');
-  }
-
-  getAllSupportTickets() {
-    this.router.navigateByUrl('admin/supportticketspost');
-  }
-
-  toggleSidebar(): void {
-    this.isSidebarCollapsed = !this.isSidebarCollapsed;
-  }
-
-  goTo(route: string): void {
-    this.router.navigateByUrl(route);
-  }
+  getAllAssetMaster()    { this.router.navigateByUrl('/assetsmaster'); }
+  getAllAssignedAssets() { this.router.navigateByUrl('admin/allassignedassets'); }
+  getAllUsers()          { this.router.navigateByUrl('/users'); }
+  getAllAssetHistory()   { this.router.navigateByUrl('/assethistory'); }
+  getAllAssetsRequests() { this.router.navigateByUrl('/admin/asset-requests'); }
+  getAllSupportTickets() { this.router.navigateByUrl('admin/supportticketspost'); }
+  goToLanding()         { this.router.navigateByUrl('/landing'); }
+  goTo(route: string)   { this.router.navigateByUrl(route); }
 }

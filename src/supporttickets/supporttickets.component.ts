@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SupportTicketService } from './supporttickets.service';
 import { UserService } from '../user.service';
-import { Users } from '../user.model';
 
 @Component({
   selector: 'app-supporttickets',
@@ -14,19 +13,23 @@ import { Users } from '../user.model';
   templateUrl: './supporttickets.component.html',
   styleUrls: ['./supporttickets.component.css']
 })
-
 export class SupportTicketsComponent implements OnInit {
+
   supportForm!: FormGroup;
-  currentUser!: Users;
+  currentUser: any = {};
   assignedAssets: any[] = [];
-  prefillData: any = null;
   isFromAssetPage = false;
-  userId: any;
+  userId: number | null = null;
   showSuccess = false;
   showError = false;
   successMessage = '';
   errorMessage = '';
   isSubmitting = false;
+
+  prefillAssetId: number | null = null;
+  prefillAssetTag: string = '';
+  prefillAssetConcerned: string = '';
+  prefillCategory: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -34,88 +37,62 @@ export class SupportTicketsComponent implements OnInit {
     private router: Router,
     private userService: UserService
   ) {
-
     const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras?.state) {
-      this.prefillData = navigation.extras.state;
+    const state = navigation?.extras?.state;
+
+    if (state && state['assetId']) {
+      this.prefillAssetId = state['assetId'];
+      this.prefillAssetTag = state['assetTag'] || '';
+      this.prefillAssetConcerned = state['assetConcerned'] || '';
+      this.prefillCategory = state['assetCategory'] || '';
       this.isFromAssetPage = true;
-      console.log(' Prefill data received:', this.prefillData);
+      console.log('Prefill data received from navigation:', state);
     } else {
-      console.log('ℹ No prefill data - user came from menu');
-    }
-  }
-
-private loadUserAndAssets(userId: number): void {
-  console.log('Calling getUserById with ID:', userId);
-  this.userService.getUserById(userId).subscribe({
-    next: (user: Users) => {
-      console.log(' User loaded:', user);
-      this.currentUser = user;
-      this.supportForm.patchValue({
-        name: user.name,
-        email: user.email,
-        contact: user.contact
-      });
-      this.loadAssignedAssets(userId);
-    },
-    error: (err) => {
-      console.error(' Error loading user:', err);
-      console.error(' Failed userId was:', userId);
-      this.showErrorMessage('Failed to load user data');
-    }
-  });
-}
-
-private loadAssignedAssets(userId: number): void {
-  console.log('Calling getAssignedAssetsByUser with ID:', userId);
-
-  this.userService.getAssignedAssetsByUser(userId).subscribe({
-    next: (assets) => {
-      this.assignedAssets = assets;
-      console.log('Assigned assets loaded:', assets.length, 'assets');
-
-      if (assets.length === 0) {
-        this.showErrorMessage('No assets assigned. Please contact admin.');
+      const histState = history.state;
+      if (histState && histState.assetId) {
+        this.prefillAssetId = histState.assetId;
+        this.prefillAssetTag = histState.assetTag || '';
+        this.prefillAssetConcerned = histState.assetConcerned || '';
+        this.prefillCategory = histState.assetCategory || '';
+        this.isFromAssetPage = true;
+        console.log('Prefill data from history.state:', histState);
+      } else {
+        console.log('No prefill data — user came from menu');
       }
-    },
-    error: (err) => {
-      console.error('Error loading assets:', err);
-      this.showErrorMessage('Failed to load assets');
     }
-  });
-}
-
-ngOnInit(): void {
-  const userIdStr = localStorage.getItem('userId');
-  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-  const userId = userIdStr ? Number(userIdStr) : null;
-  console.log(' Stored user:', storedUser);
-  console.log(' UserId used for API:', userId);
-  console.log(' User name:', storedUser.name);
-  if (!userId) {
-    console.error('Numeric userId not found');
-    this.router.navigate(['/login']);
-    return;
   }
-  this.currentUser = storedUser;
-  this.initForm();
-  this.loadUserAndAssets(userId);
-}
 
-  private initForm(): void {
+  ngOnInit(): void {
+    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    this.currentUser = storedUser;
+    this.userId = storedUser.numericId ? Number(storedUser.numericId) : null;
+
+    console.log('Stored user:', storedUser);
+    console.log('NumericId for API:', this.userId);
+
+    if (!this.userId) {
+      console.error('Numeric userId not found — redirecting to login');
+      this.router.navigate(['/login/auth']);
+      return;
+    }
+
+    this.initForm(storedUser);
+    this.loadAssignedAssets(this.userId);
+  }
+
+  private initForm(user: any): void {
     this.supportForm = this.fb.group({
-      name: [{ value: this.currentUser?.name || '', disabled: true }],
-      email: [{ value: this.currentUser?.email || '', disabled: true }],
-      contact: [{ value: this.currentUser?.contact || '', disabled: true }],
+      name: [{ value: user.name || user.email || '', disabled: true }],
+      email: [{ value: user.email || '', disabled: true }],
+      contact: [{ value: user.contact || '', disabled: true }],
       issueCategory: [
-        this.prefillData?.assetCategory || '',
+        { value: this.prefillCategory || '', disabled: this.isFromAssetPage },
         Validators.required
       ],
       assetId: [
-        this.prefillData?.assetId || '',
+        { value: this.prefillAssetId || '', disabled: this.isFromAssetPage },
         Validators.required
       ],
-
       issueDescription: [
         '',
         [
@@ -128,58 +105,62 @@ ngOnInit(): void {
       priority: ['Medium', Validators.required]
     });
 
-    if (this.isFromAssetPage) {
-      this.supportForm.get('assetId')?.disable();
-      this.supportForm.get('issueCategory')?.disable();
-      console.log(' Fields disabled for prefill mode');
-    }
+    console.log('Form initialised with prefill:', {
+      assetId: this.prefillAssetId,
+      category: this.prefillCategory,
+      isFromAssetPage: this.isFromAssetPage
+    });
   }
 
-private loadUserData(userId: number): void{
-  this.userService.getUserById(userId).subscribe({
-    next: (user:Users) =>
-    {
-      this.currentUser = user;
-      this.supportForm.patchValue({
-        name:user.name,
-        email:user.email,
-        contact:user.contact
-      });
-      this.loadAssignedAssets(userId);
-    },
-    error: (err) =>
-    {
-      console.error('Error loading user:', err);
-    }
-  })
-}
-
-
+  private loadAssignedAssets(userId: number): void {
+    console.log('Loading assigned assets for userId:', userId);
+    this.userService.getAssignedAssetsByUser(userId).subscribe({
+      next: (assets) => {
+        this.assignedAssets = assets;
+        console.log('Assigned assets loaded:', assets.length, 'assets');
+        if (assets.length === 0) {
+          this.showErrorMessage('No assets assigned. Please contact admin.');
+        }
+      },
+      error: (err) => {
+        console.error('Error loading assets:', err);
+        this.showErrorMessage('Failed to load assets. Please try again.');
+      }
+    });
+  }
 
   submitForm(): void {
     Object.keys(this.supportForm.controls).forEach(key => {
       this.supportForm.get(key)?.markAsTouched();
     });
+
     if (this.supportForm.invalid) {
-      console.log('Form is invalid');
+      console.log('Form is invalid — not submitting');
       return;
     }
+
     this.isSubmitting = true;
     const formValue = this.supportForm.getRawValue();
+
     const payload = {
+      userId: this.userId,
       assetId: Number(formValue.assetId),
       issueCategory: formValue.issueCategory,
       issueDescription: formValue.issueDescription,
       priority: formValue.priority
     };
-    console.log('Submitting ticket:', payload);
+
+    console.log('Submitting ticket payload:', payload);
+
     this.supportService.createTicket(payload).subscribe({
-      next: (response) => {
-        console.log('Ticket created:', response);
+      next: (res) => {
+        console.log('Ticket created successfully:', res);
         this.isSubmitting = false;
-        this.showSuccessMessage('Support ticket created successfully!');
+        this.showSuccessMessage('Ticket submitted successfully!');
+        this.initForm(this.currentUser);
+        this.loadAssignedAssets(this.userId!);
         setTimeout(() => {
-          this.router.navigate(['/user/supporttickets']);
+          this.router.navigate(['/user/trackticket']);
         }, 2000);
       },
       error: (err) => {
@@ -189,7 +170,7 @@ private loadUserData(userId: number): void{
           this.showErrorMessage('Invalid ticket data. Please check all fields.');
         } else if (err.status === 401) {
           this.showErrorMessage('Session expired. Please login again.');
-          setTimeout(() => this.router.navigate(['/login']), 2000);
+          setTimeout(() => this.router.navigate(['/login/auth']), 2000);
         } else {
           this.showErrorMessage('Failed to create ticket. Please try again.');
         }
@@ -201,13 +182,14 @@ private loadUserData(userId: number): void{
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value?.trim();
       if (!value) return null;
+
       if (/^(.)\1{4,}$/.test(value)) {
         return { gibberish: true };
       }
+
       if (/^[^a-zA-Z0-9\s]+$/.test(value)) {
         return { gibberish: true };
       }
-
 
       const words = value
         .split(/\s+/)
@@ -221,27 +203,20 @@ private loadUserData(userId: number): void{
     };
   }
 
-
   private showSuccessMessage(message: string): void {
     this.successMessage = message;
     this.showSuccess = true;
     this.showError = false;
-
-    setTimeout(() => {
-      this.showSuccess = false;
-    }, 3000);
+    setTimeout(() => { this.showSuccess = false; }, 3000);
   }
-
 
   private showErrorMessage(message: string): void {
     this.errorMessage = message;
     this.showError = true;
     this.showSuccess = false;
-
-    setTimeout(() => {
-      this.showError = false;
-    }, 5000);
+    setTimeout(() => { this.showError = false; }, 5000);
   }
+
   isFieldInvalid(fieldName: string): boolean {
     const field = this.supportForm.get(fieldName);
     return !!(field && field.invalid && field.touched);
@@ -250,5 +225,4 @@ private loadUserData(userId: number): void{
   goToLanding(): void {
     this.router.navigateByUrl('/landing');
   }
-
 }

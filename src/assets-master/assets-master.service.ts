@@ -64,6 +64,33 @@ assignAsset(assetId: number, assignedToUserId: number, assignedByUserId: number)
     }
   );
 }
+
+createAsset(payload: any): Observable<any> {
+  return this.http.post(`${environment.apibaseUrl}/api/AssetsMaster`, payload);
 }
+
+unassignAsset(assetId: number): Observable<any> {
+  return this.http.put(
+    `${environment.apibaseUrl}/api/AssetAssignments/unassign?assetId=${assetId}`,
+    {}
+  );
+}
+
+reassignAsset(assetId: number, newUserId: number): Observable<any> {
+  return this.http.post(
+    `${environment.apibaseUrl}/api/AssetAssignments/reassign?assetId=${assetId}&newUserId=${newUserId}`,
+    {}
+  );
+}
+
+updateAssetStatusOnly(assetId: number, statusId: number): Observable<any> {
+  return this.http.patch(
+    `${environment.apibaseUrl}/api/AssetsMaster/${assetId}/status`,
+    { statusId }
+  );
+}
+}
+
+
 
 

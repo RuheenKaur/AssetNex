@@ -1,65 +1,201 @@
-
-.p-datatable-sm{
-  font-size: 14px;
-  color: #111827;
-  margin-top:50px;
-  margin-left:50px;
+.page-container {
+  margin-left: 260px;
+  margin-top: 80px;
+  padding: 24px 32px;
+  min-height: 100vh;
+  background: #f5f7fb;
 }
 
-.table{
-  border-radius: 10px;
-  position: relative;
-  margin-left:220px;
-  margin-top:70px;
+/* HEADER */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.table thead {
-  background: #f8fafc;
-}
-
-button{
-  padding: 6px 14px;
-  border-radius: 6px;
-  border: none;
-  margin-left:250px;
-  margin-top:100px;
-  background-color: #2563eb;
-  color: #fff;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #eceef5;
-  color:black;
-}
-
-
-.table th {
+.page-title-group h3 {
+  margin: 0;
+  font-size: 1.35rem;
   font-weight: 600;
-  font-size: 0.85rem;
-  color: #475569;
-  border-bottom: 1px solid #e5e7eb;
+  color: #111827;
 }
-th{
-  color:black;
+
+.page-subtitle {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* CARD */
+
+.table-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* TOOLBAR */
+
+.table-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+/* SEARCH */
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 260px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.search-bar i {
+  margin-right: 8px;
+  color: #9ca3af;
   font-size: 0.9rem;
 }
 
-tr{
-  color:#121213;
-  height: 40px;
-  font-style: bold;
+.search-bar input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.9rem;
+  color: #111827;
 }
 
-tr :hover
-{
-color:#4a6183
+/* TABLE */
+
+.app-table .p-datatable-wrapper {
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-body {
-  background-color: #ffffff;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-    'Open Sans', 'Helvetica Neue', sans-serif;
+.app-table .p-datatable-thead > tr > th {
+  background: #f9fafb;
+  color: #6b7280;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 14px 12px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
+.app-table .p-datatable-tbody > tr > td {
+  padding: 14px 12px;
+  font-size: 0.9rem;
+  color: #111827;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+}
+
+.app-table .p-datatable-tbody > tr:hover {
+  background: #fff7f1;
+  transition: background 0.2s ease;
+}
+
+/* ACTION ICONS */
+
+.action-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.action-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.92rem;
+}
+
+.action-icon.edit {
+  color: #2563eb;
+}
+
+.action-icon.edit:hover {
+  background: #eff6ff;
+  transform: translateY(-1px);
+}
+
+/* BUTTON */
+
+.btn-dark {
+  border: none;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #111827;
+  color: #ffffff;
+}
+
+.btn-dark:hover {
+  background: #000000;
+}
+
+/* EMPTY */
+
+.empty-text {
+  padding: 24px;
+  text-align: center;
+  font-size: 0.88rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* PAGINATOR */
+
+:host ::ng-deep .p-paginator {
+  border: none;
+  padding-top: 14px;
+  background: transparent;
+}
+
+:host ::ng-deep .p-paginator .p-paginator-page {
+  border-radius: 8px;
+}
+
+:host ::ng-deep .p-paginator .p-paginator-page.p-highlight {
+  background: #f0842c;
+  border-color: #f0842c;
+  color: #ffffff;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1024px) {
+
+  .page-container {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .search-bar {
+    width: 100%;
+  }
+}

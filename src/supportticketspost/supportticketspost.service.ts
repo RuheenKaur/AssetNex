@@ -6,9 +6,11 @@ import { TrackTicket } from "../supporttickets/trackticket/trackticket.model";
 
 @Injectable({ providedIn: 'root' })
 export class SupportTicketPostService {
+
   private apiUrl = `${environment.apibaseUrl}/api/support-tickets`;
 
   constructor(private http: HttpClient) {}
+
 
   getAdminTickets(
     pageNumber: number,
@@ -17,6 +19,7 @@ export class SupportTicketPostService {
     sortField: string,
     sortOrder: string
   ): Observable<any> {
+
     const params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString())
@@ -35,20 +38,28 @@ export class SupportTicketPostService {
     return this.http.post(`${this.apiUrl}/${ticketId}/comment`, payload);
   }
 
-getConnents(ticketId: number): Observable<any[]>
-{
-  return this.http.get<any[]>(`${this.apiUrl}/${ticketId}/comments`);
+updateResolutionNotes(ticketId: number, notes: string): Observable<any> {
+  return this.http.patch(
+    `${this.apiUrl}/${ticketId}/resolution`,
+    { resolutionNotes: notes }
+  );
 }
-  updateStatus(ticketId: number, statusId: number): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${ticketId}/status`, { statusId });
+  updateStatus(ticketId: number, statusId: number) {
+    return this.http.patch(
+      `${this.apiUrl}/${ticketId}/status`,
+      { statusId }
+    );
   }
+
 
   deleteTicket(ticketId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${ticketId}`);
   }
 
 
-  getAllTrackTickets(userId: number): Observable<TrackTicket[]> {
-    return this.http.get<TrackTicket[]>(`${this.apiUrl}/user/${userId}`);
+  getAllTrackTickets(numericId: number): Observable<TrackTicket[]> {
+    return this.http.get<TrackTicket[]>(
+      `${this.apiUrl}/user/${numericId}`
+    );
   }
 }

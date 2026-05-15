@@ -1,5 +1,4 @@
 name: Build Angular
-
 on:
   push:
     branches: [main]

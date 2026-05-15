@@ -57,3 +57,66 @@
     <button class="add-btn">+ Add Asset</button>
 </div>
 
+Slide 1 — Title
+"This is AssetNexIT — an IT Asset Lifecycle Management System I built end to end using Angular, .NET 8, SQL Server and Azure. I will walk you through what it does, how it works, and what I learned building it."
+
+Slide 2 & 3 — Overview
+"The presentation covers the problem, the solution, the tech stack, and my learnings. I will also do a live demo midway."
+
+Slide 4 — Objective
+"The goal was to build a real working application independently — not follow a tutorial. I wanted to understand how frontend, backend, database and cloud actually connect in a production-grade system."
+
+Slide 5 — Business Problem
+"Organisations manage hundreds of IT assets with no centralised system. Assets go missing, assignments are tracked in spreadsheets, and there is no audit trail. AssetNexIT solves all of this."
+
+Slide 6 — Solution Overview
+"The system has two journeys — admin and user. Both flow through Angular, through a JWT interceptor, to the .NET API, through the middleware pipeline, down to SQL Server. Every layer is connected and working."
+
+Slide 7 — Scope of Learning
+"I worked across five areas — .NET backend, Angular frontend, SQL Server, Azure cloud, and core concepts like SOLID, dependency injection and repository pattern. All of these are applied in the actual codebase."
+
+Slide 8 — Tech Stack
+"Angular 20 on the frontend, ASP.NET Core Web API in C# on the backend, SQL Server as the database, and Azure for hosting and secret management. Everything communicates through REST APIs."
+
+Slide 9 — Frontend
+"I used standalone components, reactive forms with validators, an HTTP interceptor that attaches the JWT token to every request automatically, and route guards that block unauthorised navigation."
+
+Slide 10 — Backend
+"The backend follows a layered architecture — controller handles HTTP, service handles business logic, repository handles data access. The middleware pipeline runs in the correct order — authentication before authorisation always."
+
+Slide 11 — API Design
+"All endpoints follow REST conventions — correct HTTP methods, correct status codes. Pagination uses skip and take. Every protected endpoint requires a valid JWT token."
+
+Slide 12 — Data Modelling
+"The database is normalised to third normal form. I used code-first migrations so the schema is version controlled. AsNoTracking is applied on all read queries for performance."
+
+Slide 13 — CI CD
+"I set up a GitHub Actions pipeline — push to main, it builds, tests and deploys automatically. No manual deployment steps."
+
+Slide 14 — Azure
+"The API runs on Azure App Service. The Angular build is on Blob Storage. Secrets are in Key Vault. The App Service uses Managed Identity — no passwords anywhere in the code."
+
+Slide 15 — Live Demo
+"Let me show you the working application."
+Show: Login → Dashboard → Asset Master → open edit modal → Support Tickets admin side → User login → raise ticket → track ticket shows it.
+
+Slide 16 — Key Challenges
+"Three real challenges I hit — JWT auth scheme conflict with Identity, Azure IP whitelisting breaking SQL connectivity after every restart, and CORS misconfiguration blocking API calls from the Angular origin."
+
+Slide 17 — Problem Solving
+"My approach was always systematic — check logs first, isolate the layer, read official documentation, fix the root cause. Not guess and check."
+
+Slide 18 — Mentorship Impact
+"Maam's guidance shifted my thinking from what to why. Understanding why the repository pattern exists, why middleware order matters, why async is critical — that is what made the difference."
+
+Slide 19 — Areas of Growth
+"Edge case thinking, coding speed under pressure, and deeper Angular internals are areas I am actively working on."
+
+Slide 20 — Future Enhancements
+"Azure AD single sign-on, httpOnly cookie storage for JWT, Application Insights for live monitoring, and real-time notifications via SignalR."
+
+Slide 21 — Key Outcomes
+"I delivered a working full-stack application deployed on Azure. JWT auth, role-based access, CI-CD pipeline, no credentials in code. I understand every layer and can defend every decision."
+
+Slide 22 — Thank You
+"Thank you maam. I am open for questions on anything — architecture, code, decisions, or challenges

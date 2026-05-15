@@ -1,23 +1,16 @@
 <body>
-
-  <nav class="navbar">
-    <div class="nav-left">
-      <div class="logo-wrapper">
-        <h1 class="logo">AssetNex<span class="highlight">IT</span></h1>
-        <p class="below">TRACK | MANAGE | DISPOSE</p>
-      </div>
-    </div>
-    <div class="nav-right">
-      <ul class="nav-links">
-        <li><a href="#">DASHBOARD</a></li>
-        <li><a href="/about">ABOUT</a></li>
-        <li><a href="#">CONTACT</a></li>
-      </ul>
-    </div>
-  </nav>
-
+<nav class="navbar">
+  <div class="logo-wrapper">
+    <h1 class="logo">AssetNex<span class="highlight">IT</span></h1>
+    <p class="below">TRACK | MANAGE | DISPOSE</p>
+  </div>
+  <ul class="nav-links">
+    <li><a (click)="goToLogin()">DASHBOARD</a></li>
+    <li><a href="/about">ABOUT</a></li>
+    <li><a href="#">CONTACT</a></li>
+  </ul>
+</nav>
   <div class="landing-wrapper">
-
     <div class="icon-grid">
       <img src="assets/images/p1.png.png" />
       <img src="assets/images/p2.png.png" />
@@ -37,7 +30,7 @@
     </div>
 
     <div class="welcome-container">
-      <h2>Welcome to AssetNexIT</h2>
+      <h2>Welcome to AssetNex<span class = "highlightt">IT</span></h2>
       <p>Your one-stop, streamlined platform for asset inventory & IT support.</p>
       <div class="auth-buttons">
         <button class="btnn" routerLink="/login/auth" (click)="goToLogin()">
@@ -51,7 +44,7 @@
       </div>
     </div>
 
-  </div><!-- end landing-wrapper -->
+  </div>
 
   <footer class="footer">
     <div class="bottom">

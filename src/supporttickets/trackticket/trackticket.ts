@@ -1,63 +1,83 @@
 import { Component, OnInit } from '@angular/core';
 import { TrackTicketService } from './trackticket.service';
 import { TrackTicket } from './trackticket.model';
-import { ChangeDetectorRef } from '@angular/core';
-import { Table, TableModule } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import {ChangeDetectorRef} from '@angular/core';
 
 @Component({
   selector: 'app-trackticket',
-  imports: [TableModule,CommonModule],
+  standalone: true,
+  imports: [TableModule, CommonModule],
   templateUrl: './trackticket.html',
   styleUrl: './trackticket.css',
 })
 export class Trackticket implements OnInit {
-userId:any;
-currentUser:any;
-userName:any;
-goTo:any;
-  tickets: TrackTicket[]=[];
-  constructor(private trackService:TrackTicketService, private cdRef:ChangeDetectorRef, private router: Router){}
 
-  ngOnInit()
-{
+  tickets: TrackTicket[] = [];
 
-  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-  this.userId = storedUser.id;
-  this.userName=storedUser.name;
+  numericId!: number;
+  userName = '';
+  userId!: number;
+
+  constructor(
+    private trackService: TrackTicketService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+
+
+ngOnInit(): void {
+
+  const storedUser = JSON.parse(
+    localStorage.getItem('user') || '{}'
+  );
+
   console.log('Stored user:', storedUser);
-  console.log('UserId used for asset API:', this.userId);
-  console.log('User name:', this.userName);
+
+  this.userId = storedUser.numericId;
+
+  console.log('NumericId used:', this.userId);
 
   if (!this.userId) {
-    console.error('UserId not found');
+    console.error('NumericId missing');
     return;
   }
-     this.trackService.getAllTrackTickets(this.userId).subscribe(data => {
-    this.tickets = data;
-    console.log('Ticket Tracking', data);
-  });
 
-  this.trackService.getAllTrackTickets(this.userId).subscribe({
-    next:(data) =>
-    {
-      this.tickets= data;
-    },
-    error:err => {
-      console.error(err);
-    }
-  })
+  this.loadTickets();
 }
 
-goBack()
-{
-  this.router.navigateByUrl('user/dashboarduser')
+
+  loadTickets(): void {
+
+  this.trackService
+    .getAllTrackTickets(this.userId)
+    .subscribe({
+
+      next: (data) => {
+
+        this.tickets = data ?? [];
+ this.cdr.detectChanges();
+        console.log('Tickets loaded:', this.tickets);
+
+      },
+
+      error: (err) => {
+
+        console.error('Failed loading tickets', err);
+
+      }
+
+    });
 }
 
-goToLanding()
-{
-  this.router.navigateByUrl('/landing');
-}
+  goBack(): void {
+    this.router.navigateByUrl('/user/dashboarduser');
+  }
 
+  goToLanding(): void {
+    this.router.navigateByUrl('/landing');
+  }
 }

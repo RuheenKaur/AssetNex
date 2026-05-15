@@ -20,11 +20,24 @@ export class UserPostService {
     return of({ success: true });
   }
 
-  updateUser(id:number)
-  {
-    return this.http.put(`${environment.apibaseUrl}/api/Users/update-user`, id);
-  }
+createUser(payload: any): Observable<any> {
+  return this.http.post(
+    `${environment.apibaseUrl}/api/Users`,
+    payload,
+    { responseType: 'text' }
+  );
+}
 
+updateUser(user: any): Observable<any> {
+  return this.http.put(`${environment.apibaseUrl}/api/Users/${user.id}`, user);
+}
+
+deactivateUser(userId: number): Observable<any> {
+  return this.http.put(
+    `${environment.apibaseUrl}/api/Users/deactivate/${userId}`,
+    {}
+  );
+}
 
     getAssignedAssets(userId: number): Observable<Assetassign[]>
     {
@@ -33,9 +46,7 @@ export class UserPostService {
       );
     }
 
-  deactivateUser(userId: number): Observable<void> {
-    return this.http.put<void>(`${environment.apibaseUrl}/deactivate/${userId}`, {});
-  }
+
 }
 
 

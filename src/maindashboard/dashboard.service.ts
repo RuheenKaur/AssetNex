@@ -37,7 +37,10 @@ getAllAssetSoftware()
 return this.http.get(`${environment.apibaseUrl}/api/AssetSoftware`)
 }
 
+  getStats(): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apibaseUrl}/api/Dashboard/stats`
+    );
+  }
 
 }
-
-

@@ -13,9 +13,9 @@ export class AssetAssignService {
 
   constructor(private http: HttpClient) {}
 
-  getAssignedAssets(UserId: number): Observable<Assetassign[]> {
+  getAssignedAssets(userId: number): Observable<Assetassign[]> {
     return this.http.get<Assetassign[]>(
-      `${environment.apibaseUrl}/api/AssetAssignments/user/${UserId}`
+      `${environment.apibaseUrl}/api/AssetAssignments/user/${userId}`
     );
   }
   assignAsset(

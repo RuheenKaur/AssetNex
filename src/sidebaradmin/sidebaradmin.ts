@@ -21,6 +21,11 @@ getAllAssignedAssets()
   this.router.navigateByUrl('admin/assetassignpost')
 }
 
+ isDisabled: boolean = false;
+
+  toggleLink() {
+    this.isDisabled = !this.isDisabled;
+  }
 
 getAllUsers()
 {

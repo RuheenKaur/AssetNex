@@ -1,7 +1,7 @@
-import { Routes, RouterModule } from '@angular/router';
+// import { Routes, RouterModule } from '@angular/router';
 
-const routes: Routes = [
-  {  },
-];
+// const routes: Routes = [
+//   {  },
+// ];
 
-export const MyRouteRoutes = RouterModule.forChild(routes);
+// export const MyRouteRoutes = RouterModule.forChild(routes);
