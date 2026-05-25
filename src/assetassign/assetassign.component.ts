@@ -67,6 +67,15 @@ ngOnInit(): void {
     this.router.navigateByUrl('user/supporttickets');
   }
 
+  goBack()
+  {
+    this.router.navigateByUrl('/user/dashboard');
+  }
+
+  loadTickets()
+  {
+
+  }
   goToLanding() {
     this.router.navigateByUrl('/landing');
   }

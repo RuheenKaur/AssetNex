@@ -27,7 +27,7 @@ export class AuthGuard implements CanActivate {
     const expectedRole = route.data['role'];
 
     if (expectedRole && user.role !== expectedRole) {
-      // Wrong role — redirect to their correct dashboard
+
       if (user.role === 'Admin') {
         this.router.navigate(['/admin/dashboard']);
       } else {

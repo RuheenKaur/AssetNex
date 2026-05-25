@@ -4,6 +4,7 @@
   max-width: 860px;
 }
 
+
 .track-header {
   display: flex;
   justify-content: space-between;
@@ -37,7 +38,7 @@
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-    background-color: rgb(212, 208, 208);
+  background-color: rgb(212, 208, 208);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -66,7 +67,7 @@
 
 .btn-refresh:hover { background: #d4701f; }
 
-
+/* ── Search bar ── */
 .search-bar {
   display: flex;
   align-items: center;
@@ -96,7 +97,7 @@
   width: 100%;
 }
 
-
+/* ── Cards ── */
 .track-card {
   background: #ffffff;
   border: 1px solid #e5e7eb;
@@ -203,12 +204,12 @@
 .badge-approved { background: #dcfce7; color: #166534; }
 .badge-rejected { background: #fee2e2; color: #991b1b; }
 
-/* ── Priority badges ── */
+
 .badge-high   { background: #fee2e2; color: #dc2626; }
 .badge-medium { background: #fef9c3; color: #ca8a04; }
 .badge-low    { background: #dcfce7; color: #16a34a; }
 
-/* ── States ── */
+
 .state-box {
   text-align: center;
   padding: 56px 24px;
@@ -231,7 +232,7 @@
 
 .state-box p { font-size: 13px; }
 
-/* ── Count pill ── */
+
 .count-pill {
   font-size: 12px;
   background: #f3f4f6;

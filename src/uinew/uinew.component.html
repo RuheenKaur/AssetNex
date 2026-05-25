@@ -120,3 +120,36 @@ Slide 21 — Key Outcomes
 
 Slide 22 — Thank You
 "Thank you maam. I am open for questions on anything — architecture, code, decisions, or challenges
+
+
+problemmmmmmmmmmms
+
+Action buttons not opening modals
+"PrimeNG table was intercepting click events on icon tags — fixed by replacing all icon tags with button tags and adding pointer-events and z-index explicitly."
+
+2. JWT auth scheme conflict
+"Identity was overriding the JWT default auth scheme — fixed by explicitly setting the default authentication and challenge scheme to JWT Bearer in Program.cs."
+
+3. CORS blocking API calls
+"The Angular origin wasn't whitelisted — fixed by adding both localhost and the Azure Blob URL to the CORS policy configuration."
+
+4. Azure SQL connectivity breaking
+"App Service outbound IPs kept changing — fixed by adding all possible outbound IPs from the App Service to the SQL Server firewall rules."
+
+5. Status dropdown resetting after change
+"The update was calling a full data reload which overwrote the selected value — fixed by removing the reload call and letting the UI hold the updated value optimistically."
+
+6. 500 error on status update
+"EF Core tracking conflict because the resolver had already loaded the same entity — fixed by using ExecuteUpdateAsync which bypasses the change tracker entirely."
+
+7. Comment send failing
+"The domain model had a non-nullable field that wasn't being sent — fixed by providing a default value in the controller before saving."
+
+8. Ticket submit redirecting to login
+"A misplaced setTimeout for navigation was outside the subscribe block, firing regardless of success or failure — fixed by moving it inside the next callback."
+
+9. Modal dialog styles not applying
+"PrimeNG renders dialogs outside the component DOM so component-scoped CSS didn't reach them — fixed by moving all dialog styles to the global styles.css file."
+
+10. N+1 query on asset list
+"Each asset was triggering a separate database call for related data — fixed by adding Include for eager loading and Select for projection to fetch only needed columns in one query."

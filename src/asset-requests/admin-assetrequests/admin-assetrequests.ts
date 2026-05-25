@@ -19,12 +19,10 @@ export class AdminAssetrequests implements OnInit {
   assetRequests: AdminAssetRequest[] = [];
   loading = false;
   statusList: { id: number; name: string }[] = [];
-
-  // dialog
   showDialog = false;
   selectedRequest: AdminAssetRequest | null = null;
   selectedStatusId: number = 0;
-
+ adminNotes: string = '';
   constructor(
     private assetRequestService: AssetRequestService,
     private cdRef: ChangeDetectorRef,
@@ -55,24 +53,6 @@ loadStatuses() {
     .subscribe(res => this.statusList = res);
 }
 
-saveStatus() {
-  if (!this.selectedRequest) return;
-  this.assetRequestService.updateStatus(this.selectedRequest.id, this.selectedStatusId)
-    .subscribe({
-      next: () => {
-        const row = this.assetRequests.find(r => r.id === this.selectedRequest!.id);
-        if (row) {
-          row.statusId = this.selectedStatusId;
-          this.cdRef.detectChanges();  // ← force UI refresh
-        }
-        this.showDialog = false;
-        this.selectedRequest = null;
-      },
-      error: (err) => {
-        alert('Failed to update status: ' + (err.error?.message || err.message));
-      }
-    });
-}
 
   getStatusName(statusId: number): string {
     return this.statusList.find(s => s.id === statusId)?.name ?? '—';
@@ -87,11 +67,38 @@ saveStatus() {
   }
 
 
-  openEditDialog(req: AdminAssetRequest) {
-    this.selectedRequest = { ...req };
-    this.selectedStatusId = req.statusId;
-    this.showDialog = true;
-  }
+
+openEditDialog(req: AdminAssetRequest) {
+  this.selectedRequest = { ...req };
+  this.selectedStatusId = req.statusId;
+  this.adminNotes = req.adminNotes || '';  // ← load existing notes
+  this.showDialog = true;
+}
+
+saveStatus() {
+  if (!this.selectedRequest) return;
+  this.assetRequestService.updateRequestReview(
+    this.selectedRequest.id,
+    this.selectedStatusId,
+    this.adminNotes
+  ).subscribe({
+    next: () => {
+      const row = this.assetRequests.find(r => r.id === this.selectedRequest!.id);
+      if (row) {
+        row.statusId = this.selectedStatusId;
+        row.adminNotes = this.adminNotes;  // ← update local data
+        this.cdRef.detectChanges();
+      }
+      this.showDialog = false;
+      this.selectedRequest = null;
+      this.adminNotes = '';
+    },
+    error: (err) => {
+      alert('Failed to update: ' + (err.error?.message || err.message));
+    }
+  });
+}
+
 
   closeDialog() {
     this.showDialog = false;

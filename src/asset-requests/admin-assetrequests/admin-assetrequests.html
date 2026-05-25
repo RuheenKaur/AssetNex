@@ -32,10 +32,7 @@
 
       <ng-template pTemplate="header">
         <tr>
-          <th>ID</th>
-          <th pSortableColumn="assetId">Asset ID <p-sortIcon field="assetId"></p-sortIcon></th>
-          <th>Asset</th>
-          <th>User ID</th>
+          <th>ID<p-sortIcon field="assetId"></p-sortIcon></th>
           <th>User</th>
           <th>Requested Type</th>
           <th>Reason</th>
@@ -48,9 +45,6 @@
       <ng-template pTemplate="body" let-req>
         <tr>
           <td>{{ req.id }}</td>
-          <td>{{ req.assetId }}</td>
-          <td>{{ req.asset }}</td>
-          <td>{{ req.userId }}</td>
           <td>{{ req.name }}</td>
           <td>{{ req.requestedAssetType }}</td>
           <td>{{ req.reason }}</td>
@@ -126,6 +120,19 @@
 </div>
     </div>
 
+    <div>
+  <label style="font-size:12px; color:#6b7280; font-weight:600; display:block; margin-bottom:6px;">
+    ADMIN NOTES (visible to user)
+  </label>
+  <textarea
+    [(ngModel)]="adminNotes"
+    rows="3"
+    placeholder="Add a note for the user..."
+    style="width:100%; padding:10px 12px; border:1px solid #e5e7eb;
+           border-radius:8px; font-size:13px; font-family:inherit;
+           resize:vertical; outline:none; color:#111827;">
+  </textarea>
+</div>
   </div>
 
   <ng-template pTemplate="footer">

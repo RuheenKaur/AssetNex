@@ -9,9 +9,6 @@
       <button class="btn-add" (click)="openCreateModal()">
         <i class="pi pi-plus"></i> Add User
       </button>
-      <button class="btn-refresh" (click)="reloadUsers()">
-        <i class="pi pi-refresh"></i>
-      </button>
       <button class="btn-dark" (click)="goBack()">
         ← Back to Dashboard
       </button>
@@ -27,6 +24,9 @@
           placeholder="Search users..."
           (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
       </div>
+      <button class="btn-refresh" (click)="reloadUsers()">
+        <i class="pi pi-refresh"></i>
+      </button>
     </div>
 
     <p-table
@@ -101,7 +101,6 @@
   </div>
 </div>
 
-<!-- CREATE USER MODAL -->
 <p-dialog
   header="Add New User"
   [(visible)]="showCreateModal"
@@ -116,21 +115,22 @@
 
     <div class="field">
       <label>Full Name <span class="required">*</span></label>
-      <input type="text" class="dialog-input"
+      <input type="text" class="dialog-input" required
         [(ngModel)]="newUser.name" placeholder="e.g. Priya Verma" />
     </div>
 
     <div class="field">
       <label>Email <span class="required">*</span></label>
-      <input type="email" class="dialog-input"
+      <input type="email" class="dialog-input" required
         [(ngModel)]="newUser.email" placeholder="e.g. priya@company.com" />
     </div>
 
+
     <div class="field">
-      <label>Contact</label>
-      <input type="text" class="dialog-input"
+      <label>Contact<span class="required">*</span></label>
+      <input type="text" class="dialog-input" required
         [(ngModel)]="newUser.contact" placeholder="e.g. 9876543210" />
-    </div>
+  </div>
 
     <div class="field">
       <label>Role <span class="required">*</span></label>
@@ -233,17 +233,17 @@
 
     <div class="field">
       <label>Full Name</label>
-      <input type="text" class="dialog-input" [(ngModel)]="selectedUser.name" />
+      <input type="text" class="dialog-input" [(ngModel)]="selectedUser.name" required />
     </div>
 
     <div class="field">
       <label>Email</label>
-      <input type="email" class="dialog-input" [(ngModel)]="selectedUser.email" />
+      <input type="email" class="dialog-input" [(ngModel)]="selectedUser.email" required/>
     </div>
 
     <div class="field">
       <label>Contact</label>
-      <input type="text" class="dialog-input" [(ngModel)]="selectedUser.contact" />
+      <input type="text" class="dialog-input" [(ngModel)]="selectedUser.contact" required/>
     </div>
 
     <div class="field">
@@ -289,4 +289,9 @@
       <button class="btn-delete" (click)="confirmDeactivateUser()">Deactivate</button>
     </div>
   </div>
+
+  <div *ngIf="createError" class="error-msg">{{ createError }}</div>
+    <div *ngIf="createSuccess" class="success-msg">
+      <i class="pi pi-check-circle"></i> User deleted successfully!
+    </div>
 </p-dialog>

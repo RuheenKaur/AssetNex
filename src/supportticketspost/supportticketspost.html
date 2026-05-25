@@ -130,6 +130,11 @@
       <span class="detail-value">#{{ selectedTicket.id }}</span>
     </div>
 
+        <div class="detail-row">
+      <span class="detail-label">Raised By</span>
+      <span class="detail-value">#{{ selectedTicket.name }}</span>
+    </div>
+
     <div class="detail-row">
       <span class="detail-label">Asset</span>
       <span class="detail-value">{{ selectedTicket.assetConcerned || 'N/A' }}</span>
@@ -217,24 +222,6 @@
         <span class="comment-time">{{ c.createdAt | date:'MMM d, h:mm a' }}</span>
       </div>
     </div>
-
-    <!-- <div class="field" style="margin-top: 16px;">
-      <label>Add Comment</label>
-      <textarea
-        class="dialog-input"
-        rows="3"
-        [(ngModel)]="message"
-        placeholder="Type your message...">
-      </textarea>
-    </div> -->
-
-    <!-- <div class="field">
-      <label>Type</label>
-      <select class="status-dropdown" [(ngModel)]="messageType">
-        <option value="Internal">Internal</option>
-        <option value="User">User</option>
-      </select>
-    </div> -->
 
     <div class="dialog-actions">
       <button class="btn-cancel" (click)="closeActivityModal()">Close</button>

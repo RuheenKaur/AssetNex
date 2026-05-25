@@ -41,6 +41,7 @@ return this.http.get(`${environment.apibaseUrl}/api/AssetSoftware`)
     return this.http.get<any>(
       `${environment.apibaseUrl}/api/Dashboard/stats`
     );
+
   }
 
 }

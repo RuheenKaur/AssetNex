@@ -1,83 +1,87 @@
 import { Component, OnInit } from '@angular/core';
-import { TrackTicketService } from './trackticket.service';
-import { TrackTicket } from './trackticket.model';
-import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { SupportTicketService } from '../supporttickets.service';
 import { Router } from '@angular/router';
-import {ChangeDetectorRef} from '@angular/core';
+import { SupportTicketPostService } from '../../supportticketspost/supportticketspost.service';
 
 @Component({
-  selector: 'app-trackticket',
+  selector: 'app-track-tickets',
   standalone: true,
-  imports: [TableModule, CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './trackticket.html',
-  styleUrl: './trackticket.css',
+  styleUrls: ['./trackticket.css']
 })
-export class Trackticket implements OnInit {
+export class TrackTicketsComponent implements OnInit {
 
-  tickets: TrackTicket[] = [];
-
-  numericId!: number;
-  userName = '';
-  userId!: number;
+  tickets: any[] = [];
+  filteredTickets: any[] = [];
+  loading = false;
+  error = '';
+  searchTerm = '';
 
   constructor(
-    private trackService: TrackTicketService,
-    private router: Router,
-    private cdr: ChangeDetectorRef
+    private ticketService: SupportTicketPostService,
+    private router: Router
   ) {}
 
-
-
-ngOnInit(): void {
-
-  const storedUser = JSON.parse(
-    localStorage.getItem('user') || '{}'
-  );
-
-  console.log('Stored user:', storedUser);
-
-  this.userId = storedUser.numericId;
-
-  console.log('NumericId used:', this.userId);
-
-  if (!this.userId) {
-    console.error('NumericId missing');
-    return;
+  ngOnInit(): void {
+    this.loadTickets();
   }
-
-  this.loadTickets();
-}
-
 
   loadTickets(): void {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userId = user.numericId;
+    if (!userId) { this.error = 'User not found. Please log in again.'; return; }
 
-  this.trackService
-    .getAllTrackTickets(this.userId)
-    .subscribe({
+    this.loading = true;
+    this.error = '';
 
-      next: (data) => {
-
-        this.tickets = data ?? [];
- this.cdr.detectChanges();
-        console.log('Tickets loaded:', this.tickets);
-
+    this.ticketService.getAllTrackTickets(userId).subscribe({
+      next: (res) => {
+        this.tickets = res;
+        this.filteredTickets = res;
+        this.loading = false;
       },
-
-      error: (err) => {
-
-        console.error('Failed loading tickets', err);
-
+      error: () => {
+        this.error = 'Failed to load tickets. Please try again.';
+        this.loading = false;
       }
-
     });
-}
-
-  goBack(): void {
-    this.router.navigateByUrl('/user/dashboarduser');
   }
 
-  goToLanding(): void {
-    this.router.navigateByUrl('/landing');
+  onSearch(): void {
+    const term = this.searchTerm.toLowerCase();
+    this.filteredTickets = this.tickets.filter(t =>
+      t.issueCategory?.toLowerCase().includes(term) ||
+      t.issueDescription?.toLowerCase().includes(term) ||
+      t.statusName?.toLowerCase().includes(term) ||
+      t.priority?.toLowerCase().includes(term)
+    );
+  }
+getStatusBadgeClass(statusName: string): string {
+  const map: any = {
+    'open':        'badge-open',
+    'in progress': 'badge-progress',
+    'resolved':    'badge-resolved',
+    'closed':      'badge-closed'
+  };
+  return map[statusName?.toLowerCase().trim()] || 'badge-closed';
+}
+
+getTicketCardClass(statusName: string): string {
+  const map: any = {
+    'open':        'status-open',
+    'in progress': 'status-progress',
+    'resolved':    'status-resolved',
+    'closed':      'status-closed'
+  };
+  return map[statusName?.toLowerCase().trim()] || '';
+}
+
+
+
+  goBack(): void {
+    this.router.navigate(['/user/dashboard']);
   }
 }

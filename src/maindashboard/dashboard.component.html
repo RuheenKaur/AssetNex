@@ -48,21 +48,21 @@
       <span class="chart-big-number">{{ assetsInUse + availableAssets }}</span>
       <span class="chart-big-label">Total</span>
     </div>
-    <p-chart *ngIf="assetChartData" type="bar"
+    <p-chart *ngIf="assetChartData" type="pie"
       [data]="assetChartData" [options]="assetChartOptions">
     </p-chart>
   </div>
 
   <div class="chart-card">
     <h3 class="chart-title">Support Tickets</h3>
-    <p-chart *ngIf="ticketChartData" type="line"
+    <p-chart *ngIf="ticketChartData" type="pie"
       [data]="ticketChartData" [options]="ticketChartOptions">
     </p-chart>
   </div>
 
   <div class="chart-card">
     <h3 class="chart-title">Asset Requests</h3>
-    <p-chart *ngIf="requestChartData" type="pie"
+    <p-chart *ngIf="requestChartData" type="doughnut"
       [data]="requestChartData" [options]="requestChartOptions">
     </p-chart>
   </div>

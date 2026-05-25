@@ -88,6 +88,30 @@
   font-size: 0.9rem;
 }
 
+.priority-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.request-closed {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.request-pending {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.request-approved {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
 .app-table .p-datatable-thead > tr > th {
   background: #f9fafb;
   color: #6b7280;
@@ -140,8 +164,6 @@
   font-size: 0.9rem;
 }
 
-/* STATUS DROPDOWN */
-
 :host ::ng-deep .sn-status-dropdown {
   border: none;
   background: transparent;
@@ -182,12 +204,12 @@
   color: #b45309;
 }
 
-.status-under-maintenance {
+.status-rejected {
   background: #f3e8ff;
   color: #7c3aed;
 }
 
-.status-resolved {
+.status-approved {
   background: #e6f4ea;
   color: #137333;
 }
@@ -212,12 +234,12 @@
   color: #0369a1;
 }
 
-.status-requested {
+.status-pending {
   background: #fff7ed;
   color: #c2410c;
 }
 
-.status-inactive {
+.status-rejected {
   background: #fef2f2;
   color: #b91c1c;
 }

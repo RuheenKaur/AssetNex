@@ -9,9 +9,7 @@
       <button class="btn-add" (click)="openCreateModal()">
         <i class="pi pi-plus"></i> Add Asset
       </button>
-      <button class="btn-refresh" (click)="refreshAssets()">
-        <i class="pi pi-refresh"></i>
-      </button>
+
       <button class="btn-dark" (click)="goBack()">
         ← Back to Dashboard
       </button>
@@ -28,6 +26,9 @@
           [(ngModel)]="search"
           (input)="onSearchChange()" />
       </div>
+      <button class="btn-refresh" (click)="refreshAssets()">
+        <i class="pi pi-refresh"></i>
+      </button>
     </div>
 
     <p-table
@@ -49,8 +50,6 @@
           <th>Brand</th>
           <th>Model</th>
           <th>Assigned To</th>
-          <th>Created</th>
-
           <th>Status</th>
           <th class="text-center">Actions</th>
         </tr>
@@ -68,7 +67,8 @@
             </span>
             <span *ngIf="!asset.assignedTo" class="unassigned">—</span>
           </td>
-          <td>{{ asset.createdOn | date:'MMM d, y' }}</td>
+<!--
+          <td>{{ asset.createdOn | date:'dd MMM yyyy' }}</td> -->
           <td>
             <span class="status-chip"
               [ngClass]="'status-' + (asset.statusName?.toLowerCase()?.replace(' ', '-') || 'available')">
@@ -102,7 +102,6 @@
   </div>
 </div>
 
-<!-- CREATE MODAL -->
 <p-dialog
   header="Add New Asset"
   [(visible)]="showCreateModal"
@@ -133,6 +132,7 @@
           <option>Desktop</option>
           <option>Monitor</option>
           <option>Keyboard</option>
+          <option>HeadSet</option>
           <option>Mouse</option>
         </select>
         <span class="field-error" *ngIf="newAssetErrors.assetType">
@@ -193,7 +193,6 @@
   </div>
 </p-dialog>
 
-<!-- EDIT MODAL -->
 <p-dialog
   header="Edit Asset"
   [(visible)]="showEditModal"
@@ -222,6 +221,7 @@
           <option>Desktop</option>
           <option>Monitor</option>
           <option>Keyboard</option>
+          <option>HeadSet</option>
           <option>Mouse</option>
         </select>
         <span class="field-error" *ngIf="editErrors.assetType">
@@ -249,6 +249,19 @@
           {{ editErrors.model }}
         </span>
       </div>
+
+ <div class="field">
+        <label>Initial Status</label>
+
+        <p-select
+  [(ngModel)]="selectedAsset.statusId"
+  [options]="statusList"
+  optionLabel="name"
+  optionValue="id"
+  placeholder="Select Status">
+</p-select>
+      </div>
+
     </div>
 
     <div *ngIf="editError" class="error-msg">{{ editError }}</div>
@@ -262,7 +275,6 @@
   </div>
 </p-dialog>
 
-<!-- ASSIGN MODAL -->
 <p-dialog
   header="Manage Assignment"
   [(visible)]="showAssignModal"
@@ -293,7 +305,7 @@
       </span>
     </div>
 
-    <!-- unassign section — only if currently assigned -->
+
     <div *ngIf="selectedAsset.assignedTo" class="unassign-box">
       <p class="unassign-label">Remove current assignment</p>
       <button class="btn-unassign" [disabled]="unassignLoading"
@@ -328,3 +340,6 @@
 
   </div>
 </p-dialog>
+
+
+ *ngIf="item.eventType !== 'Updated'".

@@ -10,10 +10,8 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-
 import { AssetRequestService } from './asset-requests.service';
 import { UserService } from '../user.service';
-
 import { Users } from '../user.model';
 import { AssetRequestsPayload } from './assetrequestspayload';
 
@@ -89,7 +87,6 @@ export class AssetRequestsComponent implements OnInit {
         });
 
         this.loadAssignedAssets();
-
         console.log('FORM VALUES:', this.requestForm.getRawValue());
       },
 
@@ -124,6 +121,16 @@ export class AssetRequestsComponent implements OnInit {
       ]
     });
   }
+
+  loadTickets()
+  {
+
+  }
+
+  goBack()
+{
+  this.router.navigateByUrl('/user/dashboard');
+}
 
   meaningfulTextValidator() {
 

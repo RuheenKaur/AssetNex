@@ -26,6 +26,8 @@
       <option value="InRepair">In Repair</option>
       <option value="ReAssigned">ReAssigned</option>
       <option value="Disposed">Disposed</option>
+      <option value = "Updated">Updated</option>
+      <option value = "Under-Maintenance">Under-Maintenance</option>
     </select>
   </div>
 
@@ -76,8 +78,14 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
   'event-repair':     item.eventType === 'InRepair',
   'event-reassigned': item.eventType === 'ReAssigned',
   'event-disposed':   item.eventType === 'Disposed',
-  'event-available':  item.eventType === 'Available'
+  'event-available':  item.eventType === 'Available',
+  'event-updated':    item.eventType === 'Updated',
+    'event-undermaintenance': item.eventType === 'UnderMaintenance'
 }">{{ item.eventType }}</span>
+
+
+
+
           </td>
           <td>{{ item.remarks || '—' }}</td>
           <td>{{ item.modifiedBy || '—' }}</td>
@@ -139,53 +147,58 @@ currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       <div class="timeline-label">FULL HISTORY</div>
 
       <div class="timeline">
-        <div class="timeline-item"
-          *ngFor="let event of assetTimeline; let last = last">
+  <div class="timeline-item"
+    *ngFor="let event of assetTimeline; let last = last">
 
-          <div class="timeline-left">
-            <div class="timeline-dot" [ngClass]="{
-              'dot-assigned':   event.eventType === 'Assigned',
-              'dot-returned':   event.eventType === 'Returned',
-              'dot-repair':     event.eventType === 'InRepair',
-              'dot-reassigned': event.eventType === 'ReAssigned',
-              'dot-disposed':   event.eventType === 'Disposed'
-            }"></div>
-            <div class="timeline-line" *ngIf="!last"></div>
-          </div>
+    <div class="timeline-left">
+      <div class="timeline-dot" [ngClass]="{
+        'dot-assigned':         event.eventType === 'Assigned',
+        'dot-returned':         event.eventType === 'Returned',
+        'dot-repair':           event.eventType === 'InRepair',
+        'dot-reassigned':       event.eventType === 'ReAssigned',
+        'dot-disposed':         event.eventType === 'Disposed',
+        'dot-updated':          event.eventType === 'Updated',
+        'dot-undermaintenance': event.eventType === 'UnderMaintenance'
+      }"></div>
+      <div class="timeline-line" *ngIf="!last"></div>
+    </div>
 
-          <div class="timeline-content">
-            <div class="timeline-top">
-              <span class="event-badge small" [ngClass]="{
-                'event-assigned':   event.eventType === 'Assigned',
-                'event-returned':   event.eventType === 'Returned',
-                'event-repair':     event.eventType === 'InRepair',
-                'event-reassigned': event.eventType === 'ReAssigned',
-                'event-disposed':   event.eventType === 'Disposed'
-              }">{{ event.eventType }}</span>
-              <span class="timeline-date">
-                {{ event.performedAt | date:'dd MMM yyyy, HH:mm' }}
-              </span>
-            </div>
-
-            <div class="timeline-user" *ngIf="event.userName">
-              <i class="pi pi-user"></i> {{ event.userName }}
-            </div>
-
-            <div class="timeline-remarks" *ngIf="event.remarks && event.remarks !== '—'">
-              {{ event.remarks }}
-            </div>
-
-            <div class="timeline-modified" *ngIf="event.modifiedBy">
-              <i class="pi pi-pencil"></i> Modified by Admin
-            </div>
-          </div>
-
-        </div>
-
-        <div *ngIf="assetTimeline.length === 0" class="no-timeline">
-          No events recorded for this asset yet.
-        </div>
+    <div class="timeline-content">
+      <div class="timeline-top">
+        <span class="event-badge small" [ngClass]="{
+          'event-assigned':         event.eventType === 'Assigned',
+          'event-returned':         event.eventType === 'Returned',
+          'event-repair':           event.eventType === 'InRepair',
+          'event-reassigned':       event.eventType === 'ReAssigned',
+          'event-disposed':         event.eventType === 'Disposed',
+          'event-updated':          event.eventType === 'Updated',
+          'event-undermaintenance': event.eventType === 'UnderMaintenance'
+        }">{{ event.eventType }}</span>
+        <span class="timeline-date">
+          {{ event.performedAt | date:'dd MMM yyyy, HH:mm' }}
+        </span>
       </div>
+
+      <div class="timeline-user" *ngIf="event.userName">
+        <i class="pi pi-user"></i> {{ event.userName }}
+      </div>
+
+      <div class="timeline-remarks"
+        *ngIf="event.remarks && event.remarks !== '—'">
+        {{ event.remarks }}
+      </div>
+
+      <div class="timeline-modified" *ngIf="event.modifiedBy">
+        <i class="pi pi-pencil"></i> Modified by Admin
+      </div>
+    </div>
+
+  </div>
+
+  <div *ngIf="assetTimeline.length === 0" class="no-timeline">
+    No events recorded for this asset yet.
+  </div>
+</div>
     </div>
 
   </div>

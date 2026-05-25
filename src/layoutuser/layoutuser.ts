@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import {Router, RouterOutlet} from '@angular/router';
 import { Sidebaruser } from '../sidebaruser/sidebaruser';
-import { Navbar } from '../navbar/navbar';
+import { AdminNavbarComponent } from '../navbar-admin/navbar-admin';
+import { UserNavbarComponent } from '../navbar-user/navbar-user';
+
 @Component({
   selector: 'app-layoutuser',
-  imports: [Sidebaruser, Navbar, RouterOutlet],
+  imports: [Sidebaruser, UserNavbarComponent, RouterOutlet],
   templateUrl: './layoutuser.html',
   styleUrl: './layoutuser.css',
 })

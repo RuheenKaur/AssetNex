@@ -8,7 +8,8 @@ export interface AdminAssetRequest
     requestedAssetType: string,
     reason: string ,
     status:string,
-    requestedOn:Date
+    requestedOn:Date,
+    adminNotes?: string;
 statusId:number,
 }//post
 

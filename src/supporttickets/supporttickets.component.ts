@@ -203,6 +203,15 @@ export class SupportTicketsComponent implements OnInit {
     };
   }
 
+    loadTickets()
+  {
+  }
+
+  goBack()
+{
+  this.router.navigateByUrl('/user/dashboard');
+}
+
   private showSuccessMessage(message: string): void {
     this.successMessage = message;
     this.showSuccess = true;

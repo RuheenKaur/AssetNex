@@ -14,20 +14,21 @@ import { SupportTicketsPost } from '../supportticketspost/supportticketspost';
 import { AssetassignComponent } from '../assetassign/assetassign.component';
 import { SupportTicketsComponent } from '../supporttickets/supporttickets.component';
 import { AssetRequestsComponent } from '../asset-requests/asset-requests.component';
-import { Trackticket } from '../supporttickets/trackticket/trackticket';
+import { TrackTicketsComponent } from '../supporttickets/trackticket/trackticket';
 import { AdminAssetrequests } from '../asset-requests/admin-assetrequests/admin-assetrequests';
 import { AssetHistory } from '../asset-history/asset-history';
 import { SupportTicketsResolver } from '../supportticketspost/supportticketspost.resolver';
 import { ExploreComponent } from '../explore/explore.component';
 import { AboutComponent } from '../about/about.component';
 import { LogoutComponent } from '../shared/logout/logout';
+import { TrackRequestsComponent } from '../trackrequests/trackrequests';
 
 
 export const appRoutes: Routes = [
   { path: '', redirectTo: '/landing', pathMatch: 'full' },
   { path: 'landing', component: LandingComponent },
-    { path: 'explore', component: ExploreComponent },
-      { path: 'about', component: AboutComponent},
+  { path: 'explore', component: ExploreComponent },
+  { path: 'about', component: AboutComponent},
   { path: 'login/auth', component: LoginAuthComponent },
   {path: 'logout', component: LogoutComponent },
   {
@@ -57,8 +58,9 @@ export const appRoutes: Routes = [
       { path: 'dashboard', component: DashboarduserComponent },
       { path: 'assetassign', component: AssetassignComponent },
       { path: 'supporttickets', component: SupportTicketsComponent },
+      { path: 'track-requests', component: TrackRequestsComponent },
       { path: 'assetsrequests', component: AssetRequestsComponent },
-      { path: 'trackticket', component: Trackticket },
+      { path: 'trackticket', component: TrackTicketsComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {path: 'support/create',component: SupportTicketsComponent
 }]

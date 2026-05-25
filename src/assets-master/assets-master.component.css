@@ -1,3 +1,4 @@
+
 .page-container {
   margin-left: 260px;
   margin-top: 80px;
@@ -365,8 +366,8 @@
 
 .assigned-chip {
   display: inline-block;
-  background: #e0f2fe;
-  color: #0369a1;
+  background-color:#130d07;
+  color: #1a1919;
   padding: 3px 10px;
   border-radius: 20px;
   font-size: 0.78rem;
@@ -398,7 +399,7 @@
 }
 
 .status-available { background: #dcfce7; color: #16a34a; }
-.status-assigned { background: #dbeafe; color: #1d4ed8; }
+.status-assigned { background: #dbeafe; color: #f1a745; }
 .status-in-repair { background: #fef3c7; color: #d97706; }
 .status-decommissioned { background: #f3f4f6; color: #6b7280; }
 
@@ -470,15 +471,15 @@
   font-weight: 600;
 }
 
-.status-available { background: #dcfce7; color: #16a34a; }
-.status-assigned { background: #dbeafe; color: #1d4ed8; }
+.status-active { background: #dcfce7; color: #16a34a; }
+.status-assigned { background: #dbeafe; color: #eb6d1a; }
 .status-in-repair { background: #fef3c7; color: #d97706; }
 .status-decommissioned { background: #f3f4f6; color: #6b7280; }
 
 .assigned-chip {
   display: inline-block;
-  background: #e0f2fe;
-  color: #0369a1;
+  background: #ffd885;
+  color: #0a0a0a;
   padding: 3px 10px;
   border-radius: 20px;
   font-size: 0.78rem;

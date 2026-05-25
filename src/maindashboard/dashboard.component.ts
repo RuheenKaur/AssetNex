@@ -37,7 +37,7 @@ export class DashboardComponent implements OnInit {
     console.log('Dashboard ngOnInit fired');
     setTimeout(() => {
       this.loadDashboardStats();
-    }, 100);  // ← small delay ensures component is fully rendered
+    }, 100);
   }
 
   loadDashboardStats(): void {

@@ -7,14 +7,15 @@ import { appRoutes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { authInterceptor } from '../auth/auth.interceptor';
+import { provideServerRendering } from '@angular/platform-server';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    provideClientHydration(),
     provideZonelessChangeDetection(),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideRouter(appRoutes),
-
     provideAnimations(),
   ]
 };

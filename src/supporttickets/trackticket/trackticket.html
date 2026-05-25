@@ -1,89 +1,100 @@
-<div class="page-wrapper">
+<div class="track-wrapper">
 
-  <div class="page-header">
-    <div>
-      <h2>Your Ticket Status</h2>
+  <!-- Header -->
+  <div class="track-header">
+    <div class="track-header-left">
+      <h1>My Support Tickets</h1>
       <p>Track all your submitted support tickets</p>
     </div>
-    <div>
-    <button class="btn-refresh" (click)="loadTickets()">
-      <i class="pi pi-refresh"></i>
-    </button>
-    <button class="btn-back" (click)="goBack()">← Back to Dashboard</button>
-  </div>
+    <div class="track-header-actions">
+      <button class="btn-refresh" (click)="loadTickets()" title="Refresh">
+        <i class="pi pi-refresh"></i>
+      </button>
+      <button class="btn-back" (click)="goBack()">
+        <i class="pi pi-arrow-left"></i> Dashboard
+      </button>
+    </div>
   </div>
 
-  <div class="table-card">
-    <p-table
-      #dt
-      [value]="tickets"
-      [paginator]="true"
-      [rows]="10"
-      [responsiveLayout]="'scroll'"
-      [globalFilterFields]="['issueCategory','issueDescription','priority','status']"
-      styleClass="p-datatable-sm">
 
-      <ng-template pTemplate="caption">
-        <div class="table-caption">
-          <span class="p-input-icon-left search-wrapper">
-            <i class="pi pi-search"></i>
-            <input
-              pInputText
-              type="text"
-              (input)="dt.filterGlobal($event.target.value, 'contains')"
-              placeholder="Search tickets..." />
-          </span>
+  <div class="search-bar">
+    <i class="pi pi-search"></i>
+    <input
+      type="text"
+      placeholder="Search by category, description or status..."
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()" />
+  </div>
+
+  <!-- Count -->
+  <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px;">
+    <span style="font-size:13px; font-weight:600; color:#111827;">Tickets</span>
+    <span class="count-pill">{{ filteredTickets.length }}</span>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="state-box">
+    <i class="pi pi-spin pi-spinner"></i>
+    <p>Loading your tickets...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !loading" class="state-box">
+    <i class="pi pi-exclamation-circle"></i>
+    <h3>Something went wrong</h3>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Empty -->
+  <div *ngIf="!loading && !error && filteredTickets.length === 0" class="state-box">
+    <i class="pi pi-inbox"></i>
+    <h3>No tickets found</h3>
+    <p>You haven't raised any support tickets yet.</p>
+  </div>
+
+  <!-- Ticket cards -->
+  <div *ngIf="!loading && !error">
+    <div
+      class="track-card"
+      *ngFor="let ticket of filteredTickets"
+      [ngClass]="getTicketCardClass(ticket.statusName)">
+
+      <div class="card-top">
+        <div class="card-title">
+          <i class="pi pi-ticket"></i>
+          <span>{{ ticket.issueCategory }}</span>
         </div>
-      </ng-template>
+        <span class="badge" [ngClass]="getStatusBadgeClass(ticket.statusName)">
+          {{ ticket.statusName }}
+        </span>
+      </div>
 
-      <ng-template pTemplate="header">
-        <tr>
-          <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
-          <th pSortableColumn="issueCategory">Category <p-sortIcon field="issueCategory"></p-sortIcon></th>
-          <th>Description</th>
-          <th pSortableColumn="priority">Priority <p-sortIcon field="priority"></p-sortIcon></th>
-          <th>Asset</th>
-          <th>Status</th>
-          <th>Resolution Notes</th>
-          <th pSortableColumn="createdAt">Created At <p-sortIcon field="createdAt"></p-sortIcon></th>
-        </tr>
-      </ng-template>
+      <div class="card-meta">
+        <span class="meta-item">
+          <i class="pi pi-tag"></i> #{{ ticket.ticketId }}
+        </span>
+        <span class="meta-item">
+          <i class="pi pi-desktop"></i> {{ ticket.assetConcerned || 'N/A' }}
+        </span>
+        <span class="meta-item">
+          <i class="pi pi-calendar"></i> {{ ticket.createdAt | date:'dd MMM yyyy' }}
+        </span>
+        <span class="badge" [ngClass]="{
+          'badge-high':   ticket.priority === 'High',
+          'badge-medium': ticket.priority === 'Medium',
+          'badge-low':    ticket.priority === 'Low'
+        }">{{ ticket.priority }}</span>
+      </div>
 
-<ng-template pTemplate="body" let-ticket>
-  <tr>
-    <td>#{{ ticket.ticketId }}</td>
-    <td>{{ ticket.issueCategory }}</td>
-    <td>{{ ticket.issueDescription }}</td>
-    <td>
-      <span class="priority-badge" [ngClass]="{
-        'priority-high': ticket.priority === 'High',
-        'priority-medium': ticket.priority === 'Medium',
-        'priority-low': ticket.priority === 'Low'
-      }">{{ ticket.priority }}</span>
-    </td>
-    <td>{{ ticket.assetConcerned }}</td>
-    <td>
-      <span class="status-badge" [ngClass]="{
-        'status-open': ticket.statusName === 'Open',
-        'status-progress': ticket.statusName === 'In Progress',
-        'status-resolved': ticket.statusName === 'Resolved',
-        'status-closed': ticket.statusName === 'Closed'
-      }">{{ ticket.statusName }}</span>
-    </td>
-    <td>{{ ticket.resolutionNotes || '—' }}</td>
-    <td>{{ ticket.createdAt | date:'MMM d, y' }}</td>
-  </tr>
-</ng-template>
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="7" class="empty-message">
-            <i class="pi pi-inbox"></i>
-            No tickets found.
-          </td>
-        </tr>
-      </ng-template>
+      <p class="card-description">{{ ticket.issueDescription }}</p>
 
-    </p-table>
+      <!-- Admin resolution notes -->
+      <div class="admin-notes" *ngIf="ticket.resolutionNotes">
+        <div class="admin-notes-label">Admin Notes</div>
+        <div class="admin-notes-text">{{ ticket.resolutionNotes }}</div>
+      </div>
+
+    </div>
   </div>
-</div>
 
+</div>

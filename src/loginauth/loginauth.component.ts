@@ -35,7 +35,7 @@ export class LoginAuthComponent implements OnInit {
   onLogin() {
     if (this.loginForm.invalid) return;
     this.loading = true;
-    this.error = '';
+
     this.authService.login(this.loginForm.value).subscribe({
       next: (res: any) => {
         const token = res.accessToken;
@@ -68,8 +68,16 @@ export class LoginAuthComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.error = err?.error || 'Login failed. Please check your credentials.';
-        this.loading = false;
+          if (typeof err.error === 'string') {
+    this.error = err.error;
+  } else if (err.status === 401) {
+    this.error = 'Invalid email or password. Please try again.';
+  } else if (err.status === 0) {
+    this.error = 'Cannot connect to server. Please check your connection.';
+  } else {
+    this.error = 'Something went wrong. Please try again.';
+  }
+  this.loading = false
       }
     });
   }

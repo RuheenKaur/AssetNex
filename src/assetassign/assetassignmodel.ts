@@ -1,4 +1,5 @@
 export interface Assetassign {
+status: any;
   assetId: number;
   assetTag: string;
   assetType: string;

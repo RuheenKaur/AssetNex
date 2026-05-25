@@ -1,18 +1,23 @@
-/* .layout {
+
+
+.layout {
   display: flex;
   min-height: 100vh;
+  margin-left:-300px;
 }
 
 .main {
   flex: 1;
-  margin-left: 260px;
-  padding-top: 95px;
-  position: relative;
-  z-index: 1;
+  min-width: 0;
+  /* margin-left: -280px; */
+  display: flex;
+  flex-direction: column;
 }
 
 .content {
-  padding: 24px;
-  position: relative;
-  z-index: 2;
-} */
+  margin-top: -30px;
+  padding: 28px;
+  margin-left: 280px;
+  flex: 1;
+  background: #f5f7fb;
+}

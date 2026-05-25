@@ -25,14 +25,11 @@ export class AssetsMasterComponent implements OnInit {
   users: any[] = [];
   selectedAsset: any = null;
   selectedUserId: number | null = null;
-
   showCreateModal = false;
   showEditModal = false;
   showAssignModal = false;
-
   newAsset: any = { assetTag: '', assetType: '', brand: '', model: '', serialNumber: '', statusId: 1 };
   newAssetErrors: any = {};
-
   createLoading = false;
   createError = '';
   createSuccess = false;
@@ -50,10 +47,10 @@ export class AssetsMasterComponent implements OnInit {
 
   statusList = [
   { id: 6,  name: 'InActive' },
-  { id: 7,  name: 'In Use' },
   { id: 8,  name: 'Requested' },
   { id: 9,  name: 'Assigned' },
   { id: 10, name: 'Active' },
+  {id : 3, name: 'UnderMaintenance'}
 ];
 
   constructor(
@@ -107,10 +104,8 @@ export class AssetsMasterComponent implements OnInit {
     } else if (model && this.isGibberish(model)) {
       errors.model = 'Please enter a valid model name.';
     }
-
     return errors;
   }
-
 
   onSearchChange() {
     clearTimeout(this.searchTimeout);
@@ -128,32 +123,12 @@ export class AssetsMasterComponent implements OnInit {
     this.userService.getUser().subscribe({
       next: (res) => { this.users = res;
            console.log('Users loaded for dropdown:', res);
-
       },
       error: (err) => console.error('Users failed', err)
     });
   }
 
-  loadAssets(event: any) {
-    this.loading = true;
-    const page = event ? Math.floor(event.first / event.rows) + 1 : 1;
-    const pageSize = event?.rows || this.pageSize;
 
-    this.assetService.getAssetsPaged(page, pageSize, this.search).subscribe({
-      next: (res) => {
-        setTimeout(() => {
-          this.assets = res.data;
-          this.totalRecords = res.pagination.totalCount;
-          this.loading = false;
-          this.cdr.detectChanges();
-        });
-      },
-      error: (err) => {
-        console.error('Asset loading failed', err);
-        this.loading = false;
-      }
-    });
-  }
 
   openCreateModal() {
   this.newAsset = { assetTag: '', assetType: '', brand: '', model: '', serialNumber: '', statusId: 1 };
@@ -175,10 +150,8 @@ export class AssetsMasterComponent implements OnInit {
     this.newAssetErrors = this.validateAssetForm(this.newAsset);
       console.log('validation errors:', this.newAssetErrors);
     if (Object.keys(this.newAssetErrors).length > 0) return;
-
     this.createLoading = true;
     this.createError = '';
-
     const payload = {
       assetTag: this.newAsset.assetTag.trim(),
       assetType: this.newAsset.assetType,
@@ -213,7 +186,6 @@ export class AssetsMasterComponent implements OnInit {
     });
   }
 
-
   openEditModal(asset: any) {
     this.selectedAsset = { ...asset };
     this.editErrors = {};
@@ -226,58 +198,89 @@ export class AssetsMasterComponent implements OnInit {
     this.selectedAsset = null;
   }
 
-  saveAssetEdits() {
-    if (!this.selectedAsset) return;
-    this.editErrors = this.validateAssetForm(this.selectedAsset);
-    if (Object.keys(this.editErrors).length > 0) return;
+loadAssets(event: any) {
+  this.loading = true;
+  const page = event ? Math.floor(event.first / event.rows) + 1 : 1;
+  const pageSize = event?.rows || this.pageSize;
 
-    this.editLoading = true;
-    this.editError = '';
-
-    this.assetService.updateAsset(this.selectedAsset).subscribe({
-      next: () => {
-        this.editLoading = false;
-        this.closeEditModal();
-        this.loadAssets({ first: 0, rows: this.pageSize });
-      },
-      error: (err) => {
-  this.createLoading = false;
-  setTimeout(() => {
-    let msg = 'Failed to create asset.';
-    try {
-      if (typeof err.error === 'string') {
-        msg = err.error;
-      } else if (err.error?.errors) {
-        msg = Object.entries(err.error.errors)
-          .map(([field, msgs]: [string, any]) => `${field}: ${msgs.join(', ')}`)
-          .join(' | ');
-      } else if (err.error?.title) {
-        msg = err.error.title;
-      } else if (err.error?.message) {
-        msg = err.error.message;
-      }
-    } catch(e) {
-      msg = 'Failed to create asset.';
+  this.assetService.getAssetsPaged(page, pageSize, this.search).subscribe({
+    next: (res) => {
+      setTimeout(() => {
+        this.assets = res.data;
+        this.totalRecords = res.pagination.totalCount;
+        this.loading = false;
+        this.cdr.detectChanges();
+      });
+    },
+    error: (err) => {
+      console.error('Asset loading failed', err);
+      this.loading = false;
     }
-    this.createError = msg;
-    this.cdr.detectChanges();
   });
 }
-    });
+
+
+  saveAssetEdits() {
+  if (!this.selectedAsset) return;
+  this.editErrors = this.validateAssetForm(this.selectedAsset);
+  if (Object.keys(this.editErrors).length > 0) return;
+  this.editLoading = true;
+  this.editError = '';
+  this.assetService.updateAsset(this.selectedAsset).subscribe({
+    next: () => {
+  this.editLoading = false;
+  const found = this.assets.find(a => a.id === this.selectedAsset.id);
+  if (found) {
+    found.statusId = this.selectedAsset.statusId;
+    found.statusName = this.statusList.find(
+      s => s.id === this.selectedAsset.statusId
+    )?.name || '';
   }
+  this.closeEditModal();
+  this.loadAssets({ first: 0, rows: this.pageSize });
+},
+    error: (err) => {
+      this.editLoading = false;
+      setTimeout(() => {
+        this.editError = err.error?.message || err.error || 'Failed to update asset.';
+        this.cdr.detectChanges();
+      });
+    }
+  });
+}
+
+
 
   updateStatus(asset: any) {
-    this.assetService.updateAssetStatusOnly(asset.id, asset.statusId).subscribe({
-      next: () => console.log('Status updated'),
-      error: (err) => console.error('Status update failed', err)
-    });
-  }
+  this.assetService.updateAssetStatusOnly(asset.id, asset.statusId).subscribe({
+    next: () => {
+
+      const found = this.assets.find(a => a.id === asset.id);
+      if (found) {
+        found.statusId = asset.statusId;
+        found.statusName = this.statusList.find(
+          s => s.id === asset.statusId
+        )?.name || '';
+        this.cdr.detectChanges();
+      }
+      console.log('Status updated');
+    },
+    error: (err) => {
+      setTimeout(() => {
+        this.editError = err.error?.message || 'Status update failed.';
+        this.cdr.detectChanges();
+      });
+    }
+  });
+}
+
   openAssignModal(asset: any) {
-    this.selectedAsset = asset;
-    this.selectedUserId = null;
-    this.assignError = '';
-    this.showAssignModal = true;
-  }
+  console.log('FULL ASSET OBJECT:', JSON.stringify(asset));
+  this.selectedAsset = { ...asset };
+  this.selectedUserId = null;
+  this.assignError = '';
+  this.showAssignModal = true;
+}
 
   closeAssignModal() {
     this.showAssignModal = false;
@@ -286,7 +289,6 @@ export class AssetsMasterComponent implements OnInit {
   }
 
   assignAsset() {
-
   console.log('Selected asset:', this.selectedAsset);
   console.log('Asset ID being sent:', this.selectedAsset?.id);
     if (!this.selectedUserId || !this.selectedAsset) return;
@@ -318,25 +320,28 @@ export class AssetsMasterComponent implements OnInit {
   }
 
   unassignAsset() {
-    if (!this.selectedAsset) return;
-    this.unassignLoading = true;
-    this.assignError = '';
-
-    this.assetService.unassignAsset(this.selectedAsset.id).subscribe({
-      next: () => {
-        this.unassignLoading = false;
-        this.closeAssignModal();
-        this.loadAssets({ first: 0, rows: this.pageSize });
-      },
-      error: (err) => {
-        this.unassignLoading = false;
-        setTimeout(() => {
-          this.assignError = err.error?.message || 'Unassign failed.';
-          this.cdr.detectChanges();
-        });
-      }
-    });
+  console.log('Unassign called, selectedAsset.id =', this.selectedAsset?.id);
+  if (!this.selectedAsset?.id) {
+    this.assignError = 'Asset ID missing — cannot unassign.';
+    return;
   }
+  this.unassignLoading = true;
+  this.assignError = '';
+  this.assetService.unassignAsset(this.selectedAsset.id).subscribe({
+    next: () => {
+      this.unassignLoading = false;
+      this.closeAssignModal();
+      this.loadAssets({ first: 0, rows: this.pageSize });
+    },
+    error: (err) => {
+      this.unassignLoading = false;
+      setTimeout(() => {
+        this.assignError = err.error?.message || 'Unassign failed.';
+        this.cdr.detectChanges();
+      });
+    }
+  });
+}
 
   goBack() {
     this.router.navigateByUrl('/admin/dashboard');

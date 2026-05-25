@@ -1,4 +1,4 @@
-<!-- User Sidebar Component HTML -->
+
 <div class="content-wrapper">
 
 
@@ -50,7 +50,12 @@
         </a>
       </li>
 
-
+<li>
+  <a class="nav-item" (click)="goToTrackRequests()">
+    <i class="pi pi-list-check"></i>
+    <span>Track Requests</span>
+  </a>
+</li>
       <div class="divider"></div>
 
 
@@ -69,8 +74,5 @@
       </li>
     </ul>
   </aside>
-
-
-    <router-outlet></router-outlet>
 
 </div>

@@ -5,6 +5,7 @@ import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { ChangeDetectorRef } from '@angular/core';
 import { AssetHistoryService } from './asset-history.service';
 
 @Component({
@@ -27,19 +28,22 @@ export class AssetHistory implements OnInit {
 
   constructor(
     private router: Router,
-    private assetHistoryService: AssetHistoryService
+    private assetHistoryService: AssetHistoryService,
+    private cdr : ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loadHistory();
   }
 
-  loadHistory(): void {
+    loadHistory(): void {
     this.assetHistoryService.getAllAssetsHistory().subscribe({
       next: (data) => {
-        this.history = data ?? [];
-        this.filteredHistory = this.history;
-        console.log('Asset History loaded:', data);
+        setTimeout(() => {
+          this.history = data ?? [];
+          this.filteredHistory = this.history;
+          this.cdr.detectChanges();
+        });
       },
       error: (err) => console.error('Failed to load history', err),
     });
@@ -51,9 +55,11 @@ export class AssetHistory implements OnInit {
       : this.history.filter(h => h.eventType === this.selectedEventType);
   }
 
+
   openDrawer(item: AssetsHistoryModel): void {
-    this.selectedAssetTag = item.assetTag || '—';
-    this.selectedAssetType = item.assetType || '—';
+  setTimeout(() => {
+    this.selectedAssetTag = item.assetTag || '-';
+    this.selectedAssetType = item.assetType || '-';
 
     this.assetTimeline = this.history
       .filter(h => h.assetId === item.assetId)
@@ -72,12 +78,15 @@ export class AssetHistory implements OnInit {
 
     if (lastAssigned && (!lastReturned ||
       new Date(lastAssigned.performedAt) > new Date(lastReturned.performedAt))) {
-      this.currentAssignee = lastAssigned.userName || '—';
+      this.currentAssignee = lastAssigned.userName || '-';
     } else {
       this.currentAssignee = 'Unassigned';
     }
+
     this.drawerOpen = true;
-  }
+    this.cdr.detectChanges();
+  });
+}
 
   closeDrawer(): void {
     this.drawerOpen = false;
@@ -92,6 +101,6 @@ export class AssetHistory implements OnInit {
 
   goBack(): void {
     this.router.navigateByUrl('/admin/dashboard');
-  }
+  };
 }
 

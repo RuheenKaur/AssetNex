@@ -2,29 +2,19 @@
   --primary: #f0842c;
   --primary-light: #fff4ec;
   --primary-dark: #dc6f16;
-
   --bg: #f5f7fb;
   --surface: #ffffff;
-
-  --text: #1f2937;
+  --text: #37251f;
   --text-light: #6b7280;
-
   --border: #e5e7eb;
-
   --success-bg: #dcfce7;
   --success-text: #16a34a;
-
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.06);
-
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 6px 20px rgba(0,0,0,0.08);
   --radius: 14px;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   background: var(--bg);
@@ -32,33 +22,32 @@ body {
   color: var(--text);
 }
 
-.dashboard-content {
-  margin-left: 280px;
-  margin-top: 88px;
-  padding: 32px;
-  min-height: 100vh;
+.dashboard-content
+{
+  margin-left:-20px;
 }
 
 .dashboard-header {
-  margin-bottom: 30px;
+  margin-bottom: 28px;
 }
 
 .dashboard-header h1 {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
-  color: var(--text);
-  margin-bottom: 6px;
+  color:  var(--text-dark);
+  margin-bottom: 4px;
 }
 
 .dashboard-header p {
   font-size: 14px;
-  color: var(--text-light);
+  color: #f0842c;
 }
+
 
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 18px;
   margin-bottom: 32px;
 }
 
@@ -66,12 +55,12 @@ body {
   background: var(--surface);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  padding: 22px;
+  padding: 20px;
   display: flex;
   align-items: center;
-  gap: 18px;
-  transition: 0.2s ease;
+  gap: 16px;
   box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .stat-card:hover {
@@ -80,8 +69,8 @@ body {
 }
 
 .stat-icon {
-  width: 54px;
-  height: 54px;
+  width: 52px;
+  height: 52px;
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -91,7 +80,7 @@ body {
 }
 
 .stat-details h3 {
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--text-light);
@@ -99,10 +88,11 @@ body {
 }
 
 .stat-value {
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 700;
   line-height: 1;
   margin-bottom: 4px;
+  color: var(--text);
 }
 
 .stat-label {
@@ -110,32 +100,34 @@ body {
   color: #9ca3af;
 }
 
+
 .content-section {
-  margin-bottom: 34px;
+  margin-bottom: 32px;
 }
 
 .section-title {
   font-size: 17px;
   font-weight: 700;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   color: var(--text);
 }
 
+
 .assets-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
 }
 
 .asset-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px;
+  padding: 18px;
   display: flex;
-  gap: 16px;
-  transition: 0.2s ease;
+  gap: 14px;
   box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .asset-card:hover {
@@ -144,8 +136,8 @@ body {
 }
 
 .asset-icon {
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   border-radius: 12px;
   background: var(--primary-light);
   color: var(--primary);
@@ -156,26 +148,25 @@ body {
   flex-shrink: 0;
 }
 
-.asset-info {
-  flex: 1;
-}
+.asset-info { flex: 1; }
 
 .asset-info h3 {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
+  color: #f0842c;
 }
 
 .asset-type {
   font-size: 13px;
   color: var(--text-light);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .asset-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
 
 .meta-item {
@@ -183,21 +174,19 @@ body {
   color: #9ca3af;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
-.asset-status {
-  display: flex;
-  align-items: flex-start;
-}
+.asset-status { display: flex; align-items: flex-start; }
 
 .status-badge {
-  padding: 5px 10px;
+  padding: 4px 10px;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .status-active {
@@ -210,59 +199,61 @@ body {
   background: var(--surface);
   border: 2px dashed var(--border);
   border-radius: var(--radius);
-  padding: 50px 24px;
+  padding: 48px 24px;
   text-align: center;
 }
 
 .empty-state i {
-  font-size: 42px;
+  font-size: 40px;
   color: #cbd5e1;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
+  display: block;
 }
 
 .empty-state h3 {
-  font-size: 18px;
+  font-size: 17px;
   margin-bottom: 8px;
+  color: var(--text);
 }
 
 .empty-state p {
   font-size: 14px;
   color: var(--text-light);
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
   border: none;
-  padding: 11px 22px;
+  padding: 10px 22px;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(240, 132, 44, 0.25);
+  box-shadow: 0 8px 18px rgba(240,132,44,0.3);
 }
 
 .actions-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
+  gap: 16px;
 }
 
 .action-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 28px 22px;
+  padding: 26px 20px;
   text-align: center;
   cursor: pointer;
-  transition: 0.2s ease;
   box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .action-card:hover {
@@ -272,15 +263,17 @@ body {
 }
 
 .action-card i {
-  font-size: 30px;
+  font-size: 28px;
   color: var(--primary);
-  margin-bottom: 14px;
+  margin-bottom: 12px;
+  display: block;
 }
 
 .action-card h3 {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
+  color: #dc6f16;
 }
 
 .action-card p {
@@ -288,17 +281,16 @@ body {
   color: var(--text-light);
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1024px) {
   .stats-grid,
   .actions-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .dashboard-content {
-    margin-left: 0;
-    padding: 20px;
+    padding: 16px;
   }
 
   .stats-grid,
@@ -308,6 +300,6 @@ body {
   }
 
   .dashboard-header h1 {
-    font-size: 24px;
+    font-size: 22px;
   }
 }

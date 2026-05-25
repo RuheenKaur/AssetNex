@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -9,6 +9,7 @@ import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { Router } from '@angular/router';
 import { UserPostService } from '../userspost.service';
+import { Message, MessageModule } from 'primeng/message';
 import { UserspostModel } from './userspost.model';
 import { Assetassign } from '../../assetassign/assetassignmodel';
 
@@ -16,7 +17,7 @@ import { Assetassign } from '../../assetassign/assetassignmodel';
   selector: 'app-userspost',
   standalone: true,
   imports: [CommonModule, FormsModule, TableModule, DialogModule,
-    ButtonModule, InputTextModule, SelectModule, TooltipModule],
+    ButtonModule, InputTextModule, SelectModule, TooltipModule, MessageModule, ReactiveFormsModule],
   templateUrl: './userspost.html',
   styleUrl: './userspost.css',
 })
@@ -24,23 +25,20 @@ export class UsersPost implements OnInit {
 
   users: UserspostModel[] = [];
   loading = false;
-
   selectedUser: any = null;
   assignedAssets: Assetassign[] = [];
   loadingAssignments = false;
-
   showUserAssignmentModal = false;
   showEditModal = false;
   showDeactivateModal = false;
   showCreateModal = false;
-
-  // new user form
   newUser: any = { name: '', email: '', contact: '', role: 'User' };
   createLoading = false;
   createError = '';
   createSuccess = false;
   editLoading = false;
   editError = '';
+
 
   constructor(
     private userpostService: UserPostService,
@@ -168,6 +166,7 @@ export class UsersPost implements OnInit {
         this.editLoading = false;
         this.closeEditModal();
         this.loadUsers();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.editLoading = false;
@@ -193,16 +192,20 @@ export class UsersPost implements OnInit {
 
   confirmDeactivateUser(): void {
     if (!this.selectedUser) return;
-    this.userpostService.deactivateUser(this.selectedUser.id).subscribe({
+    this.userpostService.deleteUser(this.selectedUser.id).subscribe({
       next: () => {
         this.closeDeactivateModal();
         this.loadUsers();
+         alert('User successfully deactivated');
       },
+
       error: (err) => console.error('Deactivate failed', err)
     });
+
   }
 
   goBack(): void {
     this.router.navigateByUrl('/admin/dashboard');
   }
+
 }

@@ -17,7 +17,7 @@ export class Sidebaruser {
 constructor(private router: Router, private authService:AuthService){}
 ngOnInit(): void {
   const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-  this.userId = storedUser.id;
+  this.userId = storedUser.numericId;
   this.userName=storedUser.name;
   console.log('Stored user:', storedUser);
   console.log('UserId used for asset API:', this.userId);
@@ -67,6 +67,10 @@ getAllAssignedList()
     localStorage.clear();
     this.router.navigateByUrl('/login');
   }
+
+  goToTrackRequests() {
+  this.router.navigate(['/user/track-requests']);
+}
 }
 
 

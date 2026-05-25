@@ -15,8 +15,6 @@
   --sidebar-bg: #FF8C42;
   --sidebar-hover: #FFA666;
   --sidebar-dark: #E67A2E;
-
-
   --success: #F4A460;
   --warning: #FFB74D;
   --danger: #FF7043;
@@ -29,6 +27,16 @@ body {
   margin: 0;
   padding: 0;
   line-height: 1.6;
+}
+
+.sidebar {
+  top: 68px;
+  height: calc(100vh - 68px);
+}
+
+.app-wrapper {
+  margin-left: 260px;
+  margin-top: 68px;
 }
 
 * {

@@ -1,15 +1,12 @@
 
-<!-- Main Dashboard Content -->
+
 <div class="dashboard-content">
 
-  <!-- Dashboard Header -->
   <div class="dashboard-header">
     <h1>My Dashboard</h1>
     <p>View and manage your assigned assets</p>
   </div>
-
   <div class="stats-grid">
-    <!-- Stat Card 1 -->
     <div class="stat-card">
       <div class="stat-icon" style="background: #fff4ec; color: #ff8c42;">
         <i class="pi pi-desktop"></i>
@@ -20,8 +17,6 @@
         <div class="stat-label">Currently Assigned</div>
       </div>
     </div>
-
-    <!-- Stat Card 2 -->
     <div class="stat-card">
       <div class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
         <i class="pi pi-send"></i>
@@ -32,8 +27,6 @@
         <div class="stat-label">Pending Approval</div>
       </div>
     </div>
-
-    <!-- Stat Card 3 -->
     <div class="stat-card">
       <div class="stat-icon" style="background: #d1fae5; color: #10b981;">
         <i class="pi pi-check-circle"></i>
@@ -46,10 +39,8 @@
     </div>
   </div>
 
-  <!-- Recent Assets Section -->
   <div class="content-section">
     <h2 class="section-title">Recent Assets</h2>
-
     <div class="assets-grid">
       <div class="asset-card" *ngFor="let asset of recentAssets">
         <div class="asset-icon">
@@ -59,10 +50,13 @@
           <h3>{{ asset.name || 'Asset Name' }}</h3>
           <p class="asset-type">{{ asset.type || 'Hardware' }}</p>
           <div class="asset-meta">
+
+
             <span class="meta-item">
-              <i class="pi pi-calendar"></i>
-              {{ asset.assignedDate || 'Jan 15, 2026' }}
-            </span>
+  <i class="pi pi-calendar"></i>
+  {{ asset.assignedDate | date:'dd MMM yyyy' }}
+</span>
+
             <span class="meta-item">
               <i class="pi pi-tag"></i>
               {{ asset.serialNumber || 'SN-12345' }}
@@ -74,7 +68,6 @@
         </div>
       </div>
 
-      <!-- Placeholder if no assets -->
       <div class="empty-state" *ngIf="!recentAssets || recentAssets.length === 0">
         <i class="pi pi-inbox"></i>
         <h3>No Assets Assigned</h3>

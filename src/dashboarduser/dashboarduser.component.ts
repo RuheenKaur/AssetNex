@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AssetAssignService } from '../assetassign/assetassign.service';
-import { AuthService } from '../auth/auth.service';
-import { RouterModule } from '@angular/router';
+import { forkJoin } from 'rxjs';
+import { environment } from '../environments/environment';
+
 @Component({
   selector: 'app-dashboarduser',
   standalone: true,
@@ -13,102 +15,67 @@ import { RouterModule } from '@angular/router';
 })
 export class DashboarduserComponent implements OnInit {
 
-    constructor(
-    private router: Router,
-    private assetService: AssetAssignService,
-    private authService:AuthService,
-  ) {}
- private initialized = false;
-  userName: string = 'User';
-  myAssetsCount: number = 0;
-  pendingRequests: number = 0;
-  openTickets: number = 0;
-  recentAssets: any[] = [
-    {
-      name: 'Dell Latitude 5420',
-      type: 'Laptop',
-      assignedDate: 'Jan 15, 2026',
-      serialNumber: 'LT-2024-001'
-    },
+  userName = 'User';
+  userId: number = 0;
+  myAssetsCount = 0;
+  pendingRequests = 0;
+  openTickets = 0;
+  recentAssets: any[] = [];
 
-    {
-      name: 'HP Monitor 24"',
-      type: 'Monitor',
-      assignedDate: 'Jan 15, 2026',
-      serialNumber: 'MN-2024-045'
-    }
-  ];
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef  // ← add this
+  ) {}
 
   ngOnInit() {
- if (this.initialized) return;
-  this.initialized = true;
-
-  console.log('Dashboard Init');
-    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-  this.currentUser = storedUser;
-  this.userName = storedUser.name || storedUser.email || 'User';
-  this.userId = storedUser.numericId; // use numericId not id
-  console.log('Current user:', this.currentUser);
-  console.log('NumericId for API:', this.userId);
-  this.loadDashboardData();
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.userName = user.name || user.email || 'User';
+    this.userId = user.numericId;
+    this.loadDashboardData();
   }
 
   loadDashboardData() {
-    this.myAssetsCount = this.recentAssets.length;
-    this.pendingRequests = 2;
-    this.openTickets = 1;
+    if (!this.userId) return;
+
+    forkJoin({
+      assets: this.http.get<any[]>(
+        `${environment.apibaseUrl}/api/AssetAssignments/user/${this.userId}`
+      ),
+      requests: this.http.get<any[]>(
+        `${environment.apibaseUrl}/api/AssetRequests/user/${this.userId}`
+      ),
+      tickets: this.http.get<any[]>(
+        `${environment.apibaseUrl}/api/support-tickets/user/${this.userId}`
+      )
+    }).subscribe({
+      next: ({ assets, requests, tickets }) => {
+        setTimeout(() => {                  
+          this.myAssetsCount = assets?.length || 0;
+          this.pendingRequests = requests?.filter(
+            (r: any) => r.statusId === 11
+          ).length || 0;
+          this.openTickets = tickets?.filter(
+            (t: any) => t.statusName === 'Open'
+          ).length || 0;
+          this.recentAssets = (assets || []).map((a: any) => ({
+            name: `${a.brand} ${a.model}`,
+            type: a.assetType || 'Hardware',
+            assignedDate: a.assignedOn,
+            serialNumber: a.assetTag || '-'
+          }));
+          this.cdr.detectChanges();
+        });
+      },
+      error: (err) => {
+        console.error('Dashboard load failed', err);
+      }
+    });
   }
 
-  goToAssetAssign() {
-    this.router.navigateByUrl('user/assetassign');
-  }
-
-  goToAssetRequest() {
-  this.router.navigateByUrl('user/assetsrequests');
-  }
-
-  goToSupporttickets() {
-  this.router.navigateByUrl('user/supporttickets');
-  }
-
-  goToTracktickets() {
-    this.router.navigateByUrl('user/trackticket');
-  }
-
-  onLogOut() {
-
-  }
-
-user: any;
-userId:any;
-currentUser:any;
-assets: any[] = [];
-totalUsers:number = 0;
-totalAssets:number = 0;
-softwareCount:number = 0;
-hardwareCount:number = 0;
-departmentCount :number = 0;
-historyCount: number = 0;
-goTo:any;
-assignedCount: number = 0;
-roleCount: number = 0;
-isSidebarCollapsed = false;
-
-
-  goToLanding()
-  {
-    this.router.navigateByUrl('/landing');
-  }
-
-getAllAssignedList()
-{
-  this.router.navigateByUrl('user/assetassign');
-}
-
-  logout() {
-    localStorage.clear();
-    this.router.navigateByUrl('/login');
-  }
-
-
+  goToAssetRequest() { this.router.navigateByUrl('user/assetsrequests'); }
+  goToSupporttickets() { this.router.navigateByUrl('user/supporttickets'); }
+  goToTracktickets() { this.router.navigateByUrl('user/trackticket'); }
+  logout() { localStorage.clear(); this.router.navigateByUrl('/login'); }
+  goToLanding() { this.router.navigateByUrl('/landing'); }
 }

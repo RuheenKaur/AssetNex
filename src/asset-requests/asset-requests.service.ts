@@ -18,6 +18,13 @@ export class AssetRequestService {
     );
   }
 
+  //USER
+  getMyRequests(userId: number): Observable<any[]> {
+  return this.http.get<any[]>(
+    `${environment.apibaseUrl}/api/AssetRequests/user/${userId}`
+  );
+}
+
   // SHARED
   getStatuses(category: string) {
     return this.http.get<any[]>(
@@ -34,12 +41,11 @@ export class AssetRequestService {
 
   updateStatus(id: number, statusId: number) {
     return this.http.patch(
-      `${environment.apibaseUrl}/api/AssetRequests/${id}/status`, // ← fixed casing
-      { statusId }  // ← removed id from body, it's already in the URL
+      `${environment.apibaseUrl}/api/AssetRequests/${id}/status`,
+      { statusId }
     );
   }
 
-  // VERSIONING DEMO
   getAssetRequestsV1() {
     return this.http.get(`${environment.apibaseUrl}/api/v1/asset-requests`);
   }
@@ -48,9 +54,11 @@ export class AssetRequestService {
     return this.http.get(`${environment.apibaseUrl}/api/v2/asset-requests`);
   }
 
-  getMyRequests(userId: number): Observable<any[]> {
-  return this.http.get<any[]>(
-    `${environment.apibaseUrl}/api/AssetRequests/user/${userId}`
+updateRequestReview(id: number, statusId: number, adminNotes: string): Observable<any> {
+  return this.http.patch(
+    `${environment.apibaseUrl}/api/AssetRequests/${id}/review`,
+    { statusId, adminNotes }
   );
 }
+
 }

@@ -1,0 +1,94 @@
+<div class="track-wrapper">
+
+  <!-- Header -->
+  <div class="track-header">
+    <div class="track-header-left">
+      <h1>My Asset Requests</h1>
+      <p>Track the status of your submitted asset requests</p>
+    </div>
+    <div class="track-header-actions">
+      <button class="btn-refresh" (click)="loadRequests()" title="Refresh">
+        <i class="pi pi-refresh"></i>
+      </button>
+      <button class="btn-back" (click)="goBack()">
+        <i class="pi pi-arrow-left"></i> Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <i class="pi pi-search"></i>
+    <input
+      type="text"
+      placeholder="Search by asset type, reason or status..."
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()" />
+  </div>
+
+  <!-- Count -->
+  <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px;">
+    <span style="font-size:13px; font-weight:600; color:#111827;">Requests</span>
+    <span class="count-pill">{{ filteredRequests.length }}</span>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="state-box">
+    <i class="pi pi-spin pi-spinner"></i>
+    <p>Loading your requests...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !loading" class="state-box">
+    <i class="pi pi-exclamation-circle"></i>
+    <h3>Something went wrong</h3>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Empty -->
+  <div *ngIf="!loading && !error && filteredRequests.length === 0" class="state-box">
+    <i class="pi pi-inbox"></i>
+    <h3>No requests found</h3>
+    <p>You haven't submitted any asset requests yet.</p>
+  </div>
+
+  <!-- Request cards -->
+  <div *ngIf="!loading && !error">
+    <div
+      class="track-card"
+      *ngFor="let req of filteredRequests"
+      [ngClass]="getRequestCardClass(req.statusId)">
+
+      <div class="card-top">
+        <div class="card-title">
+          <i class="pi pi-desktop"></i>
+          <span>{{ req.assetType || 'Asset Request' }}</span>
+        </div>
+        <span class="badge" [ngClass]="getStatusBadgeClass(req.statusId)">
+          {{ getStatusLabel(req.statusId) }}
+        </span>
+      </div>
+
+
+      <div class="card-meta">
+  <span class="meta-item">
+    <i class="pi pi-hashtag"></i> #{{ req.id }}
+  </span>
+  <span class="meta-item" *ngIf="req.assetName">
+    <i class="pi pi-desktop"></i> {{ req.assetName }}
+  </span>
+  <span class="meta-item">
+    <i class="pi pi-calendar"></i> {{ req.requestedOn | date:'dd MMM yyyy' }}
+  </span>
+</div>
+
+<p class="card-description">{{ req.reason || 'No reason provided' }}</p>
+
+<div class="admin-notes" *ngIf="req.adminNotes">
+  <div class="admin-notes-label">Admin Notes</div>
+  <div class="admin-notes-text">{{ req.adminNotes }}</div>
+</div>
+    </div>
+  </div>
+
+</div>

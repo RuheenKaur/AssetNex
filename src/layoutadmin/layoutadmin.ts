@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { App } from '../app/app';
 import { Sidebaradmin } from '../sidebaradmin/sidebaradmin';
-import { Navbar } from '../navbar/navbar';
+import { AdminNavbarComponent } from '../navbar-admin/navbar-admin';
+import { AdminAssetrequests } from "../asset-requests/admin-assetrequests/admin-assetrequests";
 
 
 @Component({
   selector: 'app-layoutadmin',
-  imports: [Sidebaradmin,Navbar,RouterOutlet],
+  imports: [Sidebaradmin, AdminNavbarComponent, RouterOutlet, AdminAssetrequests],
   templateUrl: './layoutadmin.html',
   styleUrl: './layoutadmin.css',
 })
