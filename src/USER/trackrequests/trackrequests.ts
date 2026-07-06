@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AssetRequestService } from '../asset-requests/asset-requests.service';
 import { TrackRequestModel } from './trackrequests.model';
+import { AuthService } from '../../shared/auth/auth.service';
 @Component({
   selector: 'app-track-requests',
   standalone: true,
@@ -21,7 +22,8 @@ export class TrackRequestsComponent implements OnInit {
 
   constructor(
     private requestService: AssetRequestService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -29,13 +31,16 @@ export class TrackRequestsComponent implements OnInit {
   }
 
   loadRequests(): void {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const userId = user.numericId;
-    if (!userId) { this.error = 'User not found. Please log in again.'; return; }
 
-    this.loading = true;
-    this.error = '';
+    const userId = this.authService.getNumericId();
+  if (!userId) { 
+    this.error = 'User not found. Please log in again.'; 
+    return; 
+  }
+  this.loading = true;
+  this.error = '';
 
+    const user = this.authService.getUserId() || '{}';
     this.requestService.getMyRequests(userId).subscribe({
       next: (res) => {
         this.requests = res;

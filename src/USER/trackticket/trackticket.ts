@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { SupportTicketService } from '../supporttickets/supporttickets.service';
 import { Router } from '@angular/router';
 import { SupportTicketPostService } from '../../ADMIN/supporttickets_admin/supportticketspost.service';
+import { AuthService } from '../../shared/auth/auth.service';
 
 @Component({
   selector: 'app-track-tickets',
@@ -18,11 +19,13 @@ export class TrackTicketsComponent implements OnInit {
   filteredTickets: any[] = [];
   loading = false;
   error = '';
+  numericId: any;
   searchTerm = '';
 
   constructor(
     private ticketService: SupportTicketPostService,
-    private router: Router
+    private router: Router,
+     private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -30,25 +33,26 @@ export class TrackTicketsComponent implements OnInit {
   }
 
   loadTickets(): void {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const userId = user.numericId;
-    if (!userId) { this.error = 'User not found. Please log in again.'; return; }
-
-    this.loading = true;
-    this.error = '';
-
-    this.ticketService.getAllTrackTickets(userId).subscribe({
-      next: (res) => {
-        this.tickets = res;
-        this.filteredTickets = res;
-        this.loading = false;
-      },
-      error: () => {
-        this.error = 'Failed to load tickets. Please try again.';
-        this.loading = false;
-      }
-    });
+  const userId = this.authService.getNumericId();
+  if (!userId) { 
+    this.error = 'User not found. Please log in again.'; 
+    return; 
   }
+  this.loading = true;
+  this.error = '';
+
+  this.ticketService.getAllTrackTickets(userId).subscribe({
+    next: (res) => {
+      this.tickets = res;
+      this.filteredTickets = res;
+      this.loading = false;
+    },
+    error: () => {
+      this.error = 'Failed to load tickets. Please try again.';
+      this.loading = false;
+    }
+  });
+}
 
   onSearch(): void {
     const term = this.searchTerm.toLowerCase();
@@ -70,7 +74,8 @@ getStatusBadgeClass(statusName: string): string {
 }
 
 getTicketCardClass(statusName: string): string {
-  const map: any = {
+  const map: 
+  any = {
     'open':        'status-open',
     'in progress': 'status-progress',
     'resolved':    'status-resolved',
@@ -78,8 +83,6 @@ getTicketCardClass(statusName: string): string {
   };
   return map[statusName?.toLowerCase().trim()] || '';
 }
-
-
 
   goBack(): void {
     this.router.navigate(['/user/dashboard']);

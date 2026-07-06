@@ -71,7 +71,7 @@ export class Assetassignpost implements OnInit {
     this.selectedUserId = null;
     this.showModal = false;
   }
-
+  
   confirmReassign(): void {
     if (!this.selectedAssignment || !this.selectedUserId) return;
     this.assetassignService.reassign({

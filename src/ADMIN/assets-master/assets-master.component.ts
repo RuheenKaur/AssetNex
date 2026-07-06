@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../user-master/user.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../shared/auth/auth.service';
 
 @Component({
   selector: 'app-asset-master',
@@ -26,6 +27,7 @@ export class AssetsMasterComponent implements OnInit {
   selectedAsset: any = null;
   selectedUserId: number | null = null;
   showCreateModal = false;
+  selectedByUserId: number | null = null;
   showEditModal = false;
   showAssignModal = false;
   newAsset: any = { assetTag: '', assetType: '', brand: '', model: '', serialNumber: '', statusId: 1 };
@@ -57,12 +59,14 @@ export class AssetsMasterComponent implements OnInit {
     private assetService: AssetsMasterService,
     private userService: UserService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.loadAssets({ first: 0, rows: this.pageSize });
     this.loadUsers();
+
   }
 
 
@@ -111,7 +115,7 @@ export class AssetsMasterComponent implements OnInit {
     clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
       this.loadAssets({ first: 0, rows: this.pageSize });
-    }, 400);
+    }, 400); 
   }
 
   refreshAssets() {
@@ -239,6 +243,7 @@ loadAssets(event: any) {
   this.closeEditModal();
   this.loadAssets({ first: 0, rows: this.pageSize });
 },
+
     error: (err) => {
       this.editLoading = false;
       setTimeout(() => {
@@ -249,12 +254,9 @@ loadAssets(event: any) {
   });
 }
 
-
-
   updateStatus(asset: any) {
   this.assetService.updateAssetStatusOnly(asset.id, asset.statusId).subscribe({
     next: () => {
-
       const found = this.assets.find(a => a.id === asset.id);
       if (found) {
         found.statusId = asset.statusId;
@@ -265,6 +267,7 @@ loadAssets(event: any) {
       }
       console.log('Status updated');
     },
+
     error: (err) => {
       setTimeout(() => {
         this.editError = err.error?.message || 'Status update failed.';
@@ -288,43 +291,42 @@ loadAssets(event: any) {
     this.selectedUserId = null;
   }
 
-  assignAsset() {
+assignAsset() {
   console.log('Selected asset:', this.selectedAsset);
   console.log('Asset ID being sent:', this.selectedAsset?.id);
-    if (!this.selectedUserId || !this.selectedAsset) return;
-    this.assignLoading = true;
-    this.assignError = '';
+  if (!this.selectedUserId || !this.selectedAsset) return;
+  this.assignLoading = true;
+  this.assignError = '';
+  const action = this.selectedAsset.assignedTo
+    ? this.assetService.reassignAsset(this.selectedAsset.id, this.selectedUserId,
+    )
+    : this.assetService.assignAsset(
+        this.selectedAsset.id,
+        this.selectedUserId
+      );
+  action.subscribe({
+    next: () => {
+      this.assignLoading = false;
+      this.closeAssignModal();
+      this.loadAssets({ first: 0, rows: this.pageSize });
+    },
+    error: (err) => {
+      this.assignLoading = false;
+      setTimeout(() => {
+        this.assignError = err.error?.message || 'Assignment failed.';
+        this.cdr.detectChanges();
+      });
+    }
+  });
+}
 
-    const action = this.selectedAsset.assignedTo
-      ? this.assetService.reassignAsset(this.selectedAsset.id, this.selectedUserId)
-      : this.assetService.assignAsset(
-          this.selectedAsset.id,
-          this.selectedUserId,
-          JSON.parse(localStorage.getItem('user') || '{}').numericId
-        );
-
-    action.subscribe({
-      next: () => {
-        this.assignLoading = false;
-        this.closeAssignModal();
-        this.loadAssets({ first: 0, rows: this.pageSize });
-      },
-      error: (err) => {
-        this.assignLoading = false;
-        setTimeout(() => {
-          this.assignError = err.error?.message || 'Assignment failed.';
-          this.cdr.detectChanges();
-        });
-      }
-    });
-  }
-
-  unassignAsset() {
+unassignAsset() {
   console.log('Unassign called, selectedAsset.id =', this.selectedAsset?.id);
   if (!this.selectedAsset?.id) {
     this.assignError = 'Asset ID missing — cannot unassign.';
     return;
   }
+
   this.unassignLoading = true;
   this.assignError = '';
   this.assetService.unassignAsset(this.selectedAsset.id).subscribe({

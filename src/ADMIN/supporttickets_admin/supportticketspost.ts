@@ -53,7 +53,7 @@ export class SupportTicketsPost implements OnInit, OnDestroy {
     private router: Router,
     private service: SupportTicketPostService,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdf: ChangeDetectorRef
   ) {}
 
 
@@ -130,7 +130,7 @@ refreshTickets() {
       );
       setTimeout(() => {
   this.loading = false;
-  this.cdr.detectChanges();
+  this.cdf.detectChanges();
 });
     },
     error: (err) => {
@@ -141,6 +141,7 @@ refreshTickets() {
       this.supportTickets = [];
       this.totalRecords = 0;
       this.loading = false;
+      this.cdf.detectChanges(); 
     }
   });
 }
@@ -196,7 +197,7 @@ loadComments(ticketId: number): void {
   this.service.getComments(ticketId).subscribe({
     next: (data) => {
       this.ticketComments = data ?? [];
-      this.cdr.detectChanges();
+      this.cdf.detectChanges();
     },
     error: (err) => {
       console.error('Comments failed', err);

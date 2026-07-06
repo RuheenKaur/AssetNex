@@ -32,56 +32,90 @@ export class LoginAuthComponent implements OnInit {
     });
   }
 
+  // onLogin() {
+  //   if (this.loginForm.invalid) return;
+  //   this.loading = true;
+
+  //   this.authService.login(this.loginForm.value).subscribe({
+  //     next: (res: any) => {
+  //       const token = res.accessToken;
+  //       const decoded: any = jwtDecode(token);
+
+  //       const user = {
+  //         id: res.id,
+  //         numericId: res.numericId,
+  //         name: res.name,
+  //         email: res.email,
+  //         contact: res.contact,
+  //         role: res.role
+  //       };
+
+  //       localStorage.setItem('accessToken', token);
+  //       localStorage.setItem('token', token);
+  //       localStorage.setItem('userId', res.numericId?.toString() ?? '');
+  //       localStorage.setItem('user', JSON.stringify(user));
+
+  //       console.log('Logged in user:', user);
+  //       console.log('Numeric ID stored:', res.numericId);
+  //       console.log('Role:', user.role);
+
+  //       if (user.role === 'Admin') {
+  //         this.router.navigate(['/admin/dashboard']);
+  //       } else {
+  //         this.router.navigate(['/user/dashboard']);
+  //       }
+
+  //       this.loading = false;
+  //     },
+  //     error: (err) => {
+  //         if (typeof err.error === 'string') {
+  //   this.error = err.error;
+  // } else if (err.status === 401) {
+  //   this.error = 'Invalid email or password. Please try again.';
+  // } else if (err.status === 0) {
+  //   this.error = 'Cannot connect to server. Please check your connection.';
+  // } else {
+  //   this.error = 'Something went wrong. Please try again.';
+  // }
+  // this.loading = false
+  //     }
+  //   });
+  // }
+
+
   onLogin() {
-    if (this.loginForm.invalid) return;
-    this.loading = true;
+  if (this.loginForm.invalid) return;
+  this.loading = true;
 
-    this.authService.login(this.loginForm.value).subscribe({
-      next: (res: any) => {
-        const token = res.accessToken;
-        const decoded: any = jwtDecode(token);
+  this.authService.login(this.loginForm.value).subscribe({
+    next: (res: any) => {
+      this.authService.saveUser(res);
 
-        const user = {
-          id: res.id,
-          numericId: res.numericId,
-          name: res.name,
-          email: res.email,
-          contact: res.contact,
-          role: res.role
-        };
+      console.log('Logged in user:', res);
+      console.log('Role:', res.role);
 
-        localStorage.setItem('accessToken', token);
-        localStorage.setItem('token', token);
-        localStorage.setItem('userId', res.numericId?.toString() ?? '');
-        localStorage.setItem('user', JSON.stringify(user));
-
-        console.log('Logged in user:', user);
-        console.log('Numeric ID stored:', res.numericId);
-        console.log('Role:', user.role);
-
-        if (user.role === 'Admin') {
-          this.router.navigate(['/admin/dashboard']);
-        } else {
-          this.router.navigate(['/user/dashboard']);
-        }
-
-        this.loading = false;
-      },
-      error: (err) => {
-          if (typeof err.error === 'string') {
-    this.error = err.error;
-  } else if (err.status === 401) {
-    this.error = 'Invalid email or password. Please try again.';
-  } else if (err.status === 0) {
-    this.error = 'Cannot connect to server. Please check your connection.';
-  } else {
-    this.error = 'Something went wrong. Please try again.';
-  }
-  this.loading = false
+      if (res.role === 'Admin') {
+        this.router.navigate(['/admin/dashboard']);
+      } else {
+        this.router.navigate(['/user/dashboard']);
       }
-    });
-  }
 
+      this.loading = false;
+    },
+    error: (err) => {
+      if (typeof err.error === 'string') {
+        this.error = err.error;
+      } else if (err.status === 401) {
+        this.error = 'Invalid email or password. Please try again.';
+      } else if (err.status === 0) {
+        this.error = 'Cannot connect to server. Please check your connection.';
+      } else {
+        this.error = 'Something went wrong. Please try again.';
+      }
+      this.loading = false;
+    }
+  });
+}
   goToLanding() {
     this.router.navigateByUrl('/landing');
   }

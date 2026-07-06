@@ -45,15 +45,14 @@ getStatusId(statusId:number)
   );
 }
 
-assignAsset(assetId: number, assignedToUserId: number, assignedByUserId: number) {
+assignAsset(assetId: number, assignedToUserId: number) {
   return this.http.post(
     `${environment.apibaseUrl}/api/AssetAssignments/assign`,
     null,
     {
       params: {
         assetId,
-        assignedToUserId,
-        assignedByUserId
+        assignedToUserId
       }
     }
   );

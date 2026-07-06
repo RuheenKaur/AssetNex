@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SupportTicketService } from './supporttickets.service';
 import { UserService } from '../../ADMIN/user-master/user.service';
+import { AuthService } from '../../shared/auth/auth.service';
 
 @Component({
   selector: 'app-supporttickets',
@@ -35,7 +36,8 @@ export class SupportTicketsComponent implements OnInit {
     private fb: FormBuilder,
     private supportService: SupportTicketService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService
   ) {
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras?.state;
@@ -62,23 +64,23 @@ export class SupportTicketsComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-    this.currentUser = storedUser;
-    this.userId = storedUser.numericId ? Number(storedUser.numericId) : null;
+ ngOnInit(): void {
+  this.userId = this.authService.getNumericId();
+  this.currentUser = {
+    name: this.authService.getUserName(),
+    email: this.authService.getEmail(),
+    numericId: this.userId
+  };
 
-    console.log('Stored user:', storedUser);
-    console.log('NumericId for API:', this.userId);
-
-    if (!this.userId) {
-      console.error('Numeric userId not found — redirecting to login');
-      this.router.navigate(['/login/auth']);
-      return;
-    }
-
-    this.initForm(storedUser);
-    this.loadAssignedAssets(this.userId);
+  if (!this.userId) {
+    console.error('Numeric userId not found — redirecting to login');
+    this.router.navigate(['/login/auth']);
+    return;
   }
+
+  this.initForm(this.currentUser);
+  this.loadAssignedAssets(this.userId);
+}
 
   private initForm(user: any): void {
     this.supportForm = this.fb.group({

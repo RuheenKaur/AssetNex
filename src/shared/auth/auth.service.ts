@@ -1,59 +1,66 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-constructor(private http: HttpClient, private router:Router) {}
+private accessToken: string | null = null;
+private email: string | null = null;
+private role: string | null = null;
+private userId: string | null = null;
+private numericId: number | null = null;
+private userName: string | null = null;
+private contact: string | null = null;
 
-login(data: { email: string; password: string }) {
-  return this.http.post<any>(
-    `${environment.apibaseUrl}/api/Auth/login`,
-    data
-  );
+saveUser(res: any) {
+  this.accessToken = res.accessToken;
+  this.email = res.email;
+  this.role = res.role;
+  this.userId = res.id;
+  this.numericId = res.numericId;
+  this.userName = res.name;
+  this.contact = res.contact;
 }
 
-  saveUser(res: any)
-  {
-    localStorage.setItem('accessToken', res.accessToken);
-    localStorage.setItem('refreshToken', res.refreshToken);
-    localStorage.setItem('email', res.email);
-    localStorage.setItem('role', res.role);
-    localStorage.setItem('Id',res.id);
-    localStorage.setItem('User Name', res.name);
-    localStorage.setItem('isLoggedIn', 'true');
+getAccessToken(): string | null { return this.accessToken; }
+getRole(): string | null { return this.role; }
+getUserId(): string | null { return this.userId; }
+getNumericId(): number | null { return this.numericId; }
+getUserName(): string | null { return this.userName; }
+getEmail(): string | null { return this.email; }
+getContact(): string | null { return this.contact; }
+isAuthenticated(): boolean { return !!this.accessToken; }
+
+
+
+  constructor(private http: HttpClient, private router: Router) {}
+
+  login(data: { email: string; password: string }) {
+    return this.http.post<any>(
+      `${environment.apibaseUrl}/api/Auth/login`,
+      data,
+      { withCredentials: true }
+    );
   }
 
-
-  getRole(): string | null {
-    return localStorage.getItem('role');
-  }
-
-  isAuthenticated(): boolean {
-    return localStorage.getItem('isLoggedIn') === 'true';
+  refresh() {
+    return this.http.post<any>(
+      `${environment.apibaseUrl}/api/Auth/refresh`,
+      {},
+      { withCredentials: true }
+    );
   }
 
 
   logout(): void {
-    localStorage.removeItem('storeduser');
-    sessionStorage.removeItem('userToken');
-    localStorage.removeItem('userName');
+    this.http.post(`${environment.apibaseUrl}/api/Auth/logout`, {}, { withCredentials: true }).subscribe();
+    this.accessToken = null;
+    this.email = null;
+    this.role = null;
+    this.userId = null;
+    this.userName = null;
     this.router.navigateByUrl('/login/auth');
   }
-
-  outlog() : void {
-    localStorage.removeItem('storedUser');
-    sessionStorage.removeItem('userToken');
-    localStorage.removeItem('userName');
-    this.router.navigateByUrl('login/auth');
-  }
-
-
-  isLoggedIn(): boolean {
-    return !!localStorage.getItem('userToken');
-  }
 }
-
-

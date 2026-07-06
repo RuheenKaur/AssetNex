@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { AuthGuard } from '../SHARED/auth/auth.guard';
-import { LoginAuthComponent } from '../SHARED/loginauth/loginauth.component';
-import { LandingComponent } from '../SHARED/landing/landing.component';
+import { AuthGuard } from '../shared/auth/auth.guard';
+import { LoginAuthComponent } from '../shared/loginauth/loginauth.component';
+import { LandingComponent } from '../shared/landing/landing.component';
 import { AssetSoftware } from '../ADMIN/asset-software/asset-software';
 import { Layoutadmin } from '../ADMIN/layoutadmin/layoutadmin';
 import { Layoutuser } from '../USER/layoutuser/layoutuser';
@@ -18,9 +18,9 @@ import { TrackTicketsComponent } from '../USER/trackticket/trackticket';
 import { AdminAssetrequests } from '../ADMIN/assetrequests_admin/admin-assetrequests';
 import { AssetHistory } from '../ADMIN/asset-history/asset-history';
 import { SupportTicketsResolver } from '../ADMIN/supporttickets_admin/supportticketspost.resolver';
-import { ExploreComponent } from '../SHARED/explore/explore.component';
-import { AboutComponent } from '../SHARED/about/about.component';
-import { LogoutComponent } from '../SHARED/logout/logout';
+import { ExploreComponent } from '../shared/explore/explore.component';
+import { AboutComponent } from '../shared/about/about.component';
+import { LogoutComponent } from '../shared/logout/logout';
 import { TrackRequestsComponent } from '../USER/trackrequests/trackrequests';
 
 

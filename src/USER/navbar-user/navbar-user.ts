@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LogoutComponent } from '../../SHARED/logout/logout';
+import { LogoutComponent } from '../../shared/logout/logout';
+import { AuthService } from '../../shared/auth/auth.service';
 
 @Component({
   selector: 'app-user-navbar',
@@ -13,21 +14,21 @@ import { LogoutComponent } from '../../SHARED/logout/logout';
 export class UserNavbarComponent implements OnInit {
 
   userName = '';
+  name = this.authService.getUserName() || 'User';
   userInitials = 'U';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
-  ngOnInit(): void {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    this.userName = user.name || 'User';
-    this.userInitials = this.userName
-      .split(' ')
-      .map((n: string) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  }
 
+ngOnInit(): void {
+  this.userName = this.authService.getUserName() || 'User';
+  this.userInitials = this.userName
+    .split(' ')
+    .map((n: string) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
   goToLanding() {
     this.router.navigate(['/']);
   }

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LogoutComponent } from '../../SHARED/logout/logout';
+import { LogoutComponent } from '../../shared/logout/logout';
+import { AuthService } from '../../shared/auth/auth.service';
 
 
 @Component({
@@ -15,19 +16,19 @@ export class AdminNavbarComponent implements OnInit {
 
   adminName = '';
   adminInitials = 'AD';
+  name : any;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
-  ngOnInit(): void {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    this.adminName = user.name || 'Admin';
-    this.adminInitials = this.adminName
-      .split(' ')
-      .map((n: string) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  }
+ngOnInit(): void {
+  this.adminName = this.authService.getUserName() || 'User';
+  this.adminInitials = this.adminName
+    .split(' ')
+    .map((n: string) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
 
   goToLanding() {
     this.router.navigate(['/']);

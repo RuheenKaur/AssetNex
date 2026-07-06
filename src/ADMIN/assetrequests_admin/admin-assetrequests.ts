@@ -40,6 +40,7 @@ export class AdminAssetrequests implements OnInit {
       next: (data) => {
         this.assetRequests = data;
         this.loading = false;
+        this.cdRef.detectChanges(); 
       },
       error: (err) => {
         console.error('Failed to load asset requests', err);
@@ -71,7 +72,7 @@ loadStatuses() {
 openEditDialog(req: AdminAssetRequest) {
   this.selectedRequest = { ...req };
   this.selectedStatusId = req.statusId;
-  this.adminNotes = req.adminNotes || '';  // ← load existing notes
+  this.adminNotes = req.adminNotes || '';
   this.showDialog = true;
 }
 
@@ -86,7 +87,7 @@ saveStatus() {
       const row = this.assetRequests.find(r => r.id === this.selectedRequest!.id);
       if (row) {
         row.statusId = this.selectedStatusId;
-        row.adminNotes = this.adminNotes;  // ← update local data
+        row.adminNotes = this.adminNotes;
         this.cdRef.detectChanges();
       }
       this.showDialog = false;
@@ -98,7 +99,6 @@ saveStatus() {
     }
   });
 }
-
 
   closeDialog() {
     this.showDialog = false;

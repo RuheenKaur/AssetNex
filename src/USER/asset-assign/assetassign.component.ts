@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Assetassign } from './assetassignmodel';
 import { UserService } from '../../ADMIN/user-master/user.service';
 import { jwtDecode } from 'jwt-decode';
+import { AuthService } from '../../shared/auth/auth.service';
 
 @Component({
   selector: 'app-assetassign',
@@ -31,27 +32,21 @@ export class AssetassignComponent implements OnInit {
   constructor(
     private assetAssignService: AssetAssignService,
     private router: Router,
-    private userService:UserService
+    private userService:UserService,
+    private authService : AuthService
   ) {}
 
-
-
-ngOnInit(): void {
-  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-  this.userName = storedUser.name || storedUser.email || 'User';
-  this.userId = storedUser.numericId;
-
-  console.log('Stored user:', storedUser);
-  console.log('NumericId for asset API:', this.userId);
+  ngOnInit(): void {
+  this.userName = this.authService.getUserName() || this.authService.getEmail() || 'User';
+  this.userId = this.authService.getNumericId();
 
   if (!this.userId) {
-    console.error('Numeric userId not found in localStorage');
+    console.error('Numeric userId not found — redirecting');
     return;
   }
 
   this.userService.getAssignedAssets(this.userId).subscribe({
     next: (res: Assetassign[]) => {
-      console.log('Assigned Assets:', res);
       this.assigned = res;
     },
     error: (err) => console.error('Error loading assets:', err)

@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { AuthService } from '../../shared/auth/auth.service';
 
 @Component({
   selector: 'app-dashboarduser',
@@ -16,7 +17,7 @@ import { environment } from '../../environments/environment';
 export class DashboarduserComponent implements OnInit {
 
   userName = 'User';
-  userId: number = 0;
+  userId: any = null;
   myAssetsCount = 0;
   pendingRequests = 0;
   openTickets = 0;
@@ -25,15 +26,15 @@ export class DashboarduserComponent implements OnInit {
   constructor(
     private router: Router,
     private http: HttpClient,
-    private cdr: ChangeDetectorRef  // ← add this
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
   ) {}
-
+  
   ngOnInit() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    this.userName = user.name || user.email || 'User';
-    this.userId = user.numericId;
-    this.loadDashboardData();
-  }
+  this.userName = this.authService.getUserName() || this.authService.getEmail() || 'User';
+  this.userId = this.authService.getNumericId();
+  this.loadDashboardData();
+}
 
   loadDashboardData() {
     if (!this.userId) return;

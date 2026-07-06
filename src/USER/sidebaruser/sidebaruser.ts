@@ -1,76 +1,44 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../SHARED/auth/auth.service';
-import { LoginAuthComponent } from '../../SHARED/loginauth/loginauth.component';
+import { AuthService } from '../../shared/auth/auth.service';
 import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-sidebaruser',
   imports: [RouterModule],
   templateUrl: './sidebaruser.html',
   styleUrl: './sidebaruser.css',
 })
+export class Sidebaruser implements OnInit {
+  userId: any;
+  userName: any;
 
-export class Sidebaruser {
-  userId:any;
-  userName:any;
-  goTo: any;
-constructor(private router: Router, private authService:AuthService){}
-ngOnInit(): void {
-  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-  this.userId = storedUser.numericId;
-  this.userName=storedUser.name;
-  console.log('Stored user:', storedUser);
-  console.log('UserId used for asset API:', this.userId);
-  console.log('User name:', this.userName);
+  constructor(private router: Router, private authService: AuthService) {}
 
-  if (!this.userId) {
-    console.error('UserId not found');
-    return;
+  ngOnInit(): void {
+    this.userId = this.authService.getUserId();
+    this.userName = this.authService.getUserName();
+
+    if (!this.userId) {
+      console.error('UserId not found — redirecting');
+      this.router.navigateByUrl('/landing');
+      return;
+    }
   }
-}
-goToLanding()
-{
-  this.router.navigateByUrl('/landing');
-}
 
-  onLogOut()
-  {
+  onLogOut() {
     this.authService.logout();
-    alert('Go ahead with the logout?');
   }
 
-goToAssetAssign()
-{
-  this.router.navigateByUrl('user/assetassign');
-}
-
-goToTracktickets()
-{
-  this.router.navigateByUrl('user/trackticket');
-}
-
-  goToSupporttickets()
-  {
-    this.router.navigateByUrl('user/supporttickets');
-  }
-
-  goToAssetRequest() {
-    this.router.navigateByUrl('user/assetsrequests');
-  }
-
-getAllAssignedList()
-{
-  this.router.navigateByUrl('user/assetassign');
-}
+  goToAssetAssign() { this.router.navigateByUrl('user/assetassign'); }
+  goToTracktickets() { this.router.navigateByUrl('user/trackticket'); }
+  goToSupporttickets() { this.router.navigateByUrl('user/supporttickets'); }
+  goToAssetRequest() { this.router.navigateByUrl('user/assetsrequests'); }
+  getAllAssignedList() { this.router.navigateByUrl('user/assetassign'); }
+  goToLanding() { this.router.navigateByUrl('/landing'); }
+  goToTrackRequests() { this.router.navigate(['/user/track-requests']); }
 
   logout() {
-    localStorage.clear();
-    this.router.navigateByUrl('/login');
+    this.authService.logout();
   }
-
-  goToTrackRequests() {
-  this.router.navigate(['/user/track-requests']);
 }
-}
-
-

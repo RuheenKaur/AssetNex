@@ -14,6 +14,7 @@ import { AssetRequestService } from './asset-requests.service';
 import { UserService } from '../../ADMIN/user-master/user.service';
 import { Users } from '../../ADMIN/user-master/user.model';
 import { AssetRequestsPayload } from './assetrequestspayload';
+import { AuthService } from '../../shared/auth/auth.service';
 
 @Component({
   selector: 'app-asset-requests',
@@ -26,90 +27,53 @@ export class AssetRequestsComponent implements OnInit {
 
   assetRequests: any[] = [];
   loading = false;
-
   requestForm!: FormGroup;
-
   user: any;
   currentUser: any;
-
   success = false;
+  numericUserId: any;
 
   constructor(
     private fb: FormBuilder,
     private assetRequestsService: AssetRequestService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService
   ) {}
 
-  ngOnInit(): void {
 
-    this.initForm();
-
-    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-
-    const userId = storedUser.numericId;
-
-    console.log('Stored User:', storedUser);
-    console.log('Numeric UserId:', userId);
-
-    if (!userId) {
-      console.error('User id missing');
-      return;
-    }
-
-    this.user = storedUser;
-
-    this.userService.getUserById(userId).subscribe({
-
-      next: (user: Users) => {
-
-        console.log('USER RESPONSE:', user);
-
-        this.currentUser = user;
-
-        this.requestForm.patchValue({
-
-          name:
-            (user as any).name ||
-            (user as any).Name ||
-            '',
-
-          email:
-            (user as any).email ||
-            (user as any).Email ||
-            '',
-
-          contact:
-            (user as any).contact ||
-            (user as any).Contact ||
-            ''
-
-        });
-
-        this.loadAssignedAssets();
-        console.log('FORM VALUES:', this.requestForm.getRawValue());
-      },
-
-      error: err => {
-        console.error('Failed to load user', err);
-      }
-    });
+ngOnInit(): void {
+  this.initForm();
+  
+  const userId = this.authService.getNumericId();
+  
+  if (!userId) {
+    console.error('User id missing');
+    return;
   }
 
+  this.userService.getUserById(userId).subscribe({
+    next: (user: Users) => {
+      this.currentUser = user;
+      this.requestForm.patchValue({
+        name: (user as any).name || (user as any).Name || '',
+        email: (user as any).email || (user as any).Email || '',
+        contact: (user as any).contact || (user as any).Contact || ''
+      });
+      this.loadAssignedAssets();
+    },
+    error: err => {
+      console.error('Failed to load user', err);
+    }
+  });
+}
   private initForm() {
-
     this.requestForm = this.fb.group({
-
       name: [{ value: '', disabled: true }],
-
       email: [{ value: '', disabled: true }],
-
       contact: [{ value: '', disabled: true }],
-
       assetId: ['', Validators.required],
-
       requestedAssetType: ['', Validators.required],
-
       reason: [
         '',
         [
@@ -160,56 +124,36 @@ export class AssetRequestsComponent implements OnInit {
     };
   }
 
+
   loadAssignedAssets() {
-
-    const userId = this.user?.numericId;
-
-    console.log('Loading assets for user:', userId);
-
-    if (!userId) {
-      console.error('Numeric userId missing');
-      return;
-    }
-
-    this.userService.getAssignedAssetsByUser(userId).subscribe({
-
-      next: (assets) => {
-
-        this.assetRequests = assets;
-
-        console.log('ASSET REQUESTS:', assets);
-
-   if (assets.length > 0) {
-
-  console.log('FIRST ASSET:', assets[0]);
-
-  this.requestForm.patchValue({
-    assetId:
-      assets[0].assetId ||
-      assets[0].id
+  const userId = this.authService.getNumericId(); // fix this line
+  console.log('Loading assets for user:', userId);
+  if (!userId) {
+    console.error('Numeric userId missing');
+    return;
+  }
+  this.userService.getAssignedAssetsByUser(userId).subscribe({
+    next: (assets) => {
+      this.assetRequests = assets;
+      if (assets.length > 0) {
+        this.requestForm.patchValue({
+          assetId: assets[0].assetId || assets[0].id
+        });
+      }
+    },
+    error: err => console.error('Failed to load assets', err)
   });
 }
-      },
 
-      error: err => {
-        console.error('Failed to load assets', err);
-      }
-    });
-  }
 
 submitForm(): void {
   if (this.loading) return;
-
   if (this.requestForm.invalid) {
     this.requestForm.markAllAsTouched();
     return;
   }
-
   this.loading = true;
-
   const formData = this.requestForm.getRawValue();
-
-  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
 
   const payload: AssetRequestsPayload = {
     assetId: Number(formData.assetId),
@@ -217,21 +161,13 @@ submitForm(): void {
     reason: formData.reason.trim()
   };
 
-  console.log('Submitting payload:', payload);
-
   this.assetRequestsService.createRequest(payload).subscribe({
     next: (res) => {
-      console.log('Request submitted:', res);
       this.success = true;
       this.loading = false;
-      this.requestForm.patchValue({
-        requestedAssetType: '',
-        reason: ''
-      });
+      this.requestForm.patchValue({ requestedAssetType: '', reason: '' });
     },
     error: (err) => {
-      console.error('Submit error:', err);
-      console.error('Error body:', err.error);
       this.loading = false;
       alert('Failed: ' + (err.error?.message || err.message || 'Unknown error'));
     }

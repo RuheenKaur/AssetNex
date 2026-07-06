@@ -6,7 +6,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { appRoutes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { authInterceptor } from '../SHARED/auth/auth.interceptor';
+import { authInterceptor } from '../shared/auth/auth.interceptor';
 import { provideServerRendering } from '@angular/platform-server';
 
 export const appConfig: ApplicationConfig = {
